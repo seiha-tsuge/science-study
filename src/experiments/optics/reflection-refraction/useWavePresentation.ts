@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react'
 import { advanceWavePresentation, WAVE_PRESENTATION_DURATION } from './model'
 
-export function useWavePresentation() {
+export function useWavePresentation(active = true) {
   const [time, setTime] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
-  const running = playing && time < WAVE_PRESENTATION_DURATION && !reducedMotion
+  const [previousActive, setPreviousActive] = useState(active)
+  // Stop on closure while retaining the selected time; reopening never starts playback.
+  if (active !== previousActive) {
+    setPreviousActive(active)
+    if (!active) setPlaying(false)
+  }
+  const running = active && playing && time < WAVE_PRESENTATION_DURATION && !reducedMotion
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')

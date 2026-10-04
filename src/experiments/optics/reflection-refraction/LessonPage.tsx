@@ -1,5 +1,6 @@
 import { Accordion, Anchor, Text, Title } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import Lesson from '../../../components/Lesson'
 import OpticsSimulation from './Simulation'
 import RefractionJourney from './RefractionJourney'
@@ -10,6 +11,7 @@ import StrawDiagram from './StrawDiagram'
 import './optics-lesson.css'
 
 export default function OpticsLessonPage() {
+  const [detail, setDetail] = useState<string | null>(null)
   return (
     <Lesson
       lesson={opticsLesson}
@@ -20,10 +22,10 @@ export default function OpticsLessonPage() {
       mechanism={
         <>
           <RefractionJourney />
-          <Accordion variant="separated" mt="xl">
+          <Accordion variant="separated" mt="xl" value={detail} onChange={setDetail}>
             <Accordion.Item value="wave-basics">
               <Accordion.Control>さらに知りたい：光では何が変わる？ 電場・干渉・位相</Accordion.Control>
-              <Accordion.Panel><WavePrimer /></Accordion.Panel>
+              <Accordion.Panel><WavePrimer active={detail === 'wave-basics'} /></Accordion.Panel>
             </Accordion.Item>
             <Accordion.Item value="construction">
               <Accordion.Control>次の波面を、距離の作図で見る</Accordion.Control>
