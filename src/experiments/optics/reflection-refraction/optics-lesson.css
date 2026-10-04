@@ -1,29 +1,7 @@
-.optics-lesson { --accent: #176c71; --optics-ink: #20394a; color: var(--optics-ink); }
-.optics-lesson .page-heading { margin-bottom: 24px; }
-.optics-lesson .page-heading h1 { font-size: clamp(30px, 3.6vw, 44px); letter-spacing: -0.04em; }
-.optics-lesson .page-heading > p:last-child { max-width: 48em; }
-.optics-lesson .lesson-steps { gap: 0; padding: 6px; border: 1px solid #d9e5e5; background: white; border-radius: 14px; }
-.optics-lesson .lesson-steps a { background: transparent; color: #345d65; border-radius: 9px; }
-.optics-lesson .lesson-steps a:hover { background: #edf5f3; }
-.optics-lesson #overview { background: #fff; border-color: #d9e5e5; border-radius: 18px; }
-.optics-lesson #overview h2 { max-width: 31em; font-size: clamp(23px, 2.6vw, 30px); line-height: 1.6; letter-spacing: -0.03em; }
 .optics-lesson .lesson-overview-visual { display: grid; grid-template-columns: 1fr 1.15fr; align-items: center; gap: 32px; }
-.optics-lesson .starting-point { padding: 0; background: transparent; }
-.optics-lesson .lesson-overview-visual > div > p { font-size: 14px; color: #4d6470; }
 .optics-opening-figure { min-width: 0; margin: 0; }
-.optics-opening-figure figcaption { text-align: center; font-size: 12px; line-height: 1.8; color: #526c77; }
-.optics-lesson .relationship-map { border-top: 1px solid #e1e9e8; padding-top: 20px; }
-.optics-lesson .relationship-map > div { background: #f6f9f8; border: 0; border-radius: 10px; }
-.optics-lesson .relationship-map h3 { font-size: 16px; line-height: 1.6; }
-.optics-lesson .relationship-map p { line-height: 1.8; }
-.optics-lesson .lesson-section { padding-block: 40px; }
-.optics-lesson .section-heading h2 { font-size: clamp(21px, 2.3vw, 26px); }
-.optics-lesson .mantine-Button-root:focus-visible, .optics-lesson a:focus-visible { outline: 3px solid #176c71; outline-offset: 3px; }
+.optics-opening-figure figcaption { text-align: center; font-size: var(--mantine-font-size-xs); line-height: 1.8; color: var(--mantine-color-dimmed); }
 @media (max-width: 48em) {
   .optics-lesson .lesson-overview-visual { grid-template-columns: 1fr; gap: 8px; }
-  .optics-lesson .lesson-steps a { padding: 10px 4px; }
-  .optics-lesson .lesson-section { padding-block: 28px; }
-  .optics-opening-figure { margin-inline: -8px; }
   .optics-lesson .lesson-overview-visual > figure { order: -1; }
-  .optics-lesson .lesson-overview-visual > div > p { margin-top: 12px; }
 }

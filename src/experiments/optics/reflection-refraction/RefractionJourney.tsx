@@ -1,4 +1,5 @@
-import { Accordion, Badge, Button, Group, Paper, Slider, Text, Title } from '@mantine/core'
+import { Accordion, Badge, Button, Group, Paper, SegmentedControl, Slider, Switch, Tabs, Text, Title } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import { useId, useState } from 'react'
 import { boundaryFrontPoint, observePeriodicWave, observeWalkingRow, teachingRope, wavePhysicalTime, WAVE_PRESENTATION_DURATION } from './model'
 import StrawDiagram from './StrawDiagram'
@@ -24,6 +25,7 @@ export default function RefractionJourney() {
   const [slanted, setSlanted] = useState(true)
   const [slower, setSlower] = useState(true)
   const clock = useWavePresentation()
+  const narrow = useMediaQuery('(max-width: 48em)')
   const id = useId()
   const angle = slanted ? Math.PI / 4 : 0
   const walkers = observeWalkingRow(clock.time / WAVE_PRESENTATION_DURATION * 1.5, slanted, slower)
@@ -42,50 +44,54 @@ export default function RefractionJourney() {
       : 'A側は水中で遅く進み、B側はまだ空気中を速く進みます。両側で進む距離に差が付き、緑の列の向きが変わります。'
   const moving = scene === 1 || (scene === 2 && bridge >= 2)
   const chooseScene = (next: number) => {
+    if (next === scene) return
     clock.reset(); setScene(next); setStrawMode(next === 3 ? 2 : 0); setBridge(0); setSlanted(true); setSlower(true)
   }
   const selectBridge = (next: number) => { setBridge(next); clock.seek(next >= 2 ? (slanted ? 3 : 4) : 0) }
   const current = scenes[scene]
-  const timeControls = (moving && <div className="journey-time">
-        <Text className="eyebrow" mb="sm">時間を選んで、両端を比べる</Text><Group className="journey-time-scenes" gap="xs" aria-label="列の変化の静止場面">
-          {[[0, '入る前'], [slanted ? 3 : 4, slanted ? '片側が先に入る' : '同時に入る'], [8, '全体が入った後']].map(([value, label]) => <Button color="teal" key={value} variant={Math.abs(clock.time - Number(value)) < 0.05 ? 'light' : 'default'} aria-label={String(label)} aria-pressed={Math.abs(clock.time - Number(value)) < 0.05} onClick={() => clock.seek(Number(value))}>{label === '片側が先に入る' ? '片側が入る' : label === '全体が入った後' ? '入った後' : label}</Button>)}
+  const timeControls = (moving && <Paper withBorder p="md" className="journey-time">
+        <Text fw={600} size="sm" mb="sm">時間を選んで、両端を比べる</Text><Group className="journey-time-scenes" gap="xs" aria-label="列の変化の静止場面">
+          {[[0, '入る前'], [slanted ? 3 : 4, slanted ? '片側が先に入る' : '同時に入る'], [8, '全体が入った後']].map(([value, label]) => <Button key={value} variant={Math.abs(clock.time - Number(value)) < 0.05 ? 'light' : 'default'} aria-label={String(label)} aria-pressed={Math.abs(clock.time - Number(value)) < 0.05} onClick={() => clock.seek(Number(value))}>{label === '片側が先に入る' ? '片側が入る' : label === '全体が入った後' ? '入った後' : label}</Button>)}
         </Group>
+        <Text size="xs" mt="md" mb="xs">説明の時間：{clock.time.toFixed(1)} / {WAVE_PRESENTATION_DURATION} 秒（物理時刻とは別）</Text>
+        <Slider min={0} max={8} step={0.05} value={clock.time} onChange={clock.seek} thumbLabel="列の変化の説明時間" thumbProps={{ 'aria-valuetext': `${clock.time.toFixed(1)}秒` }} label={value => `${value.toFixed(1)} s`} />
         <Group mt="md" gap="xs">
-          <Button color="teal" disabled={clock.reducedMotion} aria-label={clock.running ? '説明を停止' : '列の変化を再生'} onClick={clock.toggle}>{clock.running ? '停止' : '再生'}</Button>
-          <Button color="teal" variant="default" aria-label="この場面を初期化" onClick={clock.reset}>先頭へ戻す</Button>
+          <Button disabled={clock.reducedMotion} aria-label={clock.running ? '説明を停止' : '列の変化を再生'} onClick={clock.toggle}>{clock.running ? '停止' : '再生'}</Button>
+          <Button variant="default" aria-label="この場面を初期化" onClick={clock.reset}>先頭へ戻す</Button>
         </Group>
-        <Text size="xs" mt="sm" mb="xs">説明の時間：{clock.time.toFixed(1)} / {WAVE_PRESENTATION_DURATION} 秒（物理時刻とは別）</Text>
-        <Slider color="teal" min={0} max={8} step={0.05} value={clock.time} onChange={clock.seek} thumbLabel="列の変化の説明時間" thumbProps={{ 'aria-valuetext': `${clock.time.toFixed(1)}秒` }} label={value => `${value.toFixed(1)} s`} />
         {clock.reducedMotion && <Text size="sm" mt="sm">動きを減らす設定です。場面ボタンや時間スライダーで、静止した図を選べます。</Text>}
-      </div>)
+      </Paper>)
   return (
     <Paper withBorder p={{ base: 'md', sm: 'xl' }} className="refraction-journey">
       <Group justify="space-between" gap="sm"><Title order={3}>ストローから、曲がる理由をたどる</Title><Badge variant="light">図とたとえで見る</Badge></Group>
-      <Text size="sm" c="dimmed" mt="sm">場面を選ぶと、見る対象が切り替わります。再生せず、途中の図だけを選ぶこともできます。</Text>
-      <nav className="journey-scenes" aria-label="屈折の説明の場面">
-        {scenes.map((item, index) => <Button color="teal" key={item.label} variant={scene === index ? 'light' : 'default'} aria-pressed={scene === index} onClick={() => chooseScene(index)}><span className="journey-scene-number">0{index + 1}</span><span>{item.label}</span></Button>)}
-      </nav>
+      <Text size="sm" c="dimmed" mt="sm">四つの場面を自由に選べます。図に重ねるものや途中の時間を選ぶと、再生せずに関係を見られます。</Text>
+      <Tabs value={String(scene)} onChange={value => { if (value !== null) chooseScene(Number(value)) }}>
+      <Tabs.List className="journey-scenes" aria-label="屈折の説明の場面" grow>
+        {scenes.map((item, index) => <Tabs.Tab key={item.label} value={String(index)}>{item.label}</Tabs.Tab>)}
+      </Tabs.List>
+      <Tabs.Panel value={String(scene)}>
       <div className="journey-intro"><Text className="eyebrow">場面 0{scene + 1} / 04</Text><Title order={4}>{current.title}</Title>
-      <Text className="journey-caption" mt="sm">{scene === 1 && !slower ? '砂地に入っても、歩く速さを変えない場合です。境目へ届く順番にかかわらず、全員が同じ時間に同じ距離を進みます。' : scene === 1 && !slanted ? 'AとBを砂地の境目から同じ距離に並べます。全員が同時に砂地へ入り、同時に遅くなる場合です。' : current.text}</Text></div>
+      <Text size="sm" c="dimmed" mt="sm">{scene === 1 && !slower ? '砂地に入っても、歩く速さを変えない場合です。境目へ届く順番にかかわらず、全員が同じ時間に同じ距離を進みます。' : scene === 1 && !slanted ? 'AとBを砂地の境目から同じ距離に並べます。全員が同時に砂地へ入り、同時に遅くなる場合です。' : current.text}</Text></div>
 
       {(scene === 0 || scene === 3) && <div className="journey-workspace">
-        <Group gap="xs" mt="md" aria-label="ストローの図に重ねるもの">
-          {['ストローの形', '目に届く光', '見える位置'].map((label, index) => <Button color="teal" key={label} variant={strawMode === index ? 'light' : 'default'} aria-pressed={strawMode === index} onClick={() => setStrawMode(index)}>{label}</Button>)}
-        </Group>
+        <div className="journey-tools">
+          <Text size="sm" fw={600} mb="xs" id={`${id}-straw-layers`}>図に重ねるもの</Text>
+          <SegmentedControl fullWidth orientation={narrow ? 'horizontal' : 'vertical'} aria-labelledby={`${id}-straw-layers`} value={String(strawMode)} onChange={value => setStrawMode(Number(value))} data={['ストローの形', '目に届く光', '見える位置'].map((label, index) => ({ value: String(index), label }))} />
+        </div>
         <StrawDiagram mode={strawMode} />
-        <div className="journey-explanation"><Text className="eyebrow">図のここを見る</Text><Text className="journey-key">{strawMode === 0 ? '茶色の●はストローの上にあります。水に入っている部分も、形は一直線です。' : strawMode === 1 ? '青い実線を●から目へたどると、水面で折れ曲がっています。ストローが曲がらなくても、光の道筋は曲がります。' : '紫の破線は、目へ届いた向きのまま光を逆向きに延ばした線です。細い束が一直線に来たとみなすと、その出発点は、破線が交わる○になります。○は実際の●より浅い位置にあります。'}</Text>
+        <Paper withBorder p="md" className="journey-explanation"><Text className="eyebrow">図のここを見る</Text><Text mt="sm">{strawMode === 0 ? '茶色の●はストローの上にあります。水に入っている部分も、形は一直線です。' : strawMode === 1 ? '青い実線を●から目へたどると、水面で折れ曲がっています。ストローが曲がらなくても、光の道筋は曲がります。' : '紫の破線は、目へ届いた向きのまま光を逆向きに延ばした線です。細い束が一直線に来たとみなすと、その出発点は、破線が交わる○になります。○は実際の●より浅い位置にあります。'}</Text>
         <Text size="sm" c="dimmed" mt="sm">平らな水面を横から見た説明図です。ストロー上の一点と細い光の束を扱い、コップの壁と目のレンズは省いています。○は光の延長から求めた近似の位置です。</Text>
         {strawMode === 2 && <Text mt="sm">水中の部分が実際とは違う位置に見えるため、まっすぐなストローが水面で折れたように見えます。</Text>}
-        </div>
+        </Paper>
       </div>}
 
-      {scene === 1 && <div className="journey-workspace has-time">
-        <Group gap="xs" mt="md">
-          <Button color="teal" variant={slanted ? 'light' : 'default'} aria-pressed={slanted} onClick={() => { setSlanted(true); clock.reset() }}>斜めに砂地へ</Button>
-          <Button color="teal" variant={!slanted ? 'light' : 'default'} aria-label="全員が同時に砂地へ" aria-pressed={!slanted} onClick={() => { setSlanted(false); clock.reset() }}>同時に砂地へ</Button>
-          <Button color="teal" variant="default" aria-pressed={!slower} onClick={() => { setSlower(!slower); clock.reset() }}>{slower ? '砂地でも同じ速さにする' : '砂地で遅くする'}</Button>
-        </Group>
+      {scene === 1 && <div className="journey-workspace">
+        <div className="journey-tools">
+          <Text size="sm" fw={600} mb="xs" id={`${id}-walk-condition`}>砂地への入り方</Text>
+          <SegmentedControl fullWidth aria-labelledby={`${id}-walk-condition`} value={slanted ? 'slanted' : 'straight'} onChange={value => { setSlanted(value === 'slanted'); clock.reset() }} data={[{ value: 'slanted', label: '斜めに入る' }, { value: 'straight', label: '同時に入る' }]} />
+          <Switch mt="md" label="砂地で速さを半分にする" checked={slower} onChange={event => { setSlower(event.currentTarget.checked); clock.reset() }} />
         {timeControls}
+        </div>
         <svg className="refraction-visual" viewBox="0 0 560 520" role="img" aria-labelledby={`${id}-walk-title ${id}-walk-desc`}>
           <title id={`${id}-walk-title`}>人の列が道から砂地へ進む模式図</title>
           <desc id={`${id}-walk-desc`}>{slanted ? 'Aが先に砂地に入り、Bは後から入ります。' : '全員が同時に砂地に入ります。'}{slower ? '砂地で歩く速さが半分になります。' : '道と砂地で同じ速さです。'}人の歩く向きは固定し、列の向きの変化だけを比べます。</desc>
@@ -110,19 +116,24 @@ export default function RefractionJourney() {
           </g>)}
           <text x="35" y="518">破線：出発時　実線：今の列</text>
         </svg>
-        <div className="journey-explanation"><Text className="eyebrow">図のここを見る</Text><Text className="journey-key">{!slower ? '同じ速さなら、同じ時間に同じ距離だけ進みます。境目を通っても列の向きは変わりません。' : !slanted ? '全員が同時に遅くなります。左右で進む距離に差が付かないので、列の向きは変わりません。' : !walkers[0].inSand ? '今はAもBも道の上。同じ速さで進んでいます。「片側が先に入る」を選ぶと、Aだけが遅くなった状態を見られます。' : walkers[4].inSand ? '今はAもBも砂地の上。先に入ったAは、Bより長い時間ゆっくり進んだため、出発時の列と今の列では傾きが違います。' : 'Aは砂地で遅く進み、Bはまだ道の上を速く進みます。同じ時間に進む距離の差が、緑の列の向きを変えています。'}</Text>
+        <Paper withBorder p="md" className="journey-explanation"><Text className="eyebrow">図のここを見る</Text><Text mt="sm">{!slower ? '同じ速さなら、同じ時間に同じ距離だけ進みます。境目を通っても列の向きは変わりません。' : !slanted ? '全員が同時に遅くなります。左右で進む距離に差が付かないので、列の向きは変わりません。' : !walkers[0].inSand ? '今はAもBも道の上。同じ速さで進んでいます。「片側が入る」を選ぶと、Aだけが遅くなった状態を見られます。' : walkers[4].inSand ? '今はAもBも砂地の上。先に入ったAは、Bより長い時間ゆっくり進んだため、出発時の列と今の列では傾きが違います。' : 'Aは砂地で遅く進み、Bはまだ道の上を速く進みます。同じ時間に進む距離の差が、緑の列の向きを変えています。'}</Text>
         <div className="journey-comparison" aria-label="両端の人の現在の速さ">
-          {[walkers[0], walkers[4]].map((walker, index) => <div key={index}><strong>{index ? 'B' : 'A'} · {walker.inSand ? '砂地' : '道'}</strong><span>{walker.inSand && slower ? '0.75' : '1.50'} m/s</span></div>)}
+          {[walkers[0], walkers[4]].map((walker, index) => <Paper withBorder p="sm" key={index}><strong>{index ? 'B' : 'A'} · {walker.inSand ? '砂地' : '道'}</strong><span>{walker.inSand && slower ? '0.75' : '1.50'} m/s</span></Paper>)}
         </div>
         <Text size="sm" mt="sm">AとBの歩く向きは、列が傾いても変わりません。光へ対応させるのは、境目への到着順と、同じ時間に進む距離の差が列を傾ける関係です。</Text>
-        </div>
+        </Paper>
       </div>}
 
-      {scene === 2 && <div className={`journey-workspace ${moving ? 'has-time' : ''}`}>
-        <Group gap="xs" mt="md" aria-label="人の列から光への対応">
-          {bridgeLabels.map((label, index) => <Button color="teal" key={label} variant={bridge === index ? 'light' : 'default'} aria-pressed={bridge === index} onClick={() => selectBridge(index)}>{label}</Button>)}
-        </Group>
+      {scene === 2 && <div className="journey-workspace">
+        <div className="journey-tools">
+          <Text size="sm" fw={600} mb="xs" id={`${id}-bridge-stages`}>同じ目印で、図をつなぐ</Text>
+          <SegmentedControl fullWidth orientation="vertical" aria-labelledby={`${id}-bridge-stages`} value={String(bridge)} onChange={value => selectBridge(Number(value))} data={bridgeLabels.map((label, index) => ({ value: String(index), label }))} />
+          {bridge >= 2 && <>
+            <Text size="sm" fw={600} mt="md" mb="xs" id={`${id}-light-condition`}>水面への入り方</Text>
+            <SegmentedControl fullWidth aria-labelledby={`${id}-light-condition`} value={slanted ? 'slanted' : 'straight'} onChange={value => { setSlanted(value === 'slanted'); clock.seek(value === 'slanted' ? 3 : 4) }} data={[{ value: 'slanted', label: '斜めに入る' }, { value: 'straight', label: 'まっすぐ入る' }]} />
+          </>}
         {timeControls}
+        </div>
         <div className="journey-bridge-context"><Text mt="md">{bridge === 0 ? '水面の上下を横から見ると、山と谷が並んでいます。緑の印を付けた一つの山を上から見ると、山の頂上にある場所が一本の列になります。' : bridge === 1 ? '光では、水面の高さの代わりに、電気・磁気のはたらきが繰り返し変わります。その変化が空間を伝わります。緑の列は、一つの山に相当する、繰り返しの同じ段階にある場所です。' : bridge === 2 ? slanted ? '灰色の横線は、空気と水の接する水面です。A側が先に水へ入り、B側が後から入ります。途中の場面で、片側だけが遅くなる状態を見られます。' : '水面へまっすぐ届く場合、緑の列は水面と平行です。A側とB側が同時に水へ入り、一緒に遅くなります。' : '黒い矢印が、光の進む向きです。この平らな波では、矢印と緑の列が90°の角度をなします。図の小さな四角が、その直角の印です。'}</Text></div>
         <svg className="refraction-visual" viewBox={`0 0 560 ${bridge === 0 ? 620 : 430}`} role="img" aria-labelledby={`${id}-front-title ${id}-front-desc`}>
           <title id={`${id}-front-title`}>{bridgeLabels[bridge]}</title>
@@ -168,19 +179,17 @@ export default function RefractionJourney() {
             <text x="35" y="612">山の頂上をつないだ列が、上の緑の線</text>
           </>}
         </svg>
-        <div className="journey-explanation"><Text className="eyebrow">図のここを見る</Text><Text className="journey-key">{bridge === 0 ? '水の山が進むと、この場所の並びも移ります。各場所の変化が周囲へ伝わる現象を「波」と呼びます。山が進む向きに、水の粒がそのまま運ばれるわけではありません。' : bridge === 1 ? '繰り返しの同じ段階にある場所は、空間で面をつくります。この面が「波面」で、緑の線はその断面です。波を追うための目印であり、実在する棒や壁ではありません。' : !slanted ? '列全体が同時に水へ入ると、左右で進む距離に差が付きません。速さは小さくなりますが、緑の列も光も向きを変えません。' : bridge === 2 ? boundaryText : '緑の列が傾くと、列に90°の黒い矢印も向きを変えます。斜めに届く波では、速さの差が列を傾け、その傾きが光の向きを変えます。進む向きを線で表したものが「光線」、別の物質へ進むときの向きの変化が「屈折」です。'}</Text>
-        {bridge >= 2 && <Group mt="md" gap="xs">
-          <Button color="teal" variant={slanted ? 'light' : 'default'} aria-pressed={slanted} onClick={() => { setSlanted(true); clock.seek(3) }}>斜めに水面へ</Button>
-          <Button color="teal" variant={!slanted ? 'light' : 'default'} aria-pressed={!slanted} onClick={() => { setSlanted(false); clock.seek(4) }}>水面へまっすぐ</Button>
-        </Group>}
+        <Paper withBorder p="md" className="journey-explanation"><Text className="eyebrow">図のここを見る</Text><Text mt="sm">{bridge === 0 ? '水の山が進むと、この場所の並びも移ります。各場所の変化が周囲へ伝わる現象を「波」と呼びます。山が進む向きに、水の粒がそのまま運ばれるわけではありません。' : bridge === 1 ? '繰り返しの同じ段階にある場所は、空間で面をつくります。この面が「波面」で、緑の線はその断面です。波を追うための目印であり、実在する棒や壁ではありません。' : !slanted ? '列全体が同時に水へ入ると、左右で進む距離に差が付きません。速さは小さくなりますが、緑の列も光も向きを変えません。' : bridge === 2 ? boundaryText : '緑の列が傾くと、列に90°の黒い矢印も向きを変えます。斜めに届く波では、速さの差が列を傾け、その傾きが光の向きを変えます。進む向きを線で表したものが「光線」、別の物質へ進むときの向きの変化が「屈折」です。'}</Text>
         <Text size="sm" mt="sm">光が波面に90°で進む性質は、人のたとえとは別の条件です。平らな波と、場所や方向によって性質が変わらない透明な物質を扱います。物質中で光が遅くなる微視的な理由は、この図の範囲外です。</Text>
-        </div>
+        </Paper>
       </div>}
 
       <Group justify="space-between" mt="lg">
-        <Button color="teal" variant="subtle" disabled={scene === 0} onClick={() => chooseScene(scene - 1)}>前の場面</Button>
-        <Button color="teal" variant="light" disabled={scene === 3} onClick={() => chooseScene(scene + 1)}>次の場面へ</Button>
+        <Button variant="subtle" disabled={scene === 0} onClick={() => chooseScene(scene - 1)}>← 前の場面</Button>
+        <Button variant="light" disabled={scene === 3} onClick={() => chooseScene(scene + 1)}>{scenes[scene + 1]?.label ?? '次の場面'} →</Button>
       </Group>
+      </Tabs.Panel>
+      </Tabs>
       <Accordion variant="separated" mt="lg">
         <Accordion.Item value="scope"><Accordion.Control>たとえの対応・図の尺度・説明の範囲</Accordion.Control><Accordion.Panel>
           <Text>人の並びは、各自が歩く向きを保ち、道で1.5 m/s、砂地で0.75 m/sとした模式図です。説明の8秒を歩行の1.5秒へ対応させます。人が手をつないだり、列の向きを保つように動いたりする条件は置きません。</Text>
