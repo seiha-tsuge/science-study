@@ -66,6 +66,16 @@ body {
   margin: 0;
 }
 
+.not-found {
+  padding: 32px 20px;
+
+  a {
+    display: inline-block;
+    margin-top: 24px;
+    color: var(--accent);
+  }
+}
+
 h1,
 h2 {
   font-family: var(--heading);
