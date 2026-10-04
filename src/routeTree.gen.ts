@@ -10,33 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MechanicsRouteImport } from './routes/mechanics'
+import { Route as MechanicsIndexRouteImport } from './routes/mechanics.index'
+import { Route as MechanicsAccelerationRouteImport } from './routes/mechanics.acceleration'
+import { Route as MechanicsMotionRouteImport } from './routes/mechanics.motion'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MechanicsRoute = MechanicsRouteImport.update({
+  id: '/mechanics',
+  path: '/mechanics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MechanicsIndexRoute = MechanicsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MechanicsRoute,
+} as any)
+const MechanicsAccelerationRoute = MechanicsAccelerationRouteImport.update({
+  id: '/acceleration',
+  path: '/acceleration',
+  getParentRoute: () => MechanicsRoute,
+} as any)
+const MechanicsMotionRoute = MechanicsMotionRouteImport.update({
+  id: '/motion',
+  path: '/motion',
+  getParentRoute: () => MechanicsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/mechanics': typeof MechanicsRouteWithChildren
+  '/mechanics/acceleration': typeof MechanicsAccelerationRoute
+  '/mechanics/motion': typeof MechanicsMotionRoute
+  '/mechanics/': typeof MechanicsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/mechanics/acceleration': typeof MechanicsAccelerationRoute
+  '/mechanics/motion': typeof MechanicsMotionRoute
+  '/mechanics': typeof MechanicsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/mechanics': typeof MechanicsRouteWithChildren
+  '/mechanics/acceleration': typeof MechanicsAccelerationRoute
+  '/mechanics/motion': typeof MechanicsMotionRoute
+  '/mechanics/': typeof MechanicsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/mechanics'
+    | '/mechanics/acceleration'
+    | '/mechanics/motion'
+    | '/mechanics/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/mechanics/acceleration' | '/mechanics/motion' | '/mechanics'
+  id:
+    | '__root__'
+    | '/'
+    | '/mechanics'
+    | '/mechanics/acceleration'
+    | '/mechanics/motion'
+    | '/mechanics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MechanicsRoute: typeof MechanicsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +95,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mechanics': {
+      id: '/mechanics'
+      path: '/mechanics'
+      fullPath: '/mechanics'
+      preLoaderRoute: typeof MechanicsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mechanics/': {
+      id: '/mechanics/'
+      path: '/'
+      fullPath: '/mechanics/'
+      preLoaderRoute: typeof MechanicsIndexRouteImport
+      parentRoute: typeof MechanicsRoute
+    }
+    '/mechanics/acceleration': {
+      id: '/mechanics/acceleration'
+      path: '/acceleration'
+      fullPath: '/mechanics/acceleration'
+      preLoaderRoute: typeof MechanicsAccelerationRouteImport
+      parentRoute: typeof MechanicsRoute
+    }
+    '/mechanics/motion': {
+      id: '/mechanics/motion'
+      path: '/motion'
+      fullPath: '/mechanics/motion'
+      preLoaderRoute: typeof MechanicsMotionRouteImport
+      parentRoute: typeof MechanicsRoute
+    }
   }
 }
 
+interface MechanicsRouteChildren {
+  MechanicsAccelerationRoute: typeof MechanicsAccelerationRoute
+  MechanicsMotionRoute: typeof MechanicsMotionRoute
+  MechanicsIndexRoute: typeof MechanicsIndexRoute
+}
+
+const MechanicsRouteChildren: MechanicsRouteChildren = {
+  MechanicsAccelerationRoute: MechanicsAccelerationRoute,
+  MechanicsMotionRoute: MechanicsMotionRoute,
+  MechanicsIndexRoute: MechanicsIndexRoute,
+}
+
+const MechanicsRouteWithChildren = MechanicsRoute._addFileChildren(
+  MechanicsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MechanicsRoute: MechanicsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

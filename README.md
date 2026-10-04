@@ -1,61 +1,72 @@
-# React + TypeScript + Vite
+# 科学の実験室 — science-study
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+問いを立て、予想し、条件を変え、結果を説明するための個人実験室です。
+React・TypeScript・Vite・TanStack Router を使った単一の SPA です。
+
+## 最初の学習
+
+1. `/` の学習マップで、概念のつながりを見る。
+2. `/mechanics` で力学の問いを選ぶ。
+3. `/mechanics/motion` で位置と速度を学ぶ。
+4. `/mechanics/acceleration` で等速運動と等加速度運動を比較する。
+
+各教材は「問い → 予想 → 実験・グラフ → 数式 → 自分の言葉で説明 → 別条件で再挑戦」の流れです。
+予想を選んでから実験と解説を開きます。「まだ分からない」も選べます。
+初期位置・速度・加速度を変え、再生・一時停止・初期化・時刻の指定ができます。
+グラフは位置と速度を切り替えられ、比較条件の数値も確認できます。
+
+描画とグラフは解析式から計算した値で、実測データではありません。
+モデルの単位は m・s、右向きを正とします。画面のピクセルは描画側で変換します。
+p5.js は実験を始めたときに読み込みます。
 
 ## 開発・検証
+
+Node.js 24 と pnpm 11 を使用します。
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm dev
 pnpm lint
+pnpm typecheck
+pnpm test
 pnpm build
 ```
 
-## ルーティング
+`pnpm test:watch` でモデルのテストを継続実行できます。
+`pnpm build` はルート生成・本番ビルドの後に型検査を行います。
+CI では lint・型検査・モデルテスト・ビルドをそれぞれ実行します。
 
-TanStack Routerのファイルベースルーティングを使用しています。
+## 学習メモ
 
-- `src/routes/__root.tsx`: 共通レイアウトと存在しないURLの画面。
-- `src/routes/index.tsx`: `/` に既存の `App` を表示。
-- `src/router.ts`: Routerの作成と型登録。
-- `src/main.tsx`: `RouterProvider` でアプリケーションを起動。
+画面の予想や再挑戦の選択は一時的なものです。再読み込みやページ移動で消えます。
+ブラウザ内のノート保存・同期機能は設けず、エディタや AI との対話で Markdown を更新します。
 
-新しいページは `src/routes/` に追加し、`createFileRoute` で定義します。
-アプリ内の移動には `@tanstack/react-router` の `Link` を使用してください。
-Viteプラグインが開発サーバーの起動時・ビルド時に `src/routeTree.gen.ts` を
-自動生成し、ページのコード分割を行います。この生成ファイルはGitで管理し、
-手動では編集しません。`pnpm build` はルート生成後にTypeScriptの型検査を実行します。
+- [学習メモのテンプレート](notes/journal/TEMPLATE.md) を日付入りの別ファイルにコピーする。
+- 操作前に、自分の予想と根拠を書く。AI に予想を代筆させない。
+- 実験の URL、条件、観察、理解の変化、未解決の問いを残す。
+- 複数の実験につながる理解ができたら `notes/concepts/` にまとめる。
 
-本番ホスティングでは、各URLへの直接アクセスを `index.html` に返す
-SPAフォールバックを設定してください。
+教材は `src/experiments/`、個人の学習履歴は `notes/` に分けています。
 
-参考: [TanStack RouterのVite導入ガイド](https://tanstack.com/router/latest/docs/installation/with-vite)
+## 構成と教材の追加
 
-Currently, two official plugins are available:
+- `src/routes/`: URL とページの接続。科学計算は置かない。
+- `src/app/`: 共通レイアウト、学習マップ、分野の入口。
+- `src/experiments/mechanics/{motion,acceleration}/`: 問い、教材、純粋な計算モデルとテスト、操作 UI。
+- `src/experiments/mechanics/shared/`: 2題で共通の時刻制御、描画、グラフと操作部品。
+- `src/components/Lesson.tsx`: 学習の流れ。進捗を保存する学習管理システムにはしない。
+- [設計・追加手順](docs/architecture.md)
+- [学習範囲と必要な数学](docs/learning-map.md)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+TanStack Router のファイルベースルーティングを使います。
+`src/routeTree.gen.ts` は Vite プラグインが生成するため、手で編集しません。
+生成ファイルは Git に含め、新しいルートを追加したら `pnpm build` で更新してください。
 
-## React Compiler
+公開時は任意の URL への直接アクセスを `index.html` に返す SPA フォールバックが必要です。
+個人の学習メモの公開範囲は、公開前に別途決めます。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 資料
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- [OpenStax: Motion with Constant Acceleration](https://openstax.org/books/university-physics-volume-1/pages/3-4-motion-with-constant-acceleration): 式と成立条件。
+- [PhET](https://phet.colorado.edu/): 既存の実験を触り、問いを見つけるための入口。
+- [p5.js instance mode](https://p5js.org/reference/p5/p5/): 描画をスケッチのインスタンスに閉じ込める。
