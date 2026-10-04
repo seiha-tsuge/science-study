@@ -17,6 +17,8 @@ Three.js、MDX、グラフライブラリ、バックエンド、認証、ノー
 | lesson.md | 式、単位、成立条件、参考資料の確認用メモ | 個人の予想 |
 | model.ts | 条件と時刻から観察量を計算 | React・p5・DOM・ピクセル |
 | Simulation.tsx | 条件と比較対象を選ぶ | 物理法則の実装 |
+| motion/ExplanationAnimation.tsx | SVGの模式図・グラフとGSAPの説明演出 | 物理法則の実装 |
+| motion/explanation-timeline.ts | 説明の場面・説明の時間から物理時刻への対応 | ピクセル・描画ループ |
 | shared/useExperimentClock.ts | 再生・停止・時刻の指定 | 位置や速度の計算 |
 | shared/sketch.ts | p5 instance mode による描画・座標変換 | 物理状態の更新 |
 | shared/Graph.tsx | 解析式のグラフを SVG で描画 | 実測データと呼ぶこと |
@@ -39,6 +41,26 @@ p5 は動的 import し、未マウント後の初期化を防ぎ、離脱時に
 React StrictMode の再マウントでも描画インスタンスを残さない。
 グラフの軸は表示中の条件の0〜10秒の値から決定するため、条件を変えると縮尺も変わる。
 比較表示中の2本のグラフは同じ縮尺を使う。
+
+### 等速運動の説明アニメーション
+
+`motion/ExplanationAnimation.tsx` は解説を開いたときだけマウントする。
+React・SVG・GSAPと`@gsap/react`を使い、説明の22秒とモデルの物理時刻を分ける。
+物理時刻は説明の2〜6秒に0〜4秒まで等倍で進み、それ以外の場面では停止する。
+位置は既存の`observeMotion`で計算し、物体の座標に演出用のイージングを適用しない。
+固定条件は x₀ = 0 m、v = 5 m/s。印とグラフは過去の0〜4秒の位置を振り返る。
+SVGへの座標変換は表示側に置き、フレーム数から物理時刻を計算しない。
+グラフの線が現れる演出は、物体の運動や追加の物理時間を表すものではない。
+
+GSAPのタイムラインは停止状態で作り、再生・一時停止・初期化・任意の秒への移動を扱う。
+場面の選択ではその場面の終了時刻へ移動して停止する。22秒で停止し、再生すると最初から始める。
+非表示のタブでは停止する。解説を閉じるかページを離れると`useGSAP`のcontextが演出を破棄し、
+visibilitychangeとメディアクエリのイベントリスナーも解除する。
+動きを減らす設定では再生を無効にし、最終場面から静止画で各場面を確認できる。
+共通の演出基盤や動画書き出しは追加していない。
+
+`explanation-timeline.test.ts`では初期位置、運動中の一定速度、説明中の物理時刻の停止、
+巻き戻し時の再現性を既存モデルと照合する。現実への適用範囲は既存の等速運動の前提に限る。
 
 描画の矢印は速度の向きだけを示す。長さは速さに対応しない。
 グラフは全10秒の式を先に表示し、縦のカーソルと点で現在時刻を示す。
@@ -75,4 +97,5 @@ AI は学習者本人の予想や理解の変化を捏造しない。
 - [TanStack Router + Vite](https://tanstack.com/router/latest/docs/installation/with-vite)
 - [p5 instance mode](https://p5js.org/reference/p5/p5/)
 - [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)
+- [GSAP + React](https://gsap.com/resources/React/)
 - [Vitest](https://vitest.dev/guide/)

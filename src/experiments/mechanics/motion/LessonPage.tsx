@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import Lesson from '../../../components/Lesson'
 import MotionSimulation from './Simulation'
+import ExplanationAnimation from './ExplanationAnimation'
 import { motionLesson } from './meta'
 
 export default function MotionLessonPage() {
@@ -12,6 +13,7 @@ export default function MotionLessonPage() {
       next={<Link to="/mechanics/acceleration">次の問い：加速度 →</Link>}
       explanation={
         <>
+          <ExplanationAnimation />
           <div className="formula" aria-label="位置イコール初期位置プラス速度かける時間">
             x = x₀ + vt
           </div>
