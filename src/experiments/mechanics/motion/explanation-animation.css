@@ -112,20 +112,6 @@
   flex-wrap: wrap;
   gap: 8px;
 }
-.explanation-scenes button {
-  border: 1px solid #d5dfea;
-  border-radius: 6px;
-  padding: 9px 12px;
-  background: white;
-  color: #526782;
-  font-size: 12px;
-  min-height: 40px;
-}
-.explanation-scenes button[aria-pressed='true'] {
-  border-color: #93b8fa;
-  background: #eff5ff;
-  color: #244a85;
-}
 @media (max-width: 900px) {
   .motion-explanation-stage {
     grid-template-columns: minmax(0, 1fr);

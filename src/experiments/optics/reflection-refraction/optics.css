@@ -1,0 +1,114 @@
+.optics-diagram svg {
+  width: 100%;
+  height: 350px;
+  display: block;
+}
+.optics-diagram text {
+  font-size: 14px;
+  fill: #26364b;
+}
+.optics-boundary {
+  stroke: #617086;
+  stroke-width: 1.5;
+}
+.optics-normal {
+  stroke: #8091aa;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+}
+.optics-ray {
+  stroke-width: 3;
+  fill: none;
+}
+.optics-angle {
+  stroke-width: 1.5;
+  fill: none;
+}
+.optics-incident {
+  stroke: #2563eb;
+  border-color: #2563eb;
+}
+.optics-reflected {
+  stroke: #b45517;
+  border-color: #b45517;
+  stroke-dasharray: 7 5;
+}
+.optics-refracted {
+  stroke: #147a65;
+  border-color: #147a65;
+}
+.optics-fill-incident {
+  fill: #2563eb;
+}
+.optics-fill-reflected {
+  fill: #b45517;
+}
+.optics-fill-refracted {
+  fill: #147a65;
+}
+.optics-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  font-size: 12px;
+}
+.optics-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.optics-legend i {
+  width: 18px;
+  border-top-width: 3px;
+  border-top-style: solid;
+}
+.optics-legend .optics-reflected {
+  border-top-style: dashed;
+}
+.optics-status {
+  font-size: 13px;
+  min-height: 50px;
+}
+.optics-readings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+.optics-readings dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+.optics-readings dd {
+  margin: 6px 0 0;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+.optics-presets {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.optics-experiment .controls > button {
+  margin-bottom: 16px;
+}
+.optics-experiment .controls .control-hint {
+  margin-top: 12px;
+}
+@media (max-width: 400px) {
+  .optics-readings {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .optics-readings > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .optics-readings dd {
+    margin: 0;
+  }
+  .optics-experiment .measurement-table {
+    font-size: 10px;
+  }
+}

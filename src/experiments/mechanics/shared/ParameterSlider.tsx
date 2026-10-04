@@ -1,3 +1,4 @@
+import { Box, Group, Slider, Text } from '@mantine/core'
 import { useId } from 'react'
 
 interface ParameterSliderProps {
@@ -23,31 +24,42 @@ export default function ParameterSlider({
 }: ParameterSliderProps) {
   const id = useId()
   return (
-    <div className="parameter">
-      <label htmlFor={id}>
-        {label} <span className="symbol">{symbol}</span>
-        <output>
-          {value} <small>{unit}</small>
-        </output>
-      </label>
-      <input
-        id={id}
-        type="range"
+    <Box my="xl">
+      <Group justify="space-between" mb="sm" gap="xs">
+        <Text id={id} size="sm">
+          {label}{' '}
+          <Text component="span" c="gray.7">
+            {symbol}
+          </Text>
+        </Text>
+        <Text component="output" fw={600}>
+          {value}{' '}
+          <Text component="span" size="xs" c="gray.7">
+            {unit}
+          </Text>
+        </Text>
+      </Group>
+      <Slider
         min={min}
         max={max}
         step={step}
         value={value}
-        aria-valuetext={`${value} ${unit}`}
-        onChange={(event) => onChange(Number(event.target.value))}
+        thumbLabel={label}
+        thumbProps={{
+          'aria-labelledby': id,
+          'aria-valuetext': `${value} ${unit}`,
+        }}
+        label={(current) => `${current} ${unit}`}
+        onChange={onChange}
       />
-      <div className="range-labels">
-        <span>
+      <Group justify="space-between" mt="xs">
+        <Text size="xs" c="gray.7">
           {min} {unit}
-        </span>
-        <span>
+        </Text>
+        <Text size="xs" c="gray.7">
           {max} {unit}
-        </span>
-      </div>
-    </div>
+        </Text>
+      </Group>
+    </Box>
   )
 }

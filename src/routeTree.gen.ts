@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MechanicsRouteImport } from './routes/mechanics'
+import { Route as OpticsRouteImport } from './routes/optics'
 import { Route as MechanicsIndexRouteImport } from './routes/mechanics.index'
 import { Route as MechanicsAccelerationRouteImport } from './routes/mechanics.acceleration'
 import { Route as MechanicsMotionRouteImport } from './routes/mechanics.motion'
+import { Route as OpticsIndexRouteImport } from './routes/optics.index'
+import { Route as OpticsReflectionRefractionRouteImport } from './routes/optics.reflection-refraction'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const MechanicsRoute = MechanicsRouteImport.update({
   id: '/mechanics',
   path: '/mechanics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpticsRoute = OpticsRouteImport.update({
+  id: '/optics',
+  path: '/optics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MechanicsIndexRoute = MechanicsIndexRouteImport.update({
@@ -40,50 +48,82 @@ const MechanicsMotionRoute = MechanicsMotionRouteImport.update({
   path: '/motion',
   getParentRoute: () => MechanicsRoute,
 } as any)
+const OpticsIndexRoute = OpticsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OpticsRoute,
+} as any)
+const OpticsReflectionRefractionRoute =
+  OpticsReflectionRefractionRouteImport.update({
+    id: '/reflection-refraction',
+    path: '/reflection-refraction',
+    getParentRoute: () => OpticsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/mechanics': typeof MechanicsRouteWithChildren
+  '/optics': typeof OpticsRouteWithChildren
   '/mechanics/acceleration': typeof MechanicsAccelerationRoute
   '/mechanics/motion': typeof MechanicsMotionRoute
+  '/optics/reflection-refraction': typeof OpticsReflectionRefractionRoute
   '/mechanics/': typeof MechanicsIndexRoute
+  '/optics/': typeof OpticsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/mechanics/acceleration': typeof MechanicsAccelerationRoute
   '/mechanics/motion': typeof MechanicsMotionRoute
+  '/optics/reflection-refraction': typeof OpticsReflectionRefractionRoute
   '/mechanics': typeof MechanicsIndexRoute
+  '/optics': typeof OpticsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/mechanics': typeof MechanicsRouteWithChildren
+  '/optics': typeof OpticsRouteWithChildren
   '/mechanics/acceleration': typeof MechanicsAccelerationRoute
   '/mechanics/motion': typeof MechanicsMotionRoute
+  '/optics/reflection-refraction': typeof OpticsReflectionRefractionRoute
   '/mechanics/': typeof MechanicsIndexRoute
+  '/optics/': typeof OpticsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/mechanics'
+    | '/optics'
     | '/mechanics/acceleration'
     | '/mechanics/motion'
+    | '/optics/reflection-refraction'
     | '/mechanics/'
+    | '/optics/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/mechanics/acceleration' | '/mechanics/motion' | '/mechanics'
+  to:
+    | '/'
+    | '/mechanics/acceleration'
+    | '/mechanics/motion'
+    | '/optics/reflection-refraction'
+    | '/mechanics'
+    | '/optics'
   id:
     | '__root__'
     | '/'
     | '/mechanics'
+    | '/optics'
     | '/mechanics/acceleration'
     | '/mechanics/motion'
+    | '/optics/reflection-refraction'
     | '/mechanics/'
+    | '/optics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MechanicsRoute: typeof MechanicsRouteWithChildren
+  OpticsRoute: typeof OpticsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -100,6 +140,13 @@ declare module '@tanstack/react-router' {
       path: '/mechanics'
       fullPath: '/mechanics'
       preLoaderRoute: typeof MechanicsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/optics': {
+      id: '/optics'
+      path: '/optics'
+      fullPath: '/optics'
+      preLoaderRoute: typeof OpticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mechanics/': {
@@ -123,6 +170,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MechanicsMotionRouteImport
       parentRoute: typeof MechanicsRoute
     }
+    '/optics/': {
+      id: '/optics/'
+      path: '/'
+      fullPath: '/optics/'
+      preLoaderRoute: typeof OpticsIndexRouteImport
+      parentRoute: typeof OpticsRoute
+    }
+    '/optics/reflection-refraction': {
+      id: '/optics/reflection-refraction'
+      path: '/reflection-refraction'
+      fullPath: '/optics/reflection-refraction'
+      preLoaderRoute: typeof OpticsReflectionRefractionRouteImport
+      parentRoute: typeof OpticsRoute
+    }
   }
 }
 
@@ -142,9 +203,23 @@ const MechanicsRouteWithChildren = MechanicsRoute._addFileChildren(
   MechanicsRouteChildren,
 )
 
+interface OpticsRouteChildren {
+  OpticsReflectionRefractionRoute: typeof OpticsReflectionRefractionRoute
+  OpticsIndexRoute: typeof OpticsIndexRoute
+}
+
+const OpticsRouteChildren: OpticsRouteChildren = {
+  OpticsReflectionRefractionRoute: OpticsReflectionRefractionRoute,
+  OpticsIndexRoute: OpticsIndexRoute,
+}
+
+const OpticsRouteWithChildren =
+  OpticsRoute._addFileChildren(OpticsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MechanicsRoute: MechanicsRouteWithChildren,
+  OpticsRoute: OpticsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
