@@ -1,7 +1,9 @@
-import { Anchor, Text, Title } from '@mantine/core'
+import { Accordion, Anchor, Text, Title } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
 import Lesson from '../../../components/Lesson'
 import OpticsSimulation from './Simulation'
+import WavefrontDiagram from './WavefrontDiagram'
+import WavePrimer from './WavePrimer'
 import { opticsLesson } from './meta'
 
 export default function OpticsLessonPage() {
@@ -10,6 +12,17 @@ export default function OpticsLessonPage() {
       lesson={opticsLesson}
       number="03"
       subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
+      mechanism={
+        <>
+          <WavePrimer />
+          <Accordion variant="separated" mt="xl">
+            <Accordion.Item value="construction">
+              <Accordion.Control>次の波面を、距離の作図で見る</Accordion.Control>
+              <Accordion.Panel><WavefrontDiagram /></Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+        </>
+      }
       simulation={<OpticsSimulation />}
       next={
         <Anchor component={Link} to="/optics">
@@ -17,6 +30,13 @@ export default function OpticsLessonPage() {
         </Anchor>
       }
       sources={[
+        { title: 'OpenStax · Mathematics of Waves', url: 'https://openstax.org/books/university-physics-volume-1/pages/16-2-mathematics-of-waves' },
+        { title: 'OpenStax · Plane Electromagnetic Waves', url: 'https://openstax.org/books/university-physics-volume-2/pages/16-2-plane-electromagnetic-waves' },
+        { title: 'OpenStax · Young’s Double-Slit Interference', url: 'https://openstax.org/books/university-physics-volume-3/pages/3-1-youngs-double-slit-interference' },
+        {
+          title: 'OpenStax · Huygens’s Principle',
+          url: 'https://openstax.org/books/university-physics-volume-3/pages/1-6-huygenss-principle',
+        },
         {
           title: 'OpenStax · Reflection',
           url: 'https://openstax.org/books/university-physics-volume-3/pages/1-2-the-law-of-reflection',
@@ -38,7 +58,7 @@ export default function OpticsLessonPage() {
           </Text>
           <Title order={3}>まず「法線」を基準にする</Title>
           <Text>
-            法線は境界に垂直な線です。入射角・反射角・屈折角はすべて法線から測ります。入射角0°は境界に沿う向きではなく、境界へ真っすぐ垂直に入る向きです。
+            法線は、二つの物質が接する面に90°で立つ基準線です。境界へ届く光と法線の間が「入射角」、戻る光との間が「反射角」、向こう側へ進む光との間が「屈折角」です。入射角0°では、光は法線と同じ向きに境界へ届きます。
           </Text>
           <div className="formula">
             θᵣ = θ₁
@@ -61,10 +81,11 @@ export default function OpticsLessonPage() {
             </div>
             <div>
               <dt>v [m/s]</dt>
-              <dd>物質中の光の速さ。屈折率が大きいほど遅い。</dd>
+              <dd>物質中の光の速さ。n = c/v は真空中の速さとの比。</dd>
             </div>
           </dl>
-          <Title order={3}>45°で入ると、どこへ進む？</Title>
+          <Text mt="sm">反射角は入射角と等しくなります。屈折の式は、二つの物質の速さの比と角度を結ぶ「スネルの法則」です。sinは角度に対応する比で、ここでは光の向きの、境界に沿う成分を表すのに使います。</Text>
+          <Title order={3}>空気から水へ、45°で入る例</Title>
           <Text>
             反射角は45°。空気の屈折率を1.00、水を1.33とすると、sin θ₂ = sin 45°
             / 1.33
@@ -73,7 +94,7 @@ export default function OpticsLessonPage() {
           </Text>
           <Title order={3}>速さが変わると、なぜ曲がる？</Title>
           <Text>
-            光を波として見ると、斜めに入る波の前線は一部分から先に水へ入ります。その部分から進む速さが変わるため、波の前線の向きが変わり、光の進む向きも変わります。垂直に入る場合は前線が一斉に境界へ届くので、速さが変わっても曲がりません。
+            同じ位相の場所を示す波面が斜めに水面へ届くと、一部が先に水へ入ります。先に入った部分から速さが小さくなるので、波面の向きが変わります。この波面に垂直な光の進む向きも変わります。水面へまっすぐ届く場合は、波面全体が同時に水へ入るため、速さが変わっても向きは変わりません。
           </Text>
           <Title order={3}>水中のストローが曲がって見える理由</Title>
           <Text>
@@ -81,19 +102,18 @@ export default function OpticsLessonPage() {
           </Text>
           <Title order={3}>水から空気へ出られない条件：全反射</Title>
           <Text>
-            n₁ &gt; n₂のとき、臨界角 θc = asin(n₂ / n₁)
-            を超えると全反射します。水1.33 →
-            空気1.00の臨界角は約48.8°。60°では屈折光がなく、反射光だけになります。臨界角ちょうどでは屈折角90°となり、境界に沿う限界を示します。
+            進む先の屈折率が小さい n₁ &gt; n₂ の場合、入射角を大きくすると屈折角も大きくなります。屈折角が90°になる入射角が「臨界角」で、θc = asin(n₂ / n₁)です。asinは、sinの値から角度を求める操作です。
           </Text>
-          <Title order={3}>このモデルの前提と限界</Title>
+          <Text mt="sm">水1.33から空気1.00への臨界角は約48.8°です。これを超える60°では、向こう側へ進む屈折光線がなく、元の側へ戻る全反射になります。臨界角ちょうどの屈折角90°は、境界に沿う限界です。</Text>
+          <Title order={3}>光線図が表す範囲</Title>
           <Text>
-            平らな境界と、一様・等方的で吸収のない透明物質を仮定した幾何光学の解析式です。単色光の代表値として空気1.00・水1.33・ガラス1.50を使い、波長・温度・ガラスの種類による違いを省いています。光線を描く近似は、物体や境界の形の尺度が波長より十分大きい場合に使います。
-          </Text>
-          <Text>
-            反射・透過の光の強さ、偏光、色の分かれ方、干渉、回折、粗い面の乱反射は扱いません。同じ屈折率では屈折せず、このモデルでは反射光もありません。全反射時の境界付近の波（エバネッセント波）も描きません。
+            境界は平らで、各物質の性質は場所や方向によらず、光を吸収しないと仮定します。光の道筋を線で扱う近似を「幾何光学」と呼びます。物体や境界の形が、光の波長より十分大きい場合に使える見方です。
           </Text>
           <Text>
-            この図は実測でも時間を進める数値シミュレーションでもなく、条件ごとの解析式の可視化です。画面の長さにメートルの意味はなく、線の太さは光の強さを表しません。再生する物理時刻はありません。
+            屈折率は空気1.00、水1.33、ガラス1.50の代表値に固定します。色や温度、ガラスの種類による値の違いは省きます。同じ屈折率を選んだ場合は、向きの変化と反射光を描きません。
+          </Text>
+          <Text>
+            光線図は、条件に応じた式の計算結果です。実測値や時間に沿う数値シミュレーションではありません。反射と透過の強さ、電場の振れる方向による違い、狭い隙間での広がり、粗い面での反射は扱いません。全反射でも境界のすぐ先には場が存在しますが、その場もこの光線図の範囲外です。
           </Text>
         </>
       }

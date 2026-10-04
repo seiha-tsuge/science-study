@@ -15,22 +15,22 @@ export default function HomePage() {
     <div className="home-page">
       <header className="home-hero">
         <div>
-          <Text className="eyebrow">YOUR PERSONAL SCIENCE LAB</Text>
+          <Text className="eyebrow">図と操作でたどる科学</Text>
           <Title order={1}>
-            問いからはじめる、
+            「なぜ？」が見えてくる、
             <br />
             科学の実験室。
           </Title>
           <Text>
-            予想して、動かして、自分の言葉で説明する。
+            歩く人の動き、水の中のストローの見え方。
             <br />
-            ひとつずつ、現象と数式をつないでいこう。
+            図を動かして、現象を生む関係をたどります。
           </Text>
           <Button component={Link} to="/mechanics/motion" size="lg" mt="lg">
-            最初の実験をはじめる <span>↗</span>
+            位置と速度を見てみる <span>↗</span>
           </Button>
           <span className="hero-caption">
-            位置と速度 · 必要な数学：座標とグラフ
+            道の上の動きと、グラフを一緒に見る
           </span>
         </div>
         <Paper
@@ -38,9 +38,10 @@ export default function HomePage() {
           p="lg"
           bg="blue.0"
           className="hero-diagram"
-          aria-hidden="true"
+          role="img"
+          aria-label="横軸が時間、縦軸が位置の模式図。実線は一定の増え方、破線は増え方が変わる例。実測値ではありません。"
         >
-          <span className="diagram-label">POSITION / TIME</span>
+          <span className="diagram-label">時間と位置のグラフ</span>
           <svg viewBox="0 0 320 260">
             <defs>
               <pattern
@@ -80,13 +81,13 @@ export default function HomePage() {
               x
             </text>
           </svg>
-          <span className="diagram-note">同じ時間、違う変化。</span>
+          <span className="diagram-note">横は時間、縦は位置。直線と曲線で増え方を比べます。</span>
         </Paper>
       </header>
       <section className="map-section">
         <div className="map-title">
           <div>
-            <Text className="eyebrow">LEARNING MAP</Text>
+            <Text className="eyebrow">分野から選ぶ</Text>
             <Title order={2}>学びの地図</Title>
           </div>
           <span>「力学」と「光学」から探索できます。</span>
@@ -107,9 +108,9 @@ export default function HomePage() {
             </Badge>
             <Title order={3}>力学</Title>
             <Text>
-              物体は、どう動く？
+              同じ時間に、どれだけ進む？
               <br />
-              位置・速度・加速度をつなぐ。
+              道の目印とグラフで、位置と速度をつなぎます。
             </Text>
             <span className="field-link">力学を探索する →</span>
           </Card>
@@ -128,18 +129,18 @@ export default function HomePage() {
             </Badge>
             <Title order={3}>光学</Title>
             <Text>
-              光は、どこへ進む？
+              水の中のものは、なぜずれて見える？
               <br />
-              反射・屈折・全反射を比べる。
+              伝わる変化の図から、水面での光の向きをたどります。
             </Text>
             <span className="field-link">光学を探索する →</span>
           </Card>
           {[
-            ['≈', '波', '重なり合うと、何が変わる？'],
-            ['±', '電気', '離れたものに、力がはたらく？'],
+            ['≈', '波', 'なぜ、波の重なり方で強さが変わる？'],
+            ['±', '電気', 'なぜ、触れずに力がはたらく？'],
             ['⌬', '化学', '物質の性質は、何で決まる？'],
-            ['❋', '生物', '生命の変化を、どうとらえる？'],
-            ['◎', '地学', '地球の変化を、どう読み解く？'],
+            ['❋', '生物', '細胞の働きは、体全体の働きにどうつながる？'],
+            ['◎', '地学', 'なぜ、大地や気候は変わり続ける？'],
           ].map(([symbol, title, question]) => (
             <Card
               withBorder
@@ -160,15 +161,15 @@ export default function HomePage() {
         </SimpleGrid>
       </section>
       <section className="concept-route">
-        <Text className="eyebrow">最初の学習ルート</Text>
-        <Title order={2}>「どこにいる？」から、「どう変わる？」へ。</Title>
+        <Text className="eyebrow">概念のつながり</Text>
+        <Title order={2}>場所の変化から、進み方の変化へ</Title>
         <SimpleGrid
           cols={{ base: 1, sm: 3 }}
           spacing="md"
           className="concept-nodes"
         >
           <Card component={Link} to="/mechanics/motion" withBorder padding="lg">
-            <span>01</span>位置と速度<small>座標・単位・グラフの傾き</small>
+            <span>01</span>位置と速度<small>道の上の動きとグラフをつなぐ</small>
           </Card>
           <Card
             component={Link}
@@ -176,10 +177,10 @@ export default function HomePage() {
             withBorder
             padding="lg"
           >
-            <span>02</span>加速度<small>変化率・二次関数</small>
+            <span>02</span>加速度<small>速度が変わると、進む量はどう変わる？</small>
           </Card>
           <Paper withBorder p="lg" className="future-node">
-            <span>この先</span>力と運動<small>次に育てる問い</small>
+            <span>この先</span>力と運動<small>押す力と速度の変化をつなぐ</small>
           </Paper>
         </SimpleGrid>
       </section>
@@ -187,12 +188,11 @@ export default function HomePage() {
         color="teal"
         mt="xl"
         mb="lg"
-        title="「正しかった」だけで終わらせない。"
+        title="場面と条件を、自分のペースで変えられます"
       >
         <div>
           <Text>
-            最初の予想、予想と違ったこと、まだ説明できないこと。学習メモは
-            notes/journal/ に残して、理解が変わった道筋も育てていきます。
+            各教材には、現象の入口、仕組みの図、条件を変える操作があります。動く図は途中で止められます。式やモデルの前提は「式と前提を開く」から参照できます。
           </Text>
         </div>
       </Alert>

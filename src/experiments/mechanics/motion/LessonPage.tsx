@@ -10,6 +10,14 @@ export default function MotionLessonPage() {
     <Lesson
       lesson={motionLesson}
       number="01"
+      mechanism={
+        <>
+          <Title order={3}>同じ変化を積み重ねると、直線になる</Title>
+          <Text mb="lg">道の上の1秒ごとの印を見ます。グラフでは、その時刻を横の位置、道の上の位置を縦の高さにします。毎秒同じ量ずつ高くなるため、点は一直線に並びます。</Text>
+          <ExplanationAnimation />
+          <Text mt="lg">ここでは速度を一定と決め、その条件から位置とグラフの形を説明しています。押す力が速度を変える理由は、今後の「力と運動」で扱う関係です。</Text>
+        </>
+      }
       simulation={<MotionSimulation />}
       next={
         <Anchor component={Link} to="/mechanics/acceleration">
@@ -18,7 +26,6 @@ export default function MotionLessonPage() {
       }
       explanation={
         <>
-          <ExplanationAnimation />
           <div
             className="formula"
             aria-label="位置イコール初期位置プラス速度かける時間"
@@ -45,18 +52,16 @@ export default function MotionLessonPage() {
           </dl>
           <Title order={3}>同じ時間に、同じだけ位置が変わる</Title>
           <Text>
-            速度5 m/sなら、1秒ごとに位置が5
-            mずつ増えます。グラフの傾きは速度。速度を2倍にすると、同じ時間での変位（x
-            −
-            x₀）も2倍になります。初期位置が0でないとき、位置そのものが2倍になるわけではありません。
+            この図の速度5 m/sでは、時間が1秒増えるごとに位置が5 m増えます。「縦の位置の増加÷横の時間の増加」がグラフの傾きで、5 m/sになります。
           </Text>
+          <Text mt="sm">速度を2倍にすると、同じ時間の変位 x − x₀ も2倍になります。出発点 x₀ は足したままなので、位置 x そのものが2倍になるとは限りません。</Text>
           <Title order={3}>負の速度は、反対向きの運動</Title>
           <Text>
-            右向きを正と決めたので、負の速度では左に進み、位置のグラフは右下がりになります。速さは速度の絶対値です。
+            右向きを正と決めたので、負の速度では左へ進み、時間が増えると位置の値は減ります。グラフは右下がりになります。速度−5 m/sの速さは5 m/sです。「速さ」は向きを含めず、速度の符号を外した大きさを表します。
           </Text>
           <Title order={3}>このモデルの前提</Title>
           <Text>
-            一直線上の運動で、速度は0〜10秒の間ずっと一定です。物体の大きさや、衝突、力が運動を変える過程は扱いません。既知の式を可視化しており、数値積分は使っていません。
+            一直線上で、速度は0〜10秒の間ずっと一定です。物体は一つの点として描きます。図と数値は式から計算したもので、実測値ではありません。物体の大きさ、衝突、力によって速度が変わる過程は、このモデルの範囲外です。
           </Text>
         </>
       }

@@ -37,7 +37,7 @@ export default function RayDiagram({ result, incidentName, transmittedName }: {
           上が光の出発側の{incidentName}、下が進む先の{transmittedName}。
           点線は境界に垂直な法線。
           {result.hasReflectedRay ? '実線の入射光と破線の反射光は法線に対して対称です。' : '同じ屈折率なので反射光は描きません。'}
-          {result.kind === 'total-reflection' ? '全反射のため進む先への屈折光はありません。' : '屈折光の角度はスネルの法則で計算しています。'}
+          {result.kind === 'total-reflection' ? '全反射のため進む先への屈折光はありません。' : '向こう側へ進む光の角度は、物質の屈折率と入射角を結ぶ式で計算しています。'}
         </desc>
         <defs>
           {['incident', 'reflected', 'refracted'].map((name) => (

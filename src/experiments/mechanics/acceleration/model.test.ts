@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { observeAcceleration } from './model'
+import { accelerationDisplacementParts, observeAcceleration } from './model'
 import { observeMotion } from '../motion/model'
 
 describe('等加速度運動の科学的な性質', () => {
@@ -47,6 +47,28 @@ describe('等加速度運動の科学的な性質', () => {
       expect(result.velocity ** 2 - parameters.initialVelocity ** 2).toBeCloseTo(
         2 * parameters.acceleration * (result.position - parameters.initialPosition),
       )
+    }
+  })
+})
+
+describe('変位の面積による分解', () => {
+  it('時間を2倍にすると初速度の寄与は2倍、加速度の寄与は4倍になる', () => {
+    const parameters = { initialPosition: 10, initialVelocity: 2, acceleration: 1 }
+    const first = accelerationDisplacementParts(parameters, 2)
+    const second = accelerationDisplacementParts(parameters, 4)
+    expect(first).toEqual({ initialVelocityPart: 4, accelerationPart: 2 })
+    expect(second.initialVelocityPart).toBe(first.initialVelocityPart * 2)
+    expect(second.accelerationPart).toBe(first.accelerationPart * 4)
+  })
+  it('負の速度・加速度も符号付き面積として変位と一致する', () => {
+    for (const initialVelocity of [-3, 0, 2]) {
+      for (const acceleration of [-2, 0, 1]) {
+        const parameters = { initialPosition: 8, initialVelocity, acceleration }
+        for (const time of [0, 2, 5]) {
+          const parts = accelerationDisplacementParts(parameters, time)
+          expect(parts.initialVelocityPart + parts.accelerationPart).toBeCloseTo(observeAcceleration(parameters, time).position - 8)
+        }
+      }
     }
   })
 })

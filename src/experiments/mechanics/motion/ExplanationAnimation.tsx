@@ -35,7 +35,7 @@ export default function ExplanationAnimation() {
   const [time, setTime] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
   const id = useId()
   const physicalTime = explanationPhysicalTime(time)
@@ -203,8 +203,7 @@ export default function ExplanationAnimation() {
         <Badge variant="light">解析式の可視化</Badge>
       </header>
       <p>
-        説明の条件は固定です：出発点 x₀ = 0 m、速度 v = 5
-        m/s。実験の条件とは独立しています。
+        青い点が物体、白い輪が1秒ごとの位置です。この図は出発点0 m、右向きの速度5 m/sに固定しています。条件を変える操作は下の運動の図にあります。
       </p>
 
       <div className="motion-explanation-stage">
@@ -400,15 +399,15 @@ export default function ExplanationAnimation() {
       </p>
       <div className="explanation-readings">
         <span>
-          物理時刻 t <output>{physicalTime.toFixed(2)} s</output>
+          物体の時間 t <output>{physicalTime.toFixed(2)} s</output>
         </span>
         <span>
           位置 x <output>{observation.position.toFixed(2)} m</output>
         </span>
         <span>
           {playing && time > 2 && time < 6
-            ? '物理時刻を進めています'
-            : '物理時刻は停止中です'}
+            ? '物体が動いています'
+            : '物体の時間は止まっています'}
         </span>
       </div>
       <div className="explanation-playback">
@@ -457,11 +456,11 @@ export default function ExplanationAnimation() {
       </div>
       {reducedMotion && (
         <p className="small-note">
-          動きを減らす設定に合わせて自動再生を無効にしています。場面のボタンで静止画を確認できます。
+          動きを減らす設定に合わせて再生を無効にしています。場面のボタンか時間スライダーで静止画を選べます。
         </p>
       )}
       <p className="small-note">
-        2〜6秒の場面で物理時刻が0〜4秒まで進み、その後は停止します。印とグラフは過去の位置を示します。一直線上で速度が一定の場合の説明で、実測や数値積分ではありません。
+        「説明の時間」の2〜6秒だけ、物体の時間が0〜4秒へ進みます。その後は物体を止め、過去の位置を印とグラフに示します。グラフの線が現れる動きは、物体の追加の運動を表しません。
       </p>
     </div>
   )

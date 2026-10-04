@@ -93,7 +93,7 @@ export default function RootLayout() {
               科学の実験室
             </Text>
             <Text c="gray.7" size="sm">
-              問いを立てる。条件を変える。理由を説明する。
+              図を止め、条件を変えて、現象を生む関係をたどる。
             </Text>
           </Box>
           <Anchor component={Link} to="/" size="sm">

@@ -28,8 +28,8 @@ export default function AccelerationSimulation() {
         }}
       />
       <aside className="controls" aria-label="実験条件">
-        <h3>条件を変えてみる</h3>
-        <p>初速度をそろえたまま、加速度の違いを観察しましょう。</p>
+        <h3>加速度と出発時の条件を変える</h3>
+        <p>青い点と灰色の輪は、同じ場所から同じ速度で出発します。青い点の加速度だけを変えて、速度と位置の差を見られます。</p>
         <ParameterSlider
           label="加速度"
           symbol="a"
@@ -43,14 +43,14 @@ export default function AccelerationSimulation() {
           }
         />
         <p className="control-hint">
-          加速度が負でも、速度が正なら右へ進みます。速度が0を越えて負になると、向きが変わります。
+          加速度が負のとき、速度の値は時間とともに減ります。正の間は右へ進み、0を通って負になると左へ進みます。
         </p>
         <Accordion variant="separated" my="lg">
           <Accordion.Item value="initial">
-            <Accordion.Control>初期条件も変える</Accordion.Control>
+            <Accordion.Control>出発時の速度と位置も変える</Accordion.Control>
             <Accordion.Panel>
               <ParameterSlider
-                label="初速度"
+                label="出発時の速度"
                 symbol="v₀"
                 unit="m/s"
                 min={-10}
@@ -61,7 +61,7 @@ export default function AccelerationSimulation() {
                 }
               />
               <ParameterSlider
-                label="初期位置"
+                label="出発時の位置"
                 symbol="x₀"
                 unit="m"
                 min={-20}
@@ -83,7 +83,7 @@ export default function AccelerationSimulation() {
           条件を初期値に戻す
         </Button>
         <p className="control-hint">
-          条件を変えると、時間は0秒に戻り、一時停止します。比較側の初期位置・初速度もそろいます。
+          条件を変えると、物体の時間は0秒に戻って停止します。比較側も同じ出発時の位置と速度にそろい、加速度だけ0のままです。
         </p>
       </aside>
     </Paper>

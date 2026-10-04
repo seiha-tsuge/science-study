@@ -33,12 +33,12 @@ export default function OpticsSimulation() {
       : result.kind === 'critical'
         ? '臨界角：屈折角90°で境界に沿う限界です。'
         : angle === 0
-          ? '垂直入射：向きは変わりません。速さも確認しましょう。'
+          ? '境界へ90°で届く光は、進む向きを変えません。速さは下の表の物質ごとの値になります。'
           : incident === transmitted
             ? '同じ物質：向きも速さも変わりません。'
             : media[transmitted].index > media[incident].index
-              ? '屈折光は法線に近づきます。'
-              : '屈折光は法線から離れます。'
+              ? '進む先では光が遅くなり、屈折光と法線の間の角度が小さくなります。'
+              : '進む先では光が速くなり、屈折光と法線の間の角度が大きくなります。'
   return (
     <Paper withBorder className="experiment-grid optics-experiment">
       <div className="simulation">
@@ -85,6 +85,7 @@ export default function OpticsSimulation() {
             <dd>{angleLabel(result.refractedAngle)}</dd>
           </div>
         </dl>
+        <Text size="sm" mt="sm">真空中の光速を基準にした比が「屈折率 n」です。物質中の光速は「真空中の光速÷n」で計算します。全反射でも表には物質の性質としてこの値を表示し、光が透過した量は示しません。</Text>
         <Table className="measurement-table" striped>
           <Table.Caption>物質中の光の速さ（屈折率からの計算値）</Table.Caption>
           <Table.Thead>
@@ -108,11 +109,12 @@ export default function OpticsSimulation() {
           </Table.Tbody>
         </Table>
         <p className="small-note">
-          上が光の出発側、下が進む先です。矢印は向きだけを示します。線の長さ・太さ・色は速さや光の強さを表しません。全反射時も、表の速さは各物質の性質として表示しています。
+          上が光の出発側、下が進む先です。入射光は境界へ届く光、反射光は元の側へ戻る光、屈折光は向こう側へ進む光を表します。矢印は向きだけを示し、速さと光の強さは線の長さや太さに対応しません。
         </p>
       </div>
       <aside className="controls" aria-label="光の実験条件">
-        <h3>条件を変えてみる</h3>
+        <h3>角度と物質を変える</h3>
+        <p>点線の法線は境界に90°で立つ基準線です。入射角は、境界へ届く光と法線の間の角度を表します。0°では境界へまっすぐ届きます。</p>
         <div className="parameter">
           <Text id={`${id}-angle`} size="sm" mb="sm">
             入射角 θ₁{' '}
@@ -186,7 +188,7 @@ export default function OpticsSimulation() {
         {result.criticalAngle !== null && (
           <>
             <p className="control-hint">
-              この組み合わせの臨界角は{degrees(result.criticalAngle).toFixed(1)}
+              向こう側へ進む光が境界に沿うときの入射角を「臨界角」と呼びます。この組み合わせでは{degrees(result.criticalAngle).toFixed(1)}
               °。これより大きな入射角では全反射します。
             </p>
             <Button
@@ -194,7 +196,7 @@ export default function OpticsSimulation() {
               variant="default"
               onClick={() => setAngle(degrees(result.criticalAngle!))}
             >
-              臨界角を確かめる
+              臨界角に合わせる
             </Button>
           </>
         )}
@@ -211,8 +213,7 @@ export default function OpticsSimulation() {
           条件を初期値に戻す
         </Button>
         <p className="control-hint">
-          まず45° → 0°を比べよう。次に水 →
-          空気の60°を試すと、全反射を確認できます。
+          表の屈折率 n は、真空中と物質中の光速の比です。大きいほど物質中の光は遅くなります。水から空気へ向かう60°では、屈折光がなくなる全反射を見られます。
         </p>
       </aside>
     </Paper>

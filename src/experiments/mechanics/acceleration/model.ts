@@ -14,3 +14,11 @@ export function observeAcceleration(parameters: AccelerationParameters, time: nu
     acceleration: parameters.acceleration,
   }
 }
+
+/** Signed areas under v(t): rectangle from v₀ and triangle from at. Units: m. */
+export function accelerationDisplacementParts(parameters: AccelerationParameters, time: number) {
+  return {
+    initialVelocityPart: parameters.initialVelocity * time,
+    accelerationPart: 0.5 * parameters.acceleration * time ** 2,
+  }
+}

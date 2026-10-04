@@ -24,8 +24,8 @@ export default function MotionSimulation() {
         }}
       />
       <aside className="controls" aria-label="実験条件">
-        <h3>条件を変えてみる</h3>
-        <p>まずは速度だけを変えて、違いを観察しましょう。</p>
+        <h3>速度と出発点を変える</h3>
+        <p>速度だけを変えると、1秒に進む量が変わります。青い点と比較する灰色の輪を、同じ時刻で見られます。</p>
         <ParameterSlider
           label="速度"
           symbol="v"
@@ -36,7 +36,7 @@ export default function MotionSimulation() {
           onChange={(velocity) => setParameters({ ...parameters, velocity })}
         />
         <p className="control-hint">
-          正：右向き ／ 負：左向き
+          速度の符号：＋は右向き、−は左向き
           <br />0 m/s なら、その場に止まります。
         </p>
         <Accordion variant="separated" my="lg">
@@ -44,7 +44,7 @@ export default function MotionSimulation() {
             <Accordion.Control>出発点も変える</Accordion.Control>
             <Accordion.Panel>
               <ParameterSlider
-                label="初期位置"
+                label="出発時の位置"
                 symbol="x₀"
                 unit="m"
                 min={-20}
@@ -77,7 +77,7 @@ export default function MotionSimulation() {
           条件を初期値に戻す
         </Button>
         <p className="control-hint">
-          条件を変えると、時間は0秒に戻り、一時停止します。比較基準は保持されます。
+          速度や出発点を変えると、物体の時間は0秒に戻って停止します。比較基準は保持されます。「今の条件を比較基準にする」で灰色の輪の条件を更新できます。
         </p>
       </aside>
     </Paper>

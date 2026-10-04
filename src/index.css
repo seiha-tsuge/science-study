@@ -226,7 +226,7 @@ p {
 }
 .lesson-steps {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-bottom: 28px;
 }
@@ -245,10 +245,10 @@ p {
   font-size: var(--mantine-font-size-xs);
   color: var(--muted);
 }
-#step-1 h2 {
+#overview h2 {
   margin: 12px 0;
 }
-#step-1 > p:last-child {
+#overview > p:last-child {
   color: var(--muted);
 }
 .lesson-section {
@@ -269,32 +269,6 @@ p {
   line-height: 1.8;
   margin-top: 16px;
   overflow-wrap: anywhere;
-}
-.prediction-receipt {
-  color: var(--accent) !important;
-  font-weight: 600;
-}
-.prediction-receipt small {
-  font-weight: 400;
-  display: block;
-  margin-top: 8px;
-}
-.locked-panel {
-  border: 1px dashed var(--border);
-  padding: 32px;
-  border-radius: var(--mantine-radius-md);
-  text-align: center;
-  color: var(--muted);
-  background: white;
-}
-.locked-panel > span {
-  font-size: 28px;
-}
-.locked-panel p {
-  margin: 12px 0;
-}
-.locked-panel a {
-  color: var(--accent);
 }
 .experiment-grid {
   display: grid;
@@ -552,7 +526,7 @@ p {
     margin-top: 12px;
   }
   .lesson-steps {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   .lesson-card {
     gap: 12px;
@@ -577,4 +551,18 @@ p {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+.relationship-map h3 { font-size: 17px; }
+.concept-visual { width: 100%; height: auto; display: block; margin: 16px 0; }
+.concept-visual text { font-size: 15px; fill: #26364b; }
+.mechanism-panel { max-width: 760px; }
+.mechanism-caption { min-height: 5em; margin: 16px 0; }
+.exploration-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+#overview, #mechanism, #explore, #details { scroll-margin-top: 16px; }
+@media (max-width: 48em) {
+  .mechanism-panel { padding: 12px; }
+  .graph-toolbar { align-items: stretch; }
+  .graph-toolbar .mantine-SegmentedControl-root { max-width: 100%; }
+  .measurement-table { font-size: 11px; }
 }

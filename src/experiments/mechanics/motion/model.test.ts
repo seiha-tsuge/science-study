@@ -9,7 +9,7 @@ describe('等速運動の科学的な性質', () => {
       acceleration: 0,
     })
   })
-  it('負の速度で左へ進む（再挑戦の既知の解）', () => {
+  it('負の速度で左へ進む（既知の解）', () => {
     expect(observeMotion({ initialPosition: 10, velocity: -3 }, 4).position).toBe(-2)
   })
   it('速度を2倍にすると変位が2倍になる。初期位置を2倍にはしない', () => {

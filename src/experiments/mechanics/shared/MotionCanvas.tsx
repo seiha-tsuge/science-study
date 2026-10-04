@@ -50,7 +50,7 @@ export default function MotionCanvas({ frame }: { frame: DrawingFrame }) {
       className="motion-canvas"
       ref={host}
       role="img"
-      aria-label="一次元の運動。位置と速度の数値は下の表でも確認できます。"
+      aria-label={`一直線上の運動。青い点が今の条件の物体。${frame.compare ? '灰色の輪が比較する条件の物体。' : ''}右向きが正です。位置と速度の数値は下の表にもあります。`}
     >
       {error && <p role="alert">描画を読み込めませんでした。グラフと数値で実験を続けられます。</p>}
     </div>

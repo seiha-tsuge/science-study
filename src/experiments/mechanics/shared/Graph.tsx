@@ -46,10 +46,10 @@ export default function Graph({
       role="img"
       aria-labelledby={`${titleId} ${descriptionId}`}
     >
-      <title id={titleId}>{label}と時間のグラフ</title>
+      <title id={titleId}>{`${label}と時間のグラフ`}</title>
       <desc id={descriptionId}>
         横軸は時間（秒）、縦軸は{label}（{unit}
-        ）。青の実線が現在の条件、灰色の破線が比較条件。曲線は10秒間の解析式から計算した値です。
+        ）。青の実線が現在の条件。{compare && '灰色の破線が比較条件。'}線全体は0〜10秒の式の計算値、縦線と青い点は選んだ時刻です。二つの条件は同じ縮尺で表示します。
       </desc>
       <text x="10" y="16" className="axis-title">
         {label} [{unit}]

@@ -29,7 +29,7 @@ export default function Simulation({
   return (
     <div className="simulation">
       <div className="simulation-title">
-        <span className="live-dot" /> 一次元の運動{' '}
+        <span className="live-dot" /> 一直線上の運動{' '}
         <Badge variant="light">解析式の可視化</Badge>
       </div>
       <MotionCanvas frame={{ current, reference, time: clock.time, compare }} />
@@ -50,7 +50,7 @@ export default function Simulation({
       </div>
       <div className="time-slider">
         <Text size="sm" mb="sm">
-          時間を動かす
+          物体の時間を選ぶ（選ぶと停止）
         </Text>
         <Slider
           min={0}
@@ -127,8 +127,9 @@ export default function Simulation({
           )}
         </Table.Tbody>
       </Table>
+      <p className="small-note">表の加速度は、速度が毎秒どれだけ変わるかを表します。0 m/s²なら速度は一定です。</p>
       <p className="visual-note">
-        青い点が物体、矢印は速度の向き（長さは速さを表しません）。位置は画面に合わせて縮尺を調整しています。グラフは0〜10秒の式の値で、実測データではありません。
+        青い点が今の条件の物体です。{compare && '灰色の輪が比較する物体です。'}矢印は進む向きだけを示します。グラフの縦線と点は選んだ時刻を示し、線全体は0〜10秒の式の計算値です。条件を変えると表示の縮尺も変わりますが、二つの条件には同じ縮尺を使います。
       </p>
     </div>
   )
