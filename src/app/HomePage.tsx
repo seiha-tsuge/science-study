@@ -131,7 +131,7 @@ export default function HomePage() {
             <Text>
               水の中のものは、なぜずれて見える？
               <br />
-              伝わる変化の図から、水面での光の向きをたどります。
+              砂地に入る人の列から、光が曲がる理由をたどります。
             </Text>
             <span className="field-link">光学を探索する →</span>
           </Card>

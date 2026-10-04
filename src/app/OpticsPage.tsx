@@ -38,10 +38,10 @@ export default function OpticsPage() {
         <Text>
           水中のストローから目へ届く光は、水面で進む向きを変えます。目へ入る向きをまっすぐにたどると、ストローの実際の場所とはずれます。
         </Text>
-        <Text mt="sm">光が向きを変える仕組みは、「何が伝わるか」を表す動く図で見ます。ひもの形が伝わる例から始め、光で変わるもの、水面へ届く部分の違いへ進みます。</Text>
+        <Text mt="sm">光が曲がる理由は、砂地に入る人の列を手がかりに見ます。片側が遅れると列が傾く関係を光の図へ引き継ぎ、最後にストローの光の道筋へ戻ります。</Text>
         <div className="concept-tags">
-          <Badge variant="light">何が伝わる？</Badge>
-          <Badge variant="light">同じタイミングの場所</Badge>
+          <Badge variant="light">先に届く側</Badge>
+          <Badge variant="light">列の傾きと光の向き</Badge>
           <Badge variant="light">水面で変わる向き</Badge>
         </div>
       </Paper>
@@ -60,7 +60,7 @@ export default function OpticsPage() {
             <Title order={3}>光の反射と屈折</Title>
             <Text>水面へ斜めに届く光は、速さが変わると、なぜ向きも変わる？</Text>
             <span className="prerequisite">
-              ひもの印と形の動きから始まる六つの図があります。各場面を止めて見られます。
+              ストロー、人の列、光の図をたどる四場面。電場や干渉は任意で開けます。
             </span>
           </div>
           <span aria-hidden="true">↗</span>

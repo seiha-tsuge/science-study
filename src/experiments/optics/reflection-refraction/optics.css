@@ -112,3 +112,36 @@
     font-size: 10px;
   }
 }
+.optics-experiment { border-color: #d9e5e5; border-radius: 18px; }
+.optics-scenarios { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 20px; border-bottom: 1px solid #dce8e5; background: #f8faf9; }
+.optics-scenarios .mantine-Button-root { height: auto; min-height: 70px; padding: 10px; border-color: #dbe5e4; border-radius: 10px; }
+.optics-scenarios [aria-pressed=true] { border-color: #589583; background: #e2f0ec; color: #146452; }
+.optics-scenarios .mantine-Button-label { gap: 12px; line-height: 1.5; white-space: normal; }
+.optics-scenarios small { display: block; font-weight: 400; color: #526c77; font-size: 12px; margin-top: 4px; }
+.optics-scenario-index { color: #526c77; font-size: 12px; }
+.optics-experiment .simulation { align-self: start; }
+.optics-diagram { background: #f3f7f9; border: 1px solid #e2ebed; border-radius: 12px; overflow: hidden; margin-top: 16px; }
+.optics-diagram .optics-ray-label { font-size: 14px; font-weight: 600; }
+.optics-diagram .optics-fill-incident { fill: #2563eb; }
+.optics-diagram .optics-fill-reflected { fill: #a9581b; }
+.optics-diagram .optics-fill-refracted { fill: #147a65; }
+.optics-ray { stroke-width: 3.5; }
+.optics-status { background: #edf6f2; border-left: 3px solid #147a65; padding: 12px 16px; line-height: 1.8; margin: 16px 0; min-height: 0; font-size: 15px; }
+.optics-readings > div { border: 1px solid #e1e9e8; border-radius: 8px; padding: 12px; background: #fafcfb; }
+.optics-readings dd { font-size: 22px; }
+.optics-values { margin-top: 20px; border-top: 1px solid #e1e9e8; padding-top: 16px; }
+.optics-values summary { cursor: pointer; color: #345d65; font-size: 13px; }
+.optics-experiment .controls { background: #f8faf9; }
+.optics-experiment .controls > button { width: 100%; height: auto; min-height: 36px; }
+.optics-experiment .controls > button .mantine-Button-label { white-space: normal; padding-block: 6px; }
+@media (max-width: 48em) {
+  .optics-scenarios { gap: 6px; padding: 12px; }
+  .optics-scenarios .mantine-Button-label { flex-direction: column; gap: 4px; font-size: 13px; }
+  .optics-scenario-index { display: none; }
+  .optics-scenarios small { font-size: 10px; }
+  .optics-experiment .optics-readings { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .optics-readings > div { display: block; padding: 8px; }
+  .optics-readings dd { font-size: 18px; margin-top: 6px; overflow-wrap: anywhere; }
+  .optics-readings dt { font-size: 11px; }
+  .optics-experiment .measurement-table { font-size: 12px; }
+}

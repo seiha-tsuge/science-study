@@ -27,6 +27,8 @@ export default function Lesson({
     title: 'OpenStax · Motion with Constant Acceleration',
     url: 'https://openstax.org/books/university-physics-volume-1/pages/3-4-motion-with-constant-acceleration',
   }],
+  overviewVisual,
+  className = '',
 }: {
   lesson: LessonContent
   number: string
@@ -36,6 +38,8 @@ export default function Lesson({
   next: ReactNode
   subject?: { title: string; to: '/mechanics' | '/optics'; label: string }
   sources?: readonly { title: string; url: string }[]
+  overviewVisual?: ReactNode
+  className?: string
 }) {
   const [showExplanation, setShowExplanation] = useState(false)
   const id = useId()
@@ -43,7 +47,7 @@ export default function Lesson({
     ['overview', '全体像'], ['mechanism', '仕組み'], ['explore', '条件を変える'], ['details', '式と前提'],
   ] as const
   return (
-    <article className="lesson-page">
+    <article className={`lesson-page ${className}`}>
       <Breadcrumbs className="breadcrumb">
         <Anchor component={Link} to="/">学習マップ</Anchor>
         <Anchor component={Link} to={subject.to}>{subject.title}</Anchor>
@@ -59,15 +63,20 @@ export default function Lesson({
           <a key={anchor} href={`#${anchor}`}><span>{String(i + 1).padStart(2, '0')}</span>{name}</a>
         ))}
       </nav>
-      <Paper component="section" withBorder p={{ base: 'md', sm: 'xl' }} bg="blue.0" id="overview">
+      <Paper component="section" withBorder p={{ base: 'md', sm: 'xl' }} bg={overviewVisual ? undefined : 'blue.0'} id="overview">
         <Text className="eyebrow">01 — 全体から見る</Text>
         <Title order={2}>{lesson.question}</Title>
-        <Paper p="md" mt="md" className="starting-point">
-          <Text fw={600}>身近な入口</Text>
-          <Text mt="xs">{lesson.startingPoint.scene}</Text>
-          <Text size="sm" mt="xs">{lesson.startingPoint.focus}</Text>
-        </Paper>
-        <Text mt="md">{lesson.overview}</Text>
+        <div className={overviewVisual ? 'lesson-overview-visual' : undefined}>
+          <div>
+            <Paper p={overviewVisual ? 0 : 'md'} mt="md" className="starting-point">
+              <Text fw={600}>身近な入口</Text>
+              <Text mt="xs">{lesson.startingPoint.scene}</Text>
+              <Text size="sm" mt="xs">{lesson.startingPoint.focus}</Text>
+            </Paper>
+            <Text mt="md">{lesson.overview}</Text>
+          </div>
+          {overviewVisual}
+        </div>
         <SimpleGrid cols={{ base: 1, sm: 3 }} mt="lg" spacing="sm" className="relationship-map">
           {lesson.relationships.map((relation, index) => (
             <Paper withBorder p="md" key={relation.title}>

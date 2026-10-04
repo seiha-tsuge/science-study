@@ -46,12 +46,17 @@ export default function RayDiagram({ result, incidentName, transmittedName }: {
             </marker>
           ))}
         </defs>
-        <rect x="0" y={cy} width={width} height={350 - cy} fill="#eaf2f8" />
+        <defs><linearGradient id={`${id}-medium`} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#d7eceb" /><stop offset="1" stopColor="#eef7f5" /></linearGradient></defs>
+        <rect x="0" y={cy} width={width} height={350 - cy} fill={`url(#${id}-medium)`} />
         <line x1="0" y1={cy} x2={width} y2={cy} className="optics-boundary" />
         <line x1={cx} y1="45" x2={cx} y2="320" className="optics-normal" />
         <text x="12" y="30">{incidentName}</text>
         <text x="12" y="330">{transmittedName}</text>
         <text x={cx + 8} y="30">法線</text>
+        <text x="12" y="57" className="optics-ray-label optics-fill-incident">入射光</text>
+        {result.hasReflectedRay && <text x={width - 12} y="57" textAnchor="end" className="optics-ray-label optics-fill-reflected">反射光</text>}
+        {result.refractedDirection && <text x={width - 12} y="330" textAnchor="end" className="optics-ray-label optics-fill-refracted">屈折光</text>}
+        <circle cx={cx} cy={cy} r="8" fill="white" stroke="#799497" strokeWidth="1.5" />
         <polyline points={`${point(incomingStart)} ${point(incomingStart, 0.5)} ${cx},${cy}`} className="optics-ray optics-incident" markerMid={`url(#${id}-incident)`} />
         {result.hasReflectedRay && <polyline points={`${cx},${cy} ${point(result.reflectedDirection, 0.7)} ${point(result.reflectedDirection)}`} className="optics-ray optics-reflected" markerMid={`url(#${id}-reflected)`} />}
         {result.refractedDirection && <polyline points={`${cx},${cy} ${point(result.refractedDirection, 0.7)} ${point(result.refractedDirection)}`} className="optics-ray optics-refracted" markerMid={`url(#${id}-refracted)`} />}
@@ -60,6 +65,7 @@ export default function RayDiagram({ result, incidentName, transmittedName }: {
           <path d={angleArc(result.reflectedAngle)} className="optics-angle optics-reflected" />
         </>}
         {result.refractedAngle !== null && result.refractedAngle !== 0 && <path d={angleArc(result.refractedAngle, true)} className="optics-angle optics-refracted" />}
+        {result.kind === 'total-reflection' && <text x={cx} y="260" textAnchor="middle">進む先への光線なし</text>}
       </svg>
     </div>
   )

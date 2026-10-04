@@ -8,12 +8,12 @@ import { useWavePresentation } from './useWavePresentation'
 import './wave-primer.css'
 
 const scenes = [
-  { label: '何が伝わる？', title: 'その場所の動きと、伝わる変化を分けて見る', text: 'オレンジの印はひもの同じ場所に付いています。再生すると、印は上下し、山の形は右へ進みます。印の動く向きと、山の進む向きを比べます。' },
-  { label: '光で変わるもの', title: '各場所の矢印が変わり、その並びが伝わる', text: '小さな＋の電気を帯びた粒を置いたとき、電気の力がどちらへはたらくかを青い矢印で示します。長い矢印の場所ほど、同じ粒にはたらく力が大きくなります。この図では、矢印の向きと長さが繰り返し変わります。' },
+  { label: '何が伝わる？', title: 'ひもの印は上下し、山は右へ進む', text: 'オレンジの印は、ひもの同じ場所に付いています。時間を進めると、印は上下するだけで、右へ運ばれません。一方、青い山の形は右へ進みます。' },
+  { label: '光で変わるもの', title: '物体の上下がなくても、光は伝わる', text: 'ひもでは、物質が上下していました。光の図の青い矢印は、小さな＋の電気を帯びた粒を置いたとき、電気の力がはたらく向きです。矢印が長い場所ほど、同じ粒にはたらく力が大きくなります。' },
   { label: '波と考える手がかり', title: '光を重ねると、明るくなる場所も暗くなる場所もある', text: '一つの光を二つの細い隙間に通す実験では、壁に明暗の縞が現れます。上の図の緑の点は、二つの光が届く壁上の一点です。下のグラフは、その点での二つの電場と、足し合わせた電場の時間変化を表します。' },
-  { label: '同じタイミングとは', title: '二つの場所は、繰り返しのどこにいる？', text: '上の図のAとBは、電場を見る二つの場所です。下の円は、各場所の「上がる → 上の端 → 下がる → 下の端」という一周を表します。円の上の点は、いま一周のどの段階にいるかを示します。' },
+  { label: '同じタイミングとは', title: '値が同じでも、変化の途中は違う', text: '上の図のAとBで、電場の値を比べます。下の円の点は、それぞれが「上がる → 上の端 → 下がる → 下の端」という一周のどこにいるかを示します。同じ高さでも、その後に上がる場合と下がる場合があります。' },
   { label: '場所をつないで見る', title: '変化がそろう場所を、空間の面として見る', text: '電場が上の端になる場所を緑で示します。上から見ると縦線になります。「空間の面を見る」に切り替えると、この場所の集まりに奥行きがある様子を見られます。' },
-  { label: '空気と水の間', title: '先に水へ届く部分から、進む速さが変わる', text: '灰色の横線は、空気と水が接する水面です。緑の線は、同じ位相を示す波面の断面です。斜めに入る場合、緑の線の左側が先に水へ届きます。' },
+  { label: '空気と水の間', title: '先に水へ届く部分から、進む速さが変わる', text: '灰色の横線は、空気と水が接する水面です。緑の線は、波の一つの山に相当する場所の並びで、波面の断面を表します。斜めに届くと、左側が先に水へ入ります。' },
 ] as const
 
 const lightX = (position: number) => 40 + position / teachingLight.wavelength * 160
@@ -58,7 +58,7 @@ export default function WavePrimer() {
 
   return (
     <Paper withBorder p={{ base: 'md', sm: 'xl' }} className="wave-primer">
-      <Group justify="space-between" mb="sm"><Title order={3}>ひもの動きから、水面での光の向きへ</Title><Badge variant="light">停止して見られる説明図</Badge></Group>
+      <Group justify="space-between" mb="sm"><Title order={3}>光を波として扱う、もう一段詳しい見方</Title><Badge variant="light">任意の詳細</Badge></Group>
       <Text c="dimmed" size="sm">六つの場面を切り替えられます。再生ボタンで動かし、時間スライダーで途中の静止画を選べます。</Text>
       <nav className="wave-scenes" aria-label="光の基礎の場面">
         {scenes.map((item, index) => <Button key={item.label} variant={scene === index ? 'light' : 'default'} aria-pressed={scene === index} onClick={() => chooseScene(index)}>{index + 1}. {item.label}</Button>)}
@@ -179,10 +179,10 @@ export default function WavePrimer() {
         </>}
       </svg>
 
-      {scene === 0 && <Text className="wave-key">印は右へ運ばれていなくても、ひもの形の変化は右へ伝わります。このように、各場所で起こる変化が周囲へ伝わる現象が「波」です。次の場面では、光で変わるものを見ます。</Text>}
+      {scene === 0 && <Text className="wave-key">印が上下する動きと、山が右へ進む動きは別です。各場所で起こる変化が周囲へ伝わる、この現象を「波」と呼びます。</Text>}
       {scene === 1 && <>
-        <Text className="wave-key">各場所で電気の力を決める向きと大きさを「電場」と呼びます。光では電場と磁場が繰り返し変わり、その変化が空間を伝わります。青い矢印の先端は電場の値で、ひものように物体が上下する場所ではありません。</Text>
-        <Text size="sm" mt="sm">光は真空でも伝わります。ひもの波と違い、上下する物質を必要としません。</Text>
+        <Text className="wave-key">場所ごとに電気の力を決める、この向きと大きさが「電場」です。時間を進めると青い矢印が上下に向きを変え、長さも変わります。矢印の先端は場の値を示し、物体の位置は示しません。</Text>
+        <Text size="sm" mt="sm">光では、電場と磁場の変化が空間を伝わります。ひもや水がない真空でも伝わるため、上下する物質を必要としません。</Text>
         <Button variant="default" mt="sm" aria-pressed={magnetic} onClick={() => setMagnetic(!magnetic)}>{magnetic ? '電場だけを見る' : '磁場の向きも重ねる'}</Button>
         {magnetic && <Text mt="sm">動く電気を帯びた粒にはたらく力に関わる、もう一つの量が「磁場」です。緑の記号はその向きを表します。⊙は画面から手前、⊗は画面の奥です。この光では、上下の電場、奥と手前の磁場、右向きの伝わる方向が互いに90°です。</Text>}
       </>}
@@ -194,18 +194,19 @@ export default function WavePrimer() {
       </>}
       {scene === 3 && <>
         <Group gap="xs">{['同じ進み具合', '¼周ずれる', '½周ずれる', '高さだけ同じ'].map((label,i) => <Button key={label} variant={pair === i ? 'light' : 'default'} aria-pressed={pair === i} onClick={() => { setPair(i); clock.reset() }}>{label}</Button>)}</Group>
-        <Text className="wave-key" mt="md">{pair === 0 ? 'AとBの円の点は同じ位置にあり、電場も同じタイミングで変わります。一周のどの段階かを「位相」と呼びます。この例では山一つ分だけ場所が離れていても、繰り返しの段階は同じなので、同じ位相です。' : pair === 3 ? '時刻0では電場の値が同じですが、Aは下がる途中、Bは上がる途中です。一周のどの段階かを表す「位相」は違います。値の一致と位相の一致を、円の点で区別できます。' : '円の点がずれています。一周のどの段階かを「位相」と呼び、ここではAとBの位相が異なります。どちらの場所にも位相があり、「位相がない場所」を示しているわけではありません。'}</Text>
+        <Text className="wave-key" mt="md">{pair === 0 ? 'AとBでは、円の点が同じ位置にあります。値だけでなく、上がる・下がるタイミングもそろっています。' : pair === 3 ? '時刻0ではAとBの高さが等しくなります。それでも、Aは下がる途中、Bは上がる途中です。円の点は別の位置にあります。' : 'AとBでは、円の点がずれています。同じ形で繰り返す変化でも、上がる・下がるタイミングがそろいません。'}</Text>
+        <Text mt="sm">一周のどの段階かを「位相」、二つの場所の段階のずれを「位相差」と呼びます。{pair === 0 ? '山から次の山までの距離だけ場所が離れていても、繰り返しの段階は同じです。' : pair === 3 ? '高さが等しいだけでは、同じ位相とはいえません。' : '円の点のずれが、AとBの位相差を表しています。'}</Text>
       </>}
       {scene === 4 && <>
         <Group gap="xs"><Button variant={!space ? 'light' : 'default'} aria-pressed={!space} onClick={() => setSpace(false)}>上から見る</Button><Button variant={space ? 'light' : 'default'} aria-pressed={space} onClick={() => setSpace(true)}>空間の面を見る</Button></Group>
-        <Text className="wave-key" mt="md">{space ? '同じ位相の場所がつくる連続した面を「波面」と呼びます。緑はその面、黒い矢印は光の進む向きです。この平らな波では、黒い矢印は緑の面を正面から突き抜けます。進む向きを線で表したものが「光線」です。' : '同じ位相の場所がつくる連続した面を「波面」と呼びます。緑の縦線はその断面です。右向きの黒い矢印との間に描いた四角は、90°の角度、つまり「垂直」を示します。'}</Text>
+        <Text className="wave-key" mt="md">{space ? '電場が上の端になる場所は、奥行きも含めると平らな面に並びます。繰り返しの同じ段階、つまり同じ位相にある場所がつくる面が「波面」です。この平らな波の光は、緑の面に90°の向きへ進みます。その向きを線で表したものが「光線」です。' : '電場が上の端になる場所を並べると、緑の縦線になります。繰り返しの同じ段階、つまり同じ位相にある場所がつくる面が「波面」で、この線はその断面です。黒い矢印と緑の線の間の四角は、90°の角度を示します。'}</Text>
       </>}
       {scene === 5 && <>
         <Group gap="xs"><Button variant={slanted ? 'light' : 'default'} aria-pressed={slanted} onClick={() => { setSlanted(true); clock.reset() }}>斜めに入る</Button><Button variant={!slanted ? 'light' : 'default'} aria-pressed={!slanted} onClick={() => { setSlanted(false); clock.reset() }}>まっすぐ入る</Button><Button variant="default" aria-pressed={normal} onClick={() => setNormal(!normal)}>水面に90°の基準線を見る</Button></Group>
         <Text className="wave-key" mt="md">{slanted ? '説明の時間を3秒付近で止めると、左側は水中、右側は空気中にあります。左側から進む速さが小さくなり、緑の線の向きが変わります。光の進む向きも変わります。' : 'まっすぐ入ると、緑の線全体が同時に水へ届きます。進む速さは変わりますが、左右の到達時刻に差がないため、光の向きは変わりません。'} 黒い矢印は、その部分の波面に90°の向きです。長さは速さを表しません。{normal && ' 水面に90°で立てた基準線を「法線」と呼びます。黒い矢印が垂直なのは緑の波面で、法線が垂直なのは灰色の水面です。'}</Text>
       </>}
 
-      {scene === 4 && <Text size="sm" mt="sm">「場所を結ぶ」は、条件に合う場所を図でつなぐことです。緑の面は物質の壁や表面を表していません。</Text>}
+      {scene === 4 && <Text size="sm" mt="sm">緑の面は、波を追うために選んだ場所の集まりです。物質の壁や表面が移動しているわけではありません。</Text>}
       <Group mt="lg" gap="sm">
         <Button disabled={clock.reducedMotion} onClick={clock.toggle}>{clock.running ? '説明を停止' : clock.time >= WAVE_PRESENTATION_DURATION ? '説明をもう一度再生' : '動きを再生'}</Button>
         <Button variant="default" onClick={clock.reset}>この場面を初期化</Button>

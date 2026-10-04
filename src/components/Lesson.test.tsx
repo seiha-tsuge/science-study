@@ -15,7 +15,7 @@ describe('全教材を回答入力なしで探索できる', () => {
   it.each([
     ['位置と速度', MotionLessonPage, '同じ時間に、同じ変位', '速度'],
     ['加速度', AccelerationLessonPage, '二つを重ねる', '加速度'],
-    ['光の反射と屈折', OpticsLessonPage, 'その場所の動きと、伝わる変化を分けて見る', '入射角'],
+    ['光の反射と屈折', OpticsLessonPage, 'ストローはまっすぐでも、見える位置はずれる', '入射角'],
   ] as const)('%s：全体像、仕組み、操作、資料を最初から表示する', (_, Page, mechanism, control) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
     const overview = html.indexOf('id="overview"')
@@ -32,5 +32,13 @@ describe('全教材を回答入力なしで探索できる', () => {
     expect(html).toContain('参考資料：')
     expect(html).toContain('aria-expanded="false"')
     expect(html).not.toMatch(/prediction-|challenge-|答えを確かめる|まず予想|自分の言葉で|再挑戦|locked-panel/)
+  })
+  it('光学の本筋はストローから始まり、電場や位相の図は任意で開ける', () => {
+    const html = renderToStaticMarkup(<MantineProvider><OpticsLessonPage /></MantineProvider>)
+    expect(html).toContain('人の列で見る')
+    expect(html).toContain('光の図へ移る')
+    expect(html).toContain('ストローへ戻る')
+    expect(html).toContain('さらに知りたい：光では何が変わる？')
+    expect(html).not.toContain('小さな＋の電気を帯びた粒を置いたとき')
   })
 })

@@ -16,6 +16,11 @@ type Medium = keyof typeof media
 const degrees = (radians: number) => (radians * 180) / Math.PI
 const angleLabel = (radians: number | null) =>
   radians === null ? 'なし（全反射）' : `${degrees(radians).toFixed(1)}°`
+const scenarios = [
+  { label: 'まっすぐ入る', detail: '速さだけが変わる', angle: 0, from: 'air', to: 'water' },
+  { label: '斜めに入る', detail: '向きも変わる', angle: 45, from: 'air', to: 'water' },
+  { label: '水側へ戻る', detail: '全反射を見る', angle: 60, from: 'water', to: 'air' },
+] as const
 
 export default function OpticsSimulation() {
   const [angle, setAngle] = useState(45)
@@ -33,7 +38,7 @@ export default function OpticsSimulation() {
       : result.kind === 'critical'
         ? '臨界角：屈折角90°で境界に沿う限界です。'
         : angle === 0
-          ? '境界へ90°で届く光は、進む向きを変えません。速さは下の表の物質ごとの値になります。'
+          ? '境界へ90°で届く光は、進む向きを変えません。速さは物質ごとの値になります。'
           : incident === transmitted
             ? '同じ物質：向きも速さも変わりません。'
             : media[transmitted].index > media[incident].index
@@ -41,6 +46,9 @@ export default function OpticsSimulation() {
               : '進む先では光が速くなり、屈折光と法線の間の角度が大きくなります。'
   return (
     <Paper withBorder className="experiment-grid optics-experiment">
+      <div className="optics-scenarios" aria-label="比べる光の場面">
+        {scenarios.map((scenario, index) => <Button color="teal" key={scenario.label} variant="default" aria-pressed={angle === scenario.angle && incident === scenario.from && transmitted === scenario.to} onClick={() => { setAngle(scenario.angle); setIncident(scenario.from); setTransmitted(scenario.to) }}><span className="optics-scenario-index">0{index + 1}</span><span>{scenario.label}<small>{scenario.detail}</small></span></Button>)}
+      </div>
       <div className="simulation">
         <h3 className="simulation-title">
           光の進む向き <Badge variant="light">解析式の可視化</Badge>
@@ -85,7 +93,8 @@ export default function OpticsSimulation() {
             <dd>{angleLabel(result.refractedAngle)}</dd>
           </div>
         </dl>
-        <Text size="sm" mt="sm">真空中の光速を基準にした比が「屈折率 n」です。物質中の光速は「真空中の光速÷n」で計算します。全反射でも表には物質の性質としてこの値を表示し、光が透過した量は示しません。</Text>
+        <details className="optics-values"><summary>光の速さ・屈折率・図の読み方</summary>
+        <Text size="sm" mt="sm">屈折率nは、真空中の速さを物質中の速さで割った比です。nが大きいほど、物質中の光は遅く進みます。表の速さは「真空中の速さ÷n」で計算します。</Text>
         <Table className="measurement-table" striped>
           <Table.Caption>物質中の光の速さ（屈折率からの計算値）</Table.Caption>
           <Table.Thead>
@@ -109,12 +118,13 @@ export default function OpticsSimulation() {
           </Table.Tbody>
         </Table>
         <p className="small-note">
-          上が光の出発側、下が進む先です。入射光は境界へ届く光、反射光は元の側へ戻る光、屈折光は向こう側へ進む光を表します。矢印は向きだけを示し、速さと光の強さは線の長さや太さに対応しません。
+          図の上が出発側、下が進む先です。入射光は境界へ届く光、破線の反射光は元の側へ戻る光、屈折光は向こう側へ進む光です。線の長さや太さは速さ・強さを表しません。全反射でも、表には進む先の物質の速さを示します。この値は、光がそこへ透過したことを意味しません。
         </p>
+        </details>
       </div>
       <aside className="controls" aria-label="光の実験条件">
         <h3>角度と物質を変える</h3>
-        <p>点線の法線は境界に90°で立つ基準線です。入射角は、境界へ届く光と法線の間の角度を表します。0°では境界へまっすぐ届きます。</p>
+        <p>入射角は、境界へ届く光と点線の法線の間で測ります。0°は水面などの境界へまっすぐ届く向き、角度を大きくするほど斜めに届く向きです。</p>
         <div className="parameter">
           <Text id={`${id}-angle`} size="sm" mb="sm">
             入射角 θ₁{' '}
@@ -122,7 +132,7 @@ export default function OpticsSimulation() {
               {angle.toFixed(1)} <small>°</small>
             </output>
           </Text>
-          <Slider
+          <Slider color="teal"
             min={0}
             max={80}
             step={0.1}
@@ -213,7 +223,7 @@ export default function OpticsSimulation() {
           条件を初期値に戻す
         </Button>
         <p className="control-hint">
-          表の屈折率 n は、真空中と物質中の光速の比です。大きいほど物質中の光は遅くなります。水から空気へ向かう60°では、屈折光がなくなる全反射を見られます。
+          水から空気へ出る場合は、角度を大きくすると屈折光が法線から離れていきます。60°では屈折光線がなくなり、光は水側へ戻ります。
         </p>
       </aside>
     </Paper>

@@ -140,7 +140,7 @@ export function observeInterference(time: number, phaseDifference: number) {
 export function boundaryFrontPoint(horizontalPosition: number, presentationTime: number, incidentAngle: number) {
   const result = observeOptics({ incidentAngle, incidentIndex: 1, transmittedIndex: media.water.index })
   const time = presentationTime / WAVE_PRESENTATION_DURATION * 1.2 / result.incidentSpeed // s
-  const incidentDistance = -0.4 + result.incidentSpeed * time // m, chosen front initially above water
+  const incidentDistance = -0.5 + result.incidentSpeed * time // m, entire chosen front initially above water
   const incidentHeight = (Math.sin(incidentAngle) * horizontalPosition - incidentDistance) / Math.cos(incidentAngle)
   const refractedAngle = result.refractedAngle!
   const inWater = incidentHeight < 0
@@ -156,4 +156,45 @@ export function boundaryFrontPoint(horizontalPosition: number, presentationTime:
 
 export function advanceWavePresentation(current: number, elapsedMilliseconds: number) {
   return Math.min(WAVE_PRESENTATION_DURATION, current + Math.max(0, elapsedMilliseconds) / 1000)
+}
+
+/** Illustrative walkers keep their heading; only their speed changes at y=0. SI units.
+ * This is an analogy for a changing row, not a model of optical refraction.
+ */
+export function observeWalkingRow(time: number, slanted: boolean, slower: boolean) {
+  const angle = slanted ? Math.PI / 4 : 0
+  const direction = { x: Math.sin(angle), y: -Math.cos(angle) }
+  const roadSpeed = 1.5 // m/s, an illustrative choice
+  const sandSpeed = slower ? 0.75 : roadSpeed
+  return Array.from({ length: 5 }, (_, i) => {
+    const alongRow = (i - 2) * 0.25 // m
+    const start = {
+      x: alongRow * Math.cos(angle) - 0.8 * Math.sin(angle),
+      y: alongRow * Math.sin(angle) + 0.8 * Math.cos(angle),
+    }
+    const arrivalTime = start.y / (-direction.y * roadSpeed)
+    const distance = roadSpeed * Math.min(time, arrivalTime) + sandSpeed * Math.max(0, time - arrivalTime)
+    return {
+      start, arrivalTime, direction,
+      x: start.x + distance * direction.x,
+      y: start.y + distance * direction.y,
+      inSand: time >= arrivalTime,
+    }
+  })
+}
+
+/** A narrow ray bundle from a marked point on a straw through a flat water surface.
+ * Backward extensions approximate its apparent position locally, not the whole image.
+ * Coordinates in m, y upward; wall refraction and the eye's lens are omitted.
+ */
+export function observeStrawPoint() {
+  const object = { x: -0.35, y: -0.65 }
+  const rays = [0.05, 0.08].map(x => {
+    const incidentAngle = Math.atan2(x - object.x, -object.y)
+    const result = observeOptics({ incidentAngle, incidentIndex: media.water.index, transmittedIndex: media.air.index })
+    const slope = Math.tan(result.refractedAngle!) // dx/dy for upward-going light
+    return { surface: { x, y: 0 }, slope, end: { x: x + slope * 0.5, y: 0.5 }, incidentAngle, exitAngle: result.refractedAngle! }
+  })
+  const apparentY = (rays[1].surface.x - rays[0].surface.x) / (rays[0].slope - rays[1].slope)
+  return { object, rays, apparent: { x: rays[0].surface.x + rays[0].slope * apparentY, y: apparentY } }
 }
