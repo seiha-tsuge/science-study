@@ -50,7 +50,7 @@ export default function LensBridge({ active }: { active: boolean }) {
     }).join(' ')
     : row.walkers.map((p, index) => `${index ? 'L' : 'M'}${px(p.x)} ${py(p.y)}`).join(' ')
   return <>
-    <div className="journey-intro"><Text className="eyebrow">場面 01 / 06</Text><Title order={4}>中央だけ長く遅れると、並びはどう変わる？</Title>
+    <div className="journey-intro"><Text className="eyebrow">さらに見る / 曲がる理由</Text><Title order={4}>中央だけ長く遅れると、並びはどう変わる？</Title>
     <Text size="sm" c="dimmed" mt="sm">人の列を上から見た配置です。図の上下に並ぶ人が、全員右へ歩きます。真ん中の人ほど長い砂地を通ります。速さが変わる場合と変わらない場合を、「中央」「上端」「下端」の位置で比べます。</Text></div>
     <div className="journey-workspace">
       <div className="journey-tools">
@@ -111,6 +111,6 @@ export default function LensBridge({ active }: { active: boolean }) {
         </Stack>
       </Paper>
     </div>
-    <Text mt="md">平行に入る光が集まる点を、「レンズで曲がる」の図ではFという目印で示します。次の図は焦点距離10 cmの別の縮尺ですが、平行に入る光が集まる点という役割は同じです。虫めがねでも、近くの文字からは光が広がって入るため、その広がりとレンズでの向きの変化を比べると、実際に集まる場合と、出た後も広がる場合へつながります。</Text>
+    <Text mt="md">平行に入る光が集まる点を、「焦点の目印」の図ではFという目印で示します。その図は焦点距離10 cmの別の縮尺ですが、平行に入る光が集まる点という役割は同じです。虫めがねでも、近くの文字からは光が広がって入るため、その広がりとレンズでの向きの変化を比べると、実際に集まる場合と、出た後も広がる場合へつながります。</Text>
   </>
 }

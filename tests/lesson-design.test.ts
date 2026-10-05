@@ -17,6 +17,7 @@ const designTables = [
   },
   { heading: '## 概念の導入', columns: ['概念', '名前を付ける前に見るもの', '図で指す対象', '混同を避ける比較'] },
   { heading: '## 観察と説明の流れ', columns: ['場面', '注目する対象', '観察と操作', 'ここで分かる関係', '図・説明・操作の配置', '切り替え時の状態'] },
+  { heading: '## 今回理解すること', columns: ['身近な行為', 'そこで起きていること', '理解する関係', '扱う範囲'] },
 ] as const
 
 // This checks omissions in the author's plan, not prose quality or learning outcomes.
@@ -46,7 +47,16 @@ function assertLessonDesign(markdown: string, path: string) {
   assertDesignTables(markdown, path)
 }
 
-describe('全教材に橋渡し・概念の導入・観察の設計を残す', () => {
+function tableRowIndex(lines: string[], heading: string, offset: number) {
+  const start = lines.indexOf(heading)
+  const next = lines.findIndex((line, index) => index > start && /^##\s/.test(line))
+  const indices = lines.map((line, index) => ({ line, index }))
+    .filter(({ line, index }) => index > start && (next === -1 || index < next) && line.startsWith('|'))
+    .map(({ index }) => index)
+  return indices[offset]
+}
+
+describe('全教材に理解のゴール・橋渡し・概念の導入・観察の設計を残す', () => {
   it('教材を自動で見つける', () => {
     expect(lessons.length).toBeGreaterThan(0)
   })
@@ -73,17 +83,27 @@ describe('説明と操作の設計を省略した教材を検出する', () => {
   it.each(['図・説明・操作の配置', '切り替え時の状態'] as const)('%sの空欄を検出する', column => {
     const table = designTables[2]
     const lines = example.split('\n')
-    const rowIndex = lines.indexOf(table.heading) + 4
+    const rowIndex = tableRowIndex(lines, table.heading, 2)
     const cells = lines[rowIndex].split('|')
     cells[table.columns.indexOf(column) + 1] = ' '
     lines[rowIndex] = cells.join('|')
-    expect(() => assertLessonDesign(lines.join('\n'), '操作設計の空欄')).toThrow(/空欄/)
+    expect(() => assertLessonDesign(lines.join('\n'), '不正な教材')).toThrow(/空欄/)
+  })
+
+  it.each(designTables[3].columns)('理解のゴールの%sが空欄なら検出する', column => {
+    const table = designTables[3]
+    const lines = example.split('\n')
+    const rowIndex = tableRowIndex(lines, table.heading, 2)
+    const cells = lines[rowIndex].split('|')
+    cells[table.columns.indexOf(column) + 1] = ' '
+    lines[rowIndex] = cells.join('|')
+    expect(() => assertLessonDesign(lines.join('\n'), '不正な教材')).toThrow(/空欄/)
   })
 
   it('配置と状態の記録がない旧形式の表を検出する', () => {
     const table = designTables[2]
     const lines = example.split('\n')
-    const headerIndex = lines.indexOf(table.heading) + 2
+    const headerIndex = tableRowIndex(lines, table.heading, 0)
     const cells = lines[headerIndex].split('|')
     lines[headerIndex] = `${cells.slice(0, 5).join('|')}|`
     expect(() => assertLessonDesign(lines.join('\n'), '旧形式')).toThrow(/列をテンプレートとそろえる/)
@@ -91,11 +111,11 @@ describe('説明と操作の設計を省略した教材を検出する', () => {
 
   it.each(['図と操作で保つ対応', '対応しない点・限界', '元の現象への戻り方'] as const)('%sの空欄を検出する', column => {
     const lines = example.split('\n')
-    const rowIndex = lines.indexOf(heading) + 4
+    const rowIndex = tableRowIndex(lines, heading, 2)
     const cells = lines[rowIndex].split('|')
     cells[designTables[0].columns.indexOf(column) + 1] = ' '
     lines[rowIndex] = cells.join('|')
-    expect(() => assertLessonDesign(lines.join('\n'), '対応の空欄')).toThrow(/空欄/)
+    expect(() => assertLessonDesign(lines.join('\n'), '不正な教材')).toThrow(/空欄/)
   })
 
   it('テンプレートの未記入を検出する', () => {

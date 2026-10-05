@@ -15,15 +15,15 @@ function reveal(progress: number) {
 }
 
 
-export function LensDiagram({ input, screen, secondPoint = false, thirdRay = false, focus = false, fixedEntry = false, progress = 1 }: {
-  input: LensInput; screen?: number; secondPoint?: boolean; thirdRay?: boolean; focus?: boolean; fixedEntry?: boolean; progress?: number
+export function LensDiagram({ input, screen, secondPoint = false, thirdRay = false, focus = false, fixedEntry = false, landmarks = true, extensions = true, progress = 1 }: {
+  input: LensInput; screen?: number; secondPoint?: boolean; thirdRay?: boolean; focus?: boolean; fixedEntry?: boolean; landmarks?: boolean; extensions?: boolean; progress?: number
 }) {
   const id = useId().replaceAll(':', '')
   const image = observeLens(input)
   const incoming = phase(progress, 0, .35)
   const outgoing = phase(progress, .35, .7)
   const backward = phase(progress, .7, 1)
-  const imageVisible = image.kind === 'virtual' ? progress >= 1 : outgoing >= 1
+  const imageVisible = image.kind === 'virtual' ? extensions && progress >= 1 : outgoing >= 1 && (landmarks || screen === undefined || image.imageDistance !== null && Math.abs(screen - image.imageDistance) < 1e-10)
   const px = (x: number) => 310 + x * 430
   const py = (y: number) => 170 - y * 16000
   const eye = { x: .4, y: -.0035 }
@@ -48,12 +48,12 @@ export function LensDiagram({ input, screen, secondPoint = false, thirdRay = fal
     return <g key={`${label}-${index}`}>
       <path d={path([{ x: -source.objectDistance, y: source.objectHeight }, { x: 0, y: height }])} fill="none" {...reveal(incoming)} stroke={color} strokeWidth="2.4" markerEnd={incoming >= 1 ? `url(#${id}-ray)` : undefined} />
       <path d={path([{ x: 0, y: height }, traceLensRay(source, height, endpoint)])} fill="none" {...reveal(outgoing)} stroke={color} strokeWidth="2.4" markerEnd={outgoing >= 1 ? `url(#${id}-ray)` : undefined} />
-      {observeLens(source).kind === 'virtual' && <path d={path([{ x: 0, y: height }, extendLensRay(source, height, (observeLens(source).imageDistance ?? -.68) * backward)])} fill="none" stroke={label === 'B' ? orange : purple} strokeWidth="2" strokeDasharray="7 6" opacity={backward > 0 ? 1 : 0} />}
+      {extensions && observeLens(source).kind === 'virtual' && <path d={path([{ x: 0, y: height }, extendLensRay(source, height, (observeLens(source).imageDistance ?? -.68) * backward)])} fill="none" stroke={label === 'B' ? orange : purple} strokeWidth="2" strokeDasharray="7 6" opacity={backward > 0 ? 1 : 0} />}
       {screen !== undefined && outgoing >= 1 && <circle cx={px(screen)} cy={py(traceLensRay(source, height, screen).y)} r="4" fill={color} />}
     </g>
   })
   return <figure className="image-diagram">
-    <svg viewBox="0 0 620 350" role="img" aria-label={focus ? '横から見た凸レンズ。軸に平行な光が右側の焦点Fに集まる作図。' : `横から見た凸レンズ。物の先端Aから出た光と${image.kind === 'virtual' ? '逆向きの延長が交わる像' : image.kind === 'real' ? '光が交わる像' : '平行に進む光'}。`}>
+    <svg viewBox="0 0 620 350" role="img" aria-label={focus ? '横から見た凸レンズ。軸に平行な光が右側の焦点Fに集まる作図。' : `横から見た凸レンズ。物の上端Aから出た光と${image.kind === 'virtual' ? extensions ? '逆向きの延長が交わる像' : '目へ届く光' : image.kind === 'real' ? imageVisible ? '光が交わる像' : '紙へ届く光' : '平行に進む光'}。`}>
       <defs>
         <marker id={`${id}-ray`} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L7 3.5 L0 7" fill="none" stroke="#495057" /></marker>
         <clipPath id={`${id}-clip`}><rect x="10" y="32" width="600" height="273" /></clipPath>
@@ -62,7 +62,7 @@ export function LensDiagram({ input, screen, secondPoint = false, thirdRay = fal
       <text x="15" y="344">レンズの中心を通る横線＝軸</text>
       <path d="M310 65 Q333 170 310 275 Q287 170 310 65Z" fill="#e7f5ff" stroke={blue} strokeWidth="2" />
       <text x="310" y="28" textAnchor="middle">凸レンズ</text>
-      {[-2, -1, 1, 2].map(m => <g key={m}><circle cx={px(m * input.focalLength)} cy="170" r="3" fill="#495057" /><text x={px(m * input.focalLength)} y="197" textAnchor="middle">{Math.abs(m) === 1 ? 'F' : '2F'}</text></g>)}
+      {landmarks && [-2, -1, 1, 2].map(m => <g key={m}><circle cx={px(m * input.focalLength)} cy="170" r="3" fill="#495057" /><text x={px(m * input.focalLength)} y="197" textAnchor="middle">{Math.abs(m) === 1 ? 'F' : '2F'}</text></g>)}
       <g clipPath={`url(#${id}-clip)`}>
         {focus ? [-.004, 0, .004].map(y => <g key={y}>
           <path d={path([{ x: -.55, y }, { x: 0, y }])} fill="none" {...reveal(incoming)} stroke={blue} strokeWidth="2.5" markerEnd={incoming >= 1 ? `url(#${id}-ray)` : undefined} />
@@ -72,27 +72,27 @@ export function LensDiagram({ input, screen, secondPoint = false, thirdRay = fal
           {secondPoint && drawRays(baseInput, baseHeights, orange, 'B')}
           {drawRays(input, heights, blue, 'A')}
           <line x1={px(-input.objectDistance)} x2={px(-input.objectDistance)} y1="170" y2={py(input.objectHeight)} stroke={orange} strokeWidth="6" />
-          <circle cx={px(-input.objectDistance)} cy={py(input.objectHeight)} r="5" fill={orange} />
+          <circle cx={px(-input.objectDistance)} cy={py(input.objectHeight)} r="5" fill={blue} />
           <circle cx={px(-input.objectDistance)} cy="170" r="4" fill={orange} />
-          {inFrame && imageVisible && <><line x1={px(image.imageDistance!)} x2={px(image.imageDistance!)} y1="170" y2={py(image.imageHeight!)} stroke={purple} strokeWidth="5" strokeDasharray={image.kind === 'virtual' ? '6 4' : undefined} /><circle cx={px(image.imageDistance!)} cy={py(image.imageHeight!)} r="5" fill={purple} /><circle cx={px(image.imageDistance!)} cy="170" r="4" fill={purple} /></>}
+          {inFrame && imageVisible && <>{secondPoint && <line x1={px(image.imageDistance!)} x2={px(image.imageDistance!)} y1="170" y2={py(image.imageHeight!)} stroke={purple} strokeWidth="5" strokeDasharray={image.kind === 'virtual' ? '6 4' : undefined} />}<circle cx={px(image.imageDistance!)} cy={py(image.imageHeight!)} r="5" fill={purple} />{secondPoint && <circle cx={px(image.imageDistance!)} cy="170" r="4" fill={purple} />}</>}
 
         </>}
       </g>
       {!focus && <>
-        <text x={Math.max(105, px(-input.objectDistance))} y="108" textAnchor="middle">物の先端 A</text>
-        <text x={px(-input.objectDistance)} y="245" textAnchor="middle">根元 B</text>
+        <text x={Math.max(105, px(-input.objectDistance))} y="108" textAnchor="middle">線の上端 A</text>
+        <text x={px(-input.objectDistance)} y="245" textAnchor="middle">線の下端 B</text>
         {inFrame && imageVisible && <>
           {image.kind === 'virtual' && <line x1={px(image.imageDistance!) - 4} y1={py(image.imageHeight!)} x2={imageLabelX} y2={imageLabelY + 8} stroke="#868e96" strokeWidth="1" />}
           <text x={imageLabelX} y={imageLabelY} textAnchor="middle">Aの像</text>
         </>}
-        {inFrame && imageVisible && <text x={px(image.imageDistance!)} y="150" textAnchor="middle">Bの像</text>}
+        {inFrame && imageVisible && secondPoint && <text x={px(image.imageDistance!)} y="150" textAnchor="middle">Bの像</text>}
         {!inFrame && image.kind !== 'at-infinity' && <text x="310" y="313" textAnchor="middle">描画範囲外の像：{image.kind === 'real' ? '右' : '左'} {cm(Math.abs(image.imageDistance!))} cm</text>}
         {screen !== undefined && <text x={Math.min(535, px(screen))} y="64" textAnchor="middle" stroke="white" strokeWidth="4" paintOrder="stroke">スクリーン</text>}
         {image.kind === 'virtual' && screen === undefined && <g><ellipse cx={px(eye.x) + 12} cy={py(eye.y)} rx="14" ry="10" fill="white" stroke="#495057" strokeWidth="2" /><line x1={px(eye.x)} x2={px(eye.x)} y1={py(eye.y) - 9} y2={py(eye.y) + 9} stroke="#495057" strokeWidth="3" /><text x={px(eye.x) + 12} y={py(eye.y) + 34} textAnchor="middle">目</text></g>}
       </>}
       {focus && <text x={px(input.focalLength) + 14} y="145">平行な光の集まる点</text>}
     </svg>
-    <figcaption>実線：実際に進む光。矢印：進む向き。破線：逆向きの延長。{!focus && (secondPoint ? '先端Aからの光は青、根元Bからの光は橙です。出発する点の名前をたどって区別できます。' : '先端Aからの光を描いています。')}横から見た薄いレンズの作図で、縦の長さを拡大しています。図から角度は測れません。</figcaption>
+    <figcaption>実線：実際に進む光。矢印：進む向き。{extensions && image.kind === 'virtual' && '破線：目に届く向きを、光が来た側へまっすぐ延ばした線。'}{!focus && (secondPoint ? '上端Aからの光は青、下端Bからの光は橙です。出発する点の名前をたどって区別できます。' : '上端Aからの光を描いています。')}横から見た薄いレンズの作図で、縦の長さを拡大しています。図から角度は測れません。</figcaption>
     {thirdRay && !canShowThird && <p className="small-note">第三の作図線は、この条件ではレンズの描画範囲を通りません。中心を通る線と、軸に平行に入る線で像を求めます。</p>}
   </figure>
 }
@@ -108,7 +108,7 @@ export function MirrorDiagram({ distance = .25, eyeY = -.12, extensions = true, 
   const rays = [-.012, .012].map(offset => observeMirror(object, { ...eye, y: eye.y + offset }))
   const points = (ps: Point[]) => ps.map(p => `${px(p.x)},${py(p.y)}`).join(' ')
   return <figure className="image-diagram">
-    <svg viewBox="0 0 620 350" role="img" aria-label="上から見た平面鏡。物の一点Aから鏡で反射して目へ届く二本の光。延長の交点は鏡の奥の対称な位置にある。">
+    <svg viewBox="0 0 620 350" role="img" aria-label={`上から見た平面鏡。物の一点Aから鏡で反射して目へ届く二本の光。${extensions ? '延長の交点は鏡の奥の対称な位置にある。' : '実際の光だけを示す。'}`}>
       <defs><marker id={`${id}-arrow`} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L7 3.5 L0 7" fill="none" stroke={blue} /></marker></defs>
       <rect x="311" y="40" width="292" height="255" fill="#f3f0ff" />
       <line x1="310" x2="310" y1="40" y2="295" stroke="#868e96" strokeWidth="5" />
@@ -131,8 +131,8 @@ export function MirrorDiagram({ distance = .25, eyeY = -.12, extensions = true, 
 }
 
 export function DirectDiagram({ extensions, progress = 1 }: { extensions: boolean; progress?: number }) {
-  return <figure className="image-diagram"><svg viewBox="0 0 620 300" role="img" aria-label="物の先端Aから目へまっすぐ届く二本の光。逆に延ばすと元のAに戻る。">
-    <line x1="120" y1="205" x2="120" y2="80" stroke={orange} strokeWidth="7" /><circle cx="120" cy="80" r="7" fill={orange} /><text x="120" y="52" textAnchor="middle">物の先端 A</text><text x="120" y="235" textAnchor="middle">根元 B</text>
+  return <figure className="image-diagram"><svg viewBox="0 0 620 300" role="img" aria-label={`文字の縦線の上端Aから目へまっすぐ届く二本の光。${extensions ? '逆にたどると元のAに戻る。' : '実際の光だけを示す。'}`}>
+    <rect x="70" y="65" width="100" height="155" rx="4" fill="white" stroke="#adb5bd" /><line x1="120" y1="205" x2="120" y2="80" stroke={orange} strokeWidth="7" /><circle cx="120" cy="80" r="7" fill={orange} /><text x="120" y="52" textAnchor="middle">線の上端 A</text><text x="120" y="246" textAnchor="middle">線の下端 B</text><text x="120" y="281" textAnchor="middle">文字の縦線</text>
     {[165, 185].map(y => <g key={y}><line x1="120" y1="80" x2="500" y2={y} stroke={blue} strokeWidth="3" {...reveal(phase(progress, 0, .35))} /><path d={`M330 ${80 + (y - 80) * 210 / 380 - 5} l10 8 l-12 2`} fill="none" stroke={blue} strokeWidth="2" opacity={progress >= .35 ? 1 : 0} />{extensions && progress > .7 && <line x1="500" y1={y} x2={500 - 380 * phase(progress, .7, 1)} y2={y + (80 - y) * phase(progress, .7, 1)} stroke={purple} strokeWidth="2" strokeDasharray="7 6" />}</g>)}
     <ellipse cx="520" cy="175" rx="23" ry="19" fill="white" stroke="#495057" strokeWidth="2" /><line x1="500" x2="500" y1="155" y2="195" stroke="#495057" strokeWidth="3" /><text x="520" y="225" textAnchor="middle">目</text>
   </svg><figcaption>説明用の模式図。目に入る細い束を二本の線で表しています。線は光の道筋で、物が移動する軌道ではありません。</figcaption></figure>

@@ -19,3 +19,10 @@
 .image-observation-reserve { visibility: hidden; }
 .journey-visual .image-diagram svg { border-radius: var(--mantine-radius-md); background: #f3f7f9; border: 1px solid var(--mantine-color-default-border); }
 .image-reason { margin-top: var(--mantine-spacing-sm); }
+
+.image-paper-face svg { max-width: 620px; }
+.image-paper-workspace .image-diagram svg text { font-size: 22px; }
+@media (max-width: 36em) {
+  .image-paper-workspace .image-diagram svg text { font-size: 26px; }
+  .image-paper-workspace .image-paper-face svg text { font-size: 25px; }
+}

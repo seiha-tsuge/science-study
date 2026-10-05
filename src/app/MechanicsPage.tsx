@@ -8,6 +8,8 @@ import {
   Title,
 } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
+import { motionLesson } from '../experiments/mechanics/motion/meta'
+import { accelerationLesson } from '../experiments/mechanics/acceleration/meta'
 
 export default function MechanicsPage() {
   return (
@@ -46,7 +48,7 @@ export default function MechanicsPage() {
         </div>
       </Paper>
       <section className="lesson-list">
-        <Title order={2}>問いを選ぶ</Title>
+        <Title order={2}>理解したい関係を選ぶ</Title>
         <Card
           component={Link}
           to="/mechanics/motion"
@@ -58,7 +60,8 @@ export default function MechanicsPage() {
           <div>
             <span className="eyebrow">等速運動</span>
             <Title order={3}>位置と速度</Title>
-            <Text>なぜ一定の速度では、位置と時間のグラフが直線になる？</Text>
+            <Text fw={600} size="sm" mt="sm">今回理解すること</Text>
+            <Text>{motionLesson.learningGoal.understand}</Text>
             <span className="prerequisite">
               道の目印と1秒ごとの動きを、グラフと対応させます。
             </span>
@@ -76,7 +79,8 @@ export default function MechanicsPage() {
           <div>
             <span className="eyebrow">等加速度運動</span>
             <Title order={3}>加速度</Title>
-            <Text>速度が毎秒同じ量ずつ増えると、進む量に二乗が現れるのはなぜ？</Text>
+            <Text fw={600} size="sm" mt="sm">今回理解すること</Text>
+            <Text>{accelerationLesson.learningGoal.understand}</Text>
             <span className="prerequisite">
               速度が変わる様子から、時間の二乗の意味を見ます。
             </span>

@@ -1,4 +1,4 @@
-import { Button, Group, Paper, Slider, Text } from '@mantine/core'
+import { Accordion, Button, Group, Paper, Slider, Text } from '@mantine/core'
 import type { ReactNode } from 'react'
 import { useImageAnimation } from './useImageAnimation'
 import { rayObservation } from './animation-observation'
@@ -6,16 +6,16 @@ import type { RayScene } from './animation-observation'
 import Observation from './Observation'
 
 type AnimationState = ReturnType<typeof useImageAnimation>
-export function AnimationControls({ animation, duration, stages, label, timeScale = 1, title = '時間を選んで、光の道筋を追う' }: {
-  animation: AnimationState; duration: number; stages: { time: number; label: string }[]; label: string; timeScale?: number; title?: string
+export function AnimationControls({ animation, duration, stages, label, timeScale = 1, title = '時間を選んで、光の道筋を追う', showStages = true }: {
+  animation: AnimationState; duration: number; stages: { time: number; label: string }[]; label: string; timeScale?: number; title?: string; showStages?: boolean
 }) {
   const { time, running, reducedMotion, seek, toggle } = animation
   return <Paper withBorder p="md" className="journey-time image-animation-controls">
     <Text fw={600} size="sm" mb="sm">{title}</Text>
-    <Group gap="xs" aria-label="静止した段階を選ぶ">{stages.map(stage => {
+    {showStages && <Group gap="xs" aria-label="静止した段階を選ぶ">{stages.map(stage => {
       const selected = Math.abs(Math.min(stage.time, duration) - time) < .005
       return <Button key={stage.time} variant={selected ? 'light' : 'default'} aria-pressed={selected} onClick={() => seek(stage.time)}>{stage.label}</Button>
-    })}</Group>
+    })}</Group>}
     <Text size="xs" mt="md" mb="xs" className="image-time-readout">{label}：{(time / timeScale).toFixed(2)} / {(duration / timeScale).toFixed(2)} 秒{timeScale === 1 && '（物理時刻とは別）'}</Text>
     <Slider thumbLabel={label} value={time / timeScale} min={0} max={duration / timeScale} step={.01} onChange={value => seek(value * timeScale)} label={value => `${value.toFixed(2)} 秒`} />
     <Group mt="md" gap="xs">
@@ -36,14 +36,22 @@ export default function RayAnimation({ active, kind, extensions = true, children
   const stages = [
     { time: 0, label: kind === 'focus' ? 'レンズと目印' : '物と目印' },
     { time: 2.8, label: kind === 'mirror' ? '鏡まで' : kind === 'direct' ? '目まで届く' : 'レンズまで' },
-    { time: 5.6, label: kind === 'real' ? 'スクリーンへ集まる' : kind === 'focus' ? 'Fへ集まる' : '届く光の向き' },
-    { time: 8, label: backward ? extensions ? '逆向きの延長' : '延長は非表示' : '完成図' },
+    ...(kind === 'direct' ? [] : [{ time: 5.6, label: kind === 'real' ? 'スクリーンへ集まる' : kind === 'focus' ? 'Fへ集まる' : '目まで届く' }]),
+    ...(backward && extensions ? [{ time: 8, label: '来た側へたどる' }] : []),
   ]
+  const completedTime = kind === 'direct' ? 2.8 : 5.6
+  const selected = (time: number) => Math.abs(time - animation.time) < .005 || time === completedTime && animation.time >= completedTime && (!backward || !extensions)
   return <div className="journey-workspace">
     <div className="journey-tools">
       {tools && <><Text fw={600} size="sm" mb="xs">図に重ねるもの</Text>{tools}</>}
-      <AnimationControls animation={animation} duration={8} stages={stages} label="作図の時間" />
-      <Text size="xs" c="dimmed" mt="sm">線を描く順序をゆっくり見せる8秒の説明アニメーションです。描画の速さは光の速さや到着時刻を表しません。各段階へ直接移れます。</Text>
+      <Text fw={600} size="sm" mt="md" mb="xs">線を順に見る（静止図）</Text>
+      <Group gap="xs" aria-label="静止した段階を選ぶ">{stages.map(stage => <Button key={stage.time} size="xs" variant={selected(stage.time) ? 'light' : 'default'} aria-pressed={selected(stage.time)} onClick={() => animation.seek(stage.time)}>{stage.label}</Button>)}</Group>
+      <Accordion mt="md" variant="separated" onChange={() => animation.seek(animation.time)}>
+        <Accordion.Item value="animation"><Accordion.Control>動きでたどる・途中で止める</Accordion.Control><Accordion.Panel>
+          <AnimationControls animation={animation} duration={8} stages={stages} label="作図の時間" showStages={false} />
+          <Text size="xs" c="dimmed" mt="sm">8秒は線を描く順序の説明時間です。光の速さや到着時刻を表しません。閉じると停止し、その図を保ちます。</Text>
+        </Accordion.Panel></Accordion.Item>
+      </Accordion>
     </div>
     <div className="journey-visual">{children(progress)}</div>
     <Paper withBorder p="md" className="journey-explanation">

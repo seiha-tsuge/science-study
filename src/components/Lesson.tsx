@@ -9,6 +9,7 @@ export interface LessonContent {
   subtitle: string
   question: string
   startingPoint: { scene: string; focus: string }
+  learningGoal: { understand: string; scope: string }
   overview: string
   relationships: readonly { title: string; detail: string }[]
   observation: string
@@ -65,18 +66,22 @@ export default function Lesson({
       </nav>
       <Paper component="section" withBorder p={{ base: 'md', sm: 'xl' }} bg={overviewVisual ? undefined : 'blue.0'} id="overview">
         <Text className="eyebrow">01 — 全体から見る</Text>
-        <Title order={2}>{lesson.question}</Title>
+        <Title order={2}>今回理解すること</Title>
+        <Text fw={500} mt="sm">{lesson.learningGoal.understand}</Text>
         <div className={overviewVisual ? 'lesson-overview-visual' : undefined}>
           <div>
             <Paper p={overviewVisual ? 0 : 'md'} mt="md" className="starting-point">
-              <Text fw={600}>身近な入口</Text>
+              <Text fw={600}>身近な行為から考える</Text>
               <Text mt="xs">{lesson.startingPoint.scene}</Text>
-              <Text size="sm" mt="xs">{lesson.startingPoint.focus}</Text>
             </Paper>
+            <Text fw={600} mt="md">そのとき起きていること</Text>
             <Text mt="md">{lesson.overview}</Text>
+            <Text size="sm" mt="sm">扱う範囲：{lesson.learningGoal.scope}</Text>
           </div>
           {overviewVisual}
         </div>
+        <Title order={3} mt="lg">{lesson.question}</Title>
+        <Text size="sm" mt="xs">{lesson.startingPoint.focus}</Text>
         <SimpleGrid cols={{ base: 1, sm: 3 }} mt="lg" spacing="sm" className="relationship-map">
           {lesson.relationships.map((relation, index) => (
             <Paper withBorder p="md" key={relation.title}>

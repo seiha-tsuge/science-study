@@ -9,6 +9,10 @@ import {
   Title,
 } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
+import { motionLesson } from '../experiments/mechanics/motion/meta'
+import { accelerationLesson } from '../experiments/mechanics/acceleration/meta'
+import { opticsLesson } from '../experiments/optics/reflection-refraction/meta'
+import { imagesLesson } from '../experiments/optics/lenses-mirrors/meta'
 
 export default function HomePage() {
   return (
@@ -22,9 +26,9 @@ export default function HomePage() {
             科学の実験室。
           </Title>
           <Text>
-            歩く人の動き、水の中のストローの見え方。
+            歩く、本の文字を読む、水の中をのぞく。
             <br />
-            図を動かして、現象を生む関係をたどります。
+            その行為の中で何が起きているか、図と操作でたどります。
           </Text>
           <Button component={Link} to="/mechanics/motion" size="lg" mt="lg">
             位置と速度を見てみる <span>↗</span>
@@ -84,6 +88,24 @@ export default function HomePage() {
           <span className="diagram-note">横は時間、縦は位置。直線と曲線で増え方を比べます。</span>
         </Paper>
       </header>
+      <section className="map-section">
+        <Title order={2}>どの行為の、何を理解する？</Title>
+        <Text mt="sm" mb="lg">各教材のゴールから選べます。詳しい範囲は教材の最初に示します。</Text>
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+          {[
+            { lesson: motionLesson, to: '/mechanics/motion' },
+            { lesson: accelerationLesson, to: '/mechanics/acceleration' },
+            { lesson: opticsLesson, to: '/optics/reflection-refraction' },
+            { lesson: imagesLesson, to: '/optics/lenses-mirrors' },
+          ].map(({ lesson, to }) => (
+            <Card key={to} component={Link} to={to} withBorder padding="lg">
+              <Title order={3}>{lesson.title}</Title>
+              <Text fw={600} size="sm" mt="sm">今回理解すること</Text>
+              <Text size="sm" mt="xs">{lesson.learningGoal.understand}</Text>
+            </Card>
+          ))}
+        </SimpleGrid>
+      </section>
       <section className="map-section">
         <div className="map-title">
           <div>

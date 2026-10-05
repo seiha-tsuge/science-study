@@ -56,9 +56,9 @@ export default function ImageSimulation() {
                 ? `Aから出てレンズを通った光の延長は、レンズの左 ${cm(-image.imageDistance)} cmで交わります。像の高さは${cm(image.imageHeight)} cm、物の${image.magnification.toLocaleString('ja-JP', { maximumFractionDigits: 2 })}倍です。`
                 : '物がFにあると、同じ一点Aから出てレンズを通った二本は互いに平行になります。Aは軸より上なので、二本とも軸に対して斜めに進みます。有限の距離では集まりません。「像が無限遠」と表す条件です。'}</Text>
             <Text size="sm">Aの二本の光がレンズへ入る位置を、軸の上下2.5 mmに固定しています。Fをまたいでも同じ場所で、入る向きと出た後の広がりを比較できます。破線は出た光の逆向きの延長です。</Text>
-            <Text size="sm">{image.kind === 'at-infinity' ? 'Aの光とBの光は、出た後の向きが異なります。それぞれの点から出た二本は互いに平行ですが、AとBの光すべてが同じ向きになるわけではありません。この条件には、有限の像の高さもありません。' : 'Aの像とBの像の間隔が、像の高さです。元のAとBの間隔と比べます。根元Bの光を重ねると、各点が別の各点へ対応することをたどれます。'}</Text>
-            {image.kind === 'virtual' && <Text size="sm">目へ届く光を選ぶ作図は、仕組みの「虫めがねで見る」で示しています。ここでは同じ入射位置を保ちます。右のスクリーンには、一点の光が一点へ集まる像は映りません。</Text>}
-            <Switch label="根元Bの光を重ねる" checked={secondPoint} onChange={event => setSecondPoint(event.currentTarget.checked)} />
+            <Text size="sm">{image.kind === 'at-infinity' ? 'Aの光とBの光は、出た後の向きが異なります。それぞれの点から出た二本は互いに平行ですが、AとBの光すべてが同じ向きになるわけではありません。この条件には、有限の像の高さもありません。' : 'Aの像とBの像の間隔が、像の高さです。元のAとBの間隔と比べます。下端Bの光を重ねると、各点が別の各点へ対応することをたどれます。'}</Text>
+            {image.kind === 'virtual' && <Text size="sm">目へ届く光を選ぶ作図は、仕組みの「③ 虫めがね」で示しています。ここでは同じ入射位置を保ちます。右のスクリーンには、一点の光が一点へ集まる像は映りません。</Text>}
+            <Switch label="下端Bの光を重ねる" checked={secondPoint} onChange={event => setSecondPoint(event.currentTarget.checked)} />
             <div className="image-result">
               <Text fw={600}>スクリーン：レンズの右 {screen.toLocaleString('ja-JP', { maximumFractionDigits: 2 })} cm</Text>
               <Text size="sm" mt="xs">{focused ? 'Aの二本の光が同じ場所に当たります。ほかの各点の光も集まる面なので、像が映ります。' : image.kind === 'virtual' ? '虚像の位置へは光が集まりません。スクリーンは光を遮りますが、虚像をそのまま映すことはできません。' : `Aの二本の光が当たる高さの差は ${cm(separation)} cmです。一点の光が別々の場所へ届くので、ぼけの原因になります。`}</Text>

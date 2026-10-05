@@ -16,6 +16,28 @@ describe('条件操作の光線の対応', () => {
 
 describe('作図アニメーションの科学的な区別', () => {
   const input = { focalLength: .1, objectDistance: .075, objectHeight: .002 }
+  it('虚像の補助線だけを隠しても、目へ届く実際の光は同じである', () => {
+    const shown = renderToStaticMarkup(<LensDiagram input={input} />)
+    const hidden = renderToStaticMarkup(<LensDiagram input={input} extensions={false} landmarks={false} />)
+    const physicalPaths = (html: string) => [...html.matchAll(/<path d="([^"]+)"[^>]*pathLength="1"[^>]*stroke="#1971c2"/g)].map(match => match[1])
+    expect(physicalPaths(hidden)).toEqual(physicalPaths(shown))
+    expect(physicalPaths(hidden)).toHaveLength(4)
+    expect(hidden).not.toContain('stroke-dasharray="7 6"')
+    expect(hidden).not.toContain('>Aの像<')
+    expect(hidden).not.toContain('>F<')
+    expect(shown).toContain('>Aの像<')
+  })
+  it('紙の入門図は、紙の位置が合ったときだけ像の点を重ねる', () => {
+    const real = { ...input, objectDistance: .2 }
+    for (const screen of [.16, .2, .3]) {
+      const html = renderToStaticMarkup(<LensDiagram input={real} fixedEntry screen={screen} landmarks={false} />)
+      expect(html.includes('>Aの像<')).toBe(screen === .2)
+      expect(html).not.toContain('>Bの像<')
+      const hits = [...html.matchAll(/<circle cx="[^"]+" cy="([^"]+)" r="4" fill="#1971c2"/g)].map(match => Number(match[1]))
+      expect(hits).toHaveLength(2)
+      expect(Math.abs(hits[0]! - hits[1]!) < 1e-8).toBe(screen === .2)
+    }
+  })
   it('虚像は実線を描いた後に延長をたどり、交点まで到達してから表示する', () => {
     const before = renderToStaticMarkup(<LensDiagram input={input} progress={.7} />)
     const extending = renderToStaticMarkup(<LensDiagram input={input} progress={.85} />)

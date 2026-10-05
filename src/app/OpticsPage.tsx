@@ -8,6 +8,8 @@ import {
   Title,
 } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
+import { opticsLesson } from '../experiments/optics/reflection-refraction/meta'
+import { imagesLesson } from '../experiments/optics/lenses-mirrors/meta'
 
 export default function OpticsPage() {
   return (
@@ -46,7 +48,7 @@ export default function OpticsPage() {
         </div>
       </Paper>
       <section className="lesson-list">
-        <Title order={2}>問いを選ぶ</Title>
+        <Title order={2}>理解したい関係を選ぶ</Title>
         <Card
           component={Link}
           to="/optics/reflection-refraction"
@@ -58,7 +60,8 @@ export default function OpticsPage() {
           <div>
             <span className="eyebrow">反射・屈折・全反射</span>
             <Title order={3}>光の反射と屈折</Title>
-            <Text>水面へ斜めに届く光は、速さが変わると、なぜ向きも変わる？</Text>
+            <Text fw={600} size="sm" mt="sm">今回理解すること</Text>
+            <Text>{opticsLesson.learningGoal.understand}</Text>
             <span className="prerequisite">
               ストロー、人の列、光の図をたどる四場面。電場や干渉は任意で開けます。
             </span>
@@ -70,7 +73,8 @@ export default function OpticsPage() {
           <div>
             <span className="eyebrow">凸レンズ・実像・虚像・平面鏡</span>
             <Title order={3}>凸レンズの像と平面鏡の像</Title>
-            <Text>像が見える場所は、光の道筋からなぜ決まる？</Text>
+            <Text fw={600} size="sm" mt="sm">今回理解すること</Text>
+            <Text>{imagesLesson.learningGoal.understand}</Text>
             <span className="prerequisite">一点の光から像の形へ。物・スクリーン・目の位置を変えて、集まる光と延長を比べます。</span>
           </div>
           <span aria-hidden="true">↗</span>
