@@ -125,13 +125,13 @@ export default function HomePage() {
               ◇
             </span>
             <Badge variant="light" size="sm">
-              1つの実験
+              2つの実験
             </Badge>
             <Title order={3}>光学</Title>
             <Text>
-              水の中のものは、なぜずれて見える？
+              水中のストロー、虫めがね、鏡の奥の像。
               <br />
-              砂地に入る人の列から、光が曲がる理由をたどります。
+              光が曲がる理由から、像が見える場所へつなぎます。
             </Text>
             <span className="field-link">光学を探索する →</span>
           </Card>

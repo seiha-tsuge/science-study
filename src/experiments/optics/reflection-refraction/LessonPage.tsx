@@ -36,8 +36,8 @@ export default function OpticsLessonPage() {
       }
       simulation={<OpticsSimulation />}
       next={
-        <Anchor component={Link} to="/optics">
-          光学の地図に戻る →
+        <Anchor component={Link} to="/optics/lenses-mirrors">
+          光の道筋から、凸レンズと平面鏡の像へ →
         </Anchor>
       }
       sources={[

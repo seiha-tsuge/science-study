@@ -65,7 +65,21 @@ export default function OpticsPage() {
           </div>
           <span aria-hidden="true">↗</span>
         </Card>
+        <Card component={Link} to="/optics/lenses-mirrors" withBorder padding="lg" className="lesson-card">
+          <span className="lesson-number">04</span>
+          <div>
+            <span className="eyebrow">凸レンズ・実像・虚像・平面鏡</span>
+            <Title order={3}>凸レンズの像と平面鏡の像</Title>
+            <Text>像が見える場所は、光の道筋からなぜ決まる？</Text>
+            <span className="prerequisite">一点の光から像の形へ。物・スクリーン・目の位置を変えて、集まる光と延長を比べます。</span>
+          </div>
+          <span aria-hidden="true">↗</span>
+        </Card>
       </section>
+      <Paper withBorder p="lg" mt="xl">
+        <Title order={2}>光の向きから、像の場所へ</Title>
+        <Text mt="sm">水面やレンズで光が曲がる理由を見たら、その光が目へどう届くかをたどれます。レンズでは実際に集まる場所、鏡では反射した光の延長が交わる場所が、物の各点の像になります。像の教材から直接始めても、図の中で必要な目印と名前を見られます。</Text>
+      </Paper>
     </div>
   )
 }

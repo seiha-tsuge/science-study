@@ -9,7 +9,7 @@ export default function StrawDiagram({ mode, compact = false }: { mode: number; 
   const showLight = mode >= 1
   const showApparent = mode >= 2
   return (
-    <svg className="refraction-visual straw-diagram" viewBox="0 0 560 410" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
+    <svg className="journey-visual refraction-visual straw-diagram" viewBox="0 0 560 410" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
       <title id={`${id}-title`}>ストローの形と、目へ届く光の道筋</title>
       <desc id={`${id}-desc`}>まっすぐなストローの水中の一点から出る光は、水面で向きを変えて目へ届きます。{showApparent && '目へ届く向きを破線で水中へ延ばすと、実際の点より浅い位置で交わります。破線は実際の光の道筋ではありません。'}</desc>
       <defs>

@@ -1,0 +1,26 @@
+.journey-scenes { margin-block: var(--mantine-spacing-lg); }
+.journey-intro { max-width: 52em; }
+.journey-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr);
+  grid-template-areas: 'visual tools' 'visual context' 'visual explanation';
+  grid-template-rows: min-content min-content 1fr;
+  gap: 16px 24px;
+  margin-top: 20px;
+  align-items: start;
+}
+.journey-tools { grid-area: tools; min-width: 0; }
+.journey-time { margin-top: var(--mantine-spacing-md); }
+.journey-workspace > .journey-visual { grid-area: visual; }
+.journey-explanation { grid-area: explanation; min-width: 0; }
+.journey-bridge-context { grid-area: context; }
+.journey-bridge-context p { margin: 0; }
+@media (max-width: 48em) {
+  .journey-scenes { display: grid; grid-template-columns: 1fr 1fr; }
+  .journey-workspace { display: flex; flex-direction: column; gap: 16px; }
+  .journey-workspace > * { width: 100%; }
+  .journey-tools { order: 1; }
+  .journey-bridge-context { order: 0; }
+  .journey-workspace > .journey-visual { order: 2; }
+  .journey-explanation { order: 3; }
+}

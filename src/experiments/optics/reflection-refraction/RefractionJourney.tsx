@@ -4,6 +4,7 @@ import { useId, useState } from 'react'
 import { boundaryFrontPoint, observePeriodicWave, observeWalkingRow, teachingRope, wavePhysicalTime, WAVE_PRESENTATION_DURATION } from './model'
 import StrawDiagram from './StrawDiagram'
 import { useWavePresentation } from './useWavePresentation'
+import '../../../components/lesson-journey.css'
 import './refraction-journey.css'
 
 const scenes = [
@@ -92,7 +93,7 @@ export default function RefractionJourney() {
           <Switch mt="md" label="砂地で速さを半分にする" checked={slower} onChange={event => { setSlower(event.currentTarget.checked); clock.reset() }} />
         {timeControls}
         </div>
-        <svg className="refraction-visual" viewBox="0 0 560 520" role="img" aria-labelledby={`${id}-walk-title ${id}-walk-desc`}>
+        <svg className="journey-visual refraction-visual" viewBox="0 0 560 520" role="img" aria-labelledby={`${id}-walk-title ${id}-walk-desc`}>
           <title id={`${id}-walk-title`}>人の列が道から砂地へ進む模式図</title>
           <desc id={`${id}-walk-desc`}>{slanted ? 'Aが先に砂地に入り、Bは後から入ります。' : '全員が同時に砂地に入ります。'}{slower ? '砂地で歩く速さが半分になります。' : '道と砂地で同じ速さです。'}人の歩く向きは固定し、列の向きの変化だけを比べます。</desc>
           <defs>
@@ -135,7 +136,7 @@ export default function RefractionJourney() {
         {timeControls}
         </div>
         <div className="journey-bridge-context"><Text mt="md">{bridge === 0 ? '水面の上下を横から見ると、山と谷が並んでいます。緑の印を付けた一つの山を上から見ると、山の頂上にある場所が一本の列になります。' : bridge === 1 ? '光では、水面の高さの代わりに、電気・磁気のはたらきが繰り返し変わります。その変化が空間を伝わります。緑の列は、一つの山に相当する、繰り返しの同じ段階にある場所です。' : bridge === 2 ? slanted ? '灰色の横線は、空気と水の接する水面です。A側が先に水へ入り、B側が後から入ります。途中の場面で、片側だけが遅くなる状態を見られます。' : '水面へまっすぐ届く場合、緑の列は水面と平行です。A側とB側が同時に水へ入り、一緒に遅くなります。' : '黒い矢印が、光の進む向きです。この平らな波では、矢印と緑の列が90°の角度をなします。図の小さな四角が、その直角の印です。'}</Text></div>
-        <svg className="refraction-visual" viewBox={`0 0 560 ${bridge === 0 ? 620 : 430}`} role="img" aria-labelledby={`${id}-front-title ${id}-front-desc`}>
+        <svg className="journey-visual refraction-visual" viewBox={`0 0 560 ${bridge === 0 ? 620 : 430}`} role="img" aria-labelledby={`${id}-front-title ${id}-front-desc`}>
           <title id={`${id}-front-title`}>{bridgeLabels[bridge]}</title>
           <desc id={`${id}-front-desc`}>{slanted ? 'A側を左下、B側を右上に保った緑の列。' : 'A側とB側を水面と平行に並べた緑の列。'}{bridge >= 2 ? slanted ? '灰色の横線は水面。A側が先に入り、緑の列の向きが変わります。' : '灰色の横線は水面。列全体が同時に入り、向きは変わりません。' : '一つの山に相当する場所を目印にしています。'}{bridge === 3 && '黒い矢印は緑の列と90度をなす光の向きです。'}</desc>
           <defs>

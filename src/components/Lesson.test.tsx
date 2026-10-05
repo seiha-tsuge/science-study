@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import MotionLessonPage from '../experiments/mechanics/motion/LessonPage'
 import AccelerationLessonPage from '../experiments/mechanics/acceleration/LessonPage'
 import OpticsLessonPage from '../experiments/optics/reflection-refraction/LessonPage'
+import ImagesLessonPage from '../experiments/optics/lenses-mirrors/LessonPage'
 
 // Navigation belongs to Router; the contract under test is initial lesson access.
 vi.mock('@tanstack/react-router', () => ({
@@ -16,6 +17,7 @@ describe('全教材を回答入力なしで探索できる', () => {
     ['位置と速度', MotionLessonPage, '同じ時間に、同じ変位', '速度'],
     ['加速度', AccelerationLessonPage, '二つを重ねる', '加速度'],
     ['光の反射と屈折', OpticsLessonPage, 'ストローはまっすぐでも、見える位置はずれる', '入射角'],
+    ['凸レンズの像と平面鏡の像', ImagesLessonPage, '中央だけ長く遅れると、並びはどう変わる？', '物からレンズの中心まで'],
   ] as const)('%s：全体像、仕組み、操作、資料を最初から表示する', (_, Page, mechanism, control) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
     const overview = html.indexOf('id="overview"')

@@ -14,7 +14,9 @@ import { useEffect } from 'react'
 export default function RootLayout() {
   const pathname = useLocation({ select: (location) => location.pathname })
   useEffect(() => {
-    const title = pathname.endsWith('/reflection-refraction')
+    const title = pathname.endsWith('/lenses-mirrors')
+      ? '凸レンズの像と平面鏡の像'
+      : pathname.endsWith('/reflection-refraction')
       ? '光の反射と屈折'
       : pathname.startsWith('/optics')
         ? '光学'
