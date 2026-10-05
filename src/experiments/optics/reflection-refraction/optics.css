@@ -31,7 +31,6 @@
 .optics-reflected {
   stroke: #b45517;
   border-color: #b45517;
-  stroke-dasharray: 7 5;
 }
 .optics-refracted {
   stroke: #147a65;
@@ -61,9 +60,6 @@
   width: 18px;
   border-top-width: 3px;
   border-top-style: solid;
-}
-.optics-legend .optics-reflected {
-  border-top-style: dashed;
 }
 .optics-readings {
   display: grid;

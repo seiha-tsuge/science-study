@@ -198,3 +198,51 @@ export function observeStrawPoint() {
   const apparentY = (rays[1].surface.x - rays[0].surface.x) / (rays[0].slope - rays[1].slope)
   return { object, rays, apparent: { x: rays[0].surface.x + rays[0].slope * apparentY, y: apparentY } }
 }
+
+
+/** Fixed everyday scene, metres; horizontal water surface at y=0, y upward.
+ * The pupil is represented by two nearby points. No glass wall or eye lens.
+ */
+export const strawScene = {
+  tip: { x: -0.18, y: -0.45 },
+  top: { x: 0.14, y: 0.35 },
+  eye: { x: 0.55, y: 0.65 },
+  pupilHalfWidth: 0.003,
+} as const
+
+/** Solve Snell's law for a submerged point→flat surface→pupil path.
+ * A local two-ray backward intersection approximates apparent position.
+ * This is not a photographic rendering or a global image plane.
+ */
+export function observeStrawScenePoint(hasWater: boolean, point: Direction = strawScene.tip) {
+  if (![point.x, point.y].every(Number.isFinite) || point.y >= 0) {
+    throw new RangeError('水面より下の有限な点を指定してください。')
+  }
+  const index = hasWater ? media.water.index : media.air.index
+  const rays = [-1, 1].map(side => {
+    const eye = { x: strawScene.eye.x + side * strawScene.pupilHalfWidth, y: strawScene.eye.y }
+    let low = Math.min(point.x, eye.x)
+    let high = Math.max(point.x, eye.x)
+    for (let iteration = 0; iteration < 64; iteration++) {
+      const x = (low + high) / 2
+      const before = Math.atan2(x - point.x, -point.y)
+      const after = Math.atan2(eye.x - x, eye.y)
+      if (index * Math.sin(before) > media.air.index * Math.sin(after)) high = x
+      else low = x
+    }
+    const surface = { x: (low + high) / 2, y: 0 }
+    const slope = (eye.x - surface.x) / eye.y
+    return { surface, eye, slope, incidentAngle: Math.atan2(surface.x - point.x, -point.y), exitAngle: Math.atan(slope) }
+  })
+  const y = (rays[1].surface.x - rays[0].surface.x) / (rays[0].slope - rays[1].slope)
+  return { object: point, rays, apparent: { x: rays[0].surface.x + rays[0].slope * y, y } }
+}
+
+/** Sample the same straight straw; each submerged point has its own local image. */
+export function observeStrawShape(hasWater: boolean) {
+  return Array.from({ length: 25 }, (_, i) => {
+    const fraction = (i + 1) / 25
+    const point = { x: strawScene.tip.x * fraction, y: strawScene.tip.y * fraction }
+    return observeStrawScenePoint(hasWater, point).apparent
+  })
+}

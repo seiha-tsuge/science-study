@@ -1,4 +1,4 @@
-import type { LessonContent } from '../../../components/Lesson'
+import type { LessonContent } from '../../../components/lesson'
 
 export const accelerationLesson = {
   title: '加速度',

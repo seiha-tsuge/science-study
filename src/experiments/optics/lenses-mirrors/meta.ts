@@ -1,4 +1,4 @@
-import type { LessonContent } from '../../../components/Lesson'
+import type { LessonContent } from '../../../components/lesson'
 
 export const imagesLesson = {
   title: '凸レンズの像と平面鏡の像',

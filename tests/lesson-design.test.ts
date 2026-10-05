@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 const experiments = fileURLToPath(new URL('../src/experiments/', import.meta.url))
 const template = fileURLToPath(new URL('../docs/templates/lesson.md', import.meta.url))
 const lessons = readdirSync(experiments, { recursive: true, encoding: 'utf8' })
-  .filter(path => basename(path) === 'LessonPage.tsx')
+  .filter(path => basename(path) === 'lesson-page.tsx')
   .map(path => join(dirname(path), 'lesson.md'))
   .sort()
 
