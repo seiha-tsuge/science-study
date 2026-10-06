@@ -24,9 +24,7 @@ export default function OpticsPage() {
         <Text className="eyebrow">光の道筋を見る</Text>
         <Title order={1}>光学</Title>
         <Text>
-          鏡に映る。水の中がずれて見える。
-          <br />
-          物から目へ届く光が、どこで向きを変えるかをたどります。
+          鏡に映るものや、水の中でずれて見えるものから、物から目へ届く光がどこで向きを変えるかをたどります。
         </Text>
       </header>
       <Paper
@@ -75,7 +73,7 @@ export default function OpticsPage() {
             <Title order={3}>凸レンズの像と平面鏡の像</Title>
             <Text fw={600} size="sm" mt="sm">今回理解すること</Text>
             <Text>{imagesLesson.learningGoal.understand}</Text>
-            <span className="prerequisite">一点の光から像の形へ。物・スクリーン・目の位置を変えて、集まる光と延長を比べます。</span>
+            <span className="prerequisite">同じ葉を虫めがねや鏡で見る場面から、道具の面と目へ届く光をたどります。</span>
           </div>
           <span aria-hidden="true">↗</span>
         </Card>

@@ -66,19 +66,17 @@ export default function Lesson({
           <a key={anchor} href={`#${anchor}`}><span>{String(i + 1).padStart(2, '0')}</span>{name}</a>
         ))}
       </nav>
-      <Paper component="section" withBorder p={{ base: 'md', sm: 'xl' }} bg={opening || overviewVisual ? undefined : 'blue.0'} id="overview">
+      <Paper component="section" withBorder p={{ base: 'md', sm: 'lg' }} bg={opening || overviewVisual ? undefined : 'blue.0'} id="overview">
         {opening ?? <>
-        <Text className="eyebrow">01 — 全体から見る</Text>
+        <Text className="eyebrow">01 全体から見る</Text>
         <Title order={2}>今回理解すること</Title>
         <Text fw={500} mt="sm">{lesson.learningGoal.understand}</Text>
         <div className={overviewVisual ? 'lesson-overview-visual' : undefined}>
           <div>
             <Paper p={overviewVisual ? 0 : 'md'} mt="md" className="starting-point">
-              <Text fw={600}>身近な行為から考える</Text>
-              <Text mt="xs">{lesson.startingPoint.scene}</Text>
+              <Text><strong>身近な行為から考える。</strong>{lesson.startingPoint.scene}</Text>
             </Paper>
-            <Text fw={600} mt="md">そのとき起きていること</Text>
-            <Text mt="md">{lesson.overview}</Text>
+            <Text mt="md"><strong>そのとき起きていること。</strong>{lesson.overview}</Text>
             <Text size="sm" mt="sm">扱う範囲：{lesson.learningGoal.scope}</Text>
           </div>
           {overviewVisual}
@@ -111,7 +109,7 @@ export default function Lesson({
         <Button type="button" variant="default" aria-expanded={showExplanation} aria-controls={`${id}-explanation`} onClick={() => setShowExplanation(!showExplanation)}>
           {showExplanation ? '式と前提を閉じる −' : '式と前提を開く ＋'}
         </Button>
-        {showExplanation && <Paper withBorder p={{ base: 'md', sm: 'xl' }} mt="lg" id={`${id}-explanation`} className="explanation">{explanation}</Paper>}
+        {showExplanation && <Paper withBorder p={{ base: 'md', sm: 'lg' }} mt="lg" id={`${id}-explanation`} className="explanation">{explanation}</Paper>}
         <Text className="source">参考資料：{sources.map((source, index) => <span key={source.url}>{index > 0 && ' ／ '}<a href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a></span>)}</Text>
       </section>
       <footer className="next-lesson">

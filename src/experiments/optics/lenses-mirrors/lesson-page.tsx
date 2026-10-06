@@ -1,4 +1,4 @@
-import { Anchor, Table, Text, Title } from '@mantine/core'
+import { Accordion, Anchor, Table, Text, Title } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import Lesson from '../../../components/lesson'
@@ -7,6 +7,7 @@ import ImageSimulation from './simulation'
 import ImageObservation from './image-experience'
 import type { ImageExperience } from './image-experience'
 import { imagesLesson, imageSources } from './meta'
+import PaperImageGuide from './paper-image-guide'
 import './images.css'
 
 export default function ImagesLessonPage() {
@@ -14,16 +15,14 @@ export default function ImagesLessonPage() {
   const [distance, setDistance] = useState(7.5)
   const [mirrorDistance, setMirrorDistance] = useState(25)
   const [lensVisible, setLensVisible] = useState(true)
-  const [scene, setScene] = useState('virtual')
-  const selectExperience = (next: ImageExperience) => {
-    setExperience(next)
-    setScene(next === 'mirror' ? 'mirror' : lensVisible ? 'virtual' : 'direct')
-  }
+  const [extra, setExtra] = useState<string | null>(null)
   return <Lesson lesson={imagesLesson} number="04" className="images-lesson" subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
-    opening={<ImageObservation experience={experience} onExperienceChange={selectExperience} distance={distance} onDistanceChange={setDistance}
+    opening={<ImageObservation experience={experience} onExperienceChange={setExperience} distance={distance} onDistanceChange={setDistance}
       mirrorDistance={mirrorDistance} onMirrorDistanceChange={setMirrorDistance} lensVisible={lensVisible}
-      onLensVisibleChange={visible => { setLensVisible(visible); setScene(visible ? 'virtual' : 'direct') }} />}
-    mechanism={<ImageJourney scene={scene} onSceneChange={setScene} distance={distance} mirrorDistance={mirrorDistance} />} simulation={<ImageSimulation />} sources={imageSources}
+      onLensVisibleChange={setLensVisible} />}
+    mechanism={<ImageJourney key={`${experience}-${lensVisible}`} experience={experience} lensVisible={lensVisible} distance={distance} mirrorDistance={mirrorDistance} />}
+    simulation={<Accordion value={extra} onChange={setExtra} variant="separated"><Accordion.Item value="conditions"><Accordion.Control>数値と光の作図で、条件を広げてみる</Accordion.Control><Accordion.Panel>{extra === 'conditions' && <ImageSimulation />}</Accordion.Panel></Accordion.Item><Accordion.Item value="paper"><Accordion.Control>別の使い方：紙に映してみる</Accordion.Control><Accordion.Panel>{extra === 'paper' && <PaperImageGuide />}</Accordion.Panel></Accordion.Item></Accordion>}
+    sources={imageSources}
     next={<Anchor component={Link} to="/optics/reflection-refraction">光が曲がる理由：反射と屈折へ →</Anchor>}
     explanation={<>
       <Title order={3}>像の一点は、二本の線の交点から求められる</Title>
@@ -45,8 +44,6 @@ export default function ImagesLessonPage() {
       <div className="formula">(x, y) → (−x, y)<br />θᵢ = θᵣ</div>
       <Text>二点のx方向の差は符号だけが変わり、面に沿う差は変わりません。点どうしの距離が保たれるので、像の大きさは物と等しくなります。3Dでも面に沿う二方向の位置はそのままで、面に直角な方向が反転します。</Text>
       <Title order={3}>この図とモデルが表す範囲</Title>
-      <Text>砂地の人は道を1 m/s、砂地を0.5 m/sで右へ歩く説明用のモデルです。渡すのは中央ほど長く遅れることで並びが変わる関係だけです。水面の図は山の高さと山が並ぶ場所を対応させる静止した模式図です。光では水の高さの代わりに電気・磁気の状態が変わり、その同じ繰り返しの段階にある場所を目印にします。空気中では並びに90°の向きを光線で表します。水の上下運動、人の軌道やm/sの数値を、光の運動や速さへ対応させません。</Text>
-      <Text mt="sm">光へ移すのは全員が砂地を出た後の並びです。集まる向きが読み取れる円弧を選んだ模式図であり、その砂地の輪郭が実レンズの正確な形になるという意味ではありません。レンズの二つの表面での屈折や、内部の波の伝わり方を、この歩行から計算していません。</Text>
       <Text>レンズは空気中の薄い凸レンズで、軸に近い光、小さい角度を仮定します。焦点距離は10 cmに固定しています。二つの表面での屈折を一つの面へまとめた解析式の可視化で、電磁場の数値計算や実測ではありません。中心を通る光の直進も、この薄いレンズの近似です。</Text>
       <Text mt="sm">レンズの口径による光の制限、厚さ、色で変わる屈折、球面収差、回折、明るさは扱いません。描画範囲を超えた像は位置を数値で示します。縦を拡大した図から角度や実際のレンズの形は求められません。</Text>
       <Text mt="sm">鏡は一枚の理想的な平面鏡で、十分広いと仮定します。図は上から見た断面で、目の位置は鏡に沿う方向へ動かします。実物の鏡の縁やガラスの厚さは省きます。目のレンズ、網膜と脳による見え方は扱いません。</Text>

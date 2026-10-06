@@ -18,7 +18,7 @@
 
 /* Only this chapter: neutral reading surfaces; blue is reserved for diagrams. */
 .optics-lesson #overview { background: var(--mantine-color-body); }
-.optics-lesson p:not(.eyebrow) { max-width: 42em; line-height: 1.9; }
+.optics-lesson p:not(.eyebrow) { max-width: 48em; line-height: 1.7; }
 .optics-lesson .eyebrow { color: var(--mantine-color-gray-7); }
 .optics-lesson .lesson-steps a { background: var(--mantine-color-gray-1); color: var(--mantine-color-gray-8); }
 .optics-lesson .straw-opening > h3 { margin-top: 8px; }

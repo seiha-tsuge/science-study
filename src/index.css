@@ -246,13 +246,13 @@ p {
   color: var(--muted);
 }
 #overview h2 {
-  margin: 12px 0;
+  margin: 0;
 }
 #overview > p:last-child {
   color: var(--muted);
 }
 .lesson-section {
-  padding: 32px 0;
+  padding: 24px 0;
   border-bottom: 1px solid var(--border);
   scroll-margin-top: 16px;
 }
@@ -450,6 +450,7 @@ p {
 .explanation h3 {
   margin: 24px 0 12px;
 }
+.explanation > h3:first-child { margin-top: 0; }
 .explanation p {
   color: var(--muted);
 }

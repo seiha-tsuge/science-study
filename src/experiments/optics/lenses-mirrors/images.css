@@ -24,11 +24,14 @@
 .image-paper-workspace .image-diagram svg text { font-size: 22px; }
 .images-lesson { --mantine-color-dimmed: var(--mantine-color-gray-7); }
 .images-lesson #overview { background: var(--mantine-color-body); }
-.images-lesson p:not(.eyebrow) { max-width: 42em; line-height: 1.9; }
+.images-lesson p:not(.eyebrow) { max-width: 48em; line-height: 1.7; }
 .images-lesson .eyebrow { color: var(--mantine-color-gray-7); }
 .images-lesson .lesson-steps a { background: var(--mantine-color-gray-1); color: var(--mantine-color-gray-8); }
 .images-lesson .journey-explanation { color: var(--mantine-color-gray-9); background: white; }
-.image-experience-figure { margin: var(--mantine-spacing-md) 0; max-width: 620px; }
+.image-experience-figure { margin: var(--mantine-spacing-sm) 0; max-width: 620px; }
+.image-daily-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; margin-top: 16px; align-items: start; }
+.image-daily-layout > * { min-width: 0; }
+@media (max-width: 48em) { .image-daily-layout { grid-template-columns: 1fr; gap: 12px; } }
 .image-opening-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .image-experience-figure svg { display: block; width: 100%; height: auto; background: white; }
 .image-experience-figure svg text { fill: #343a40; font-size: 19px; }
