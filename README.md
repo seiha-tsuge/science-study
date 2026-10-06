@@ -74,6 +74,6 @@ srcの命名規約と固定名例外は[開発ガイド](docs/development.md#フ
 - [プロジェクトの教材設計](docs/project-design.md)：science-studyの目的、対象読者、教材と概念の範囲、科学的な制約
 - [教材の文章と図の規範](docs/writing-guidelines.md)：命名、段落、図と文章、科学的な表現
 - [開発ガイド](docs/development.md)：ファイル命名、標準部品、教材追加と手動公開の手順
-- [教材設計テンプレート](docs/templates/lesson.md)：各教材の `lesson.md` に残す4つの設計表
+- [教材設計テンプレート](docs/templates/lesson.md)：各教材の `lesson.md` に残す一対一の設計欄と4つの設計表
 
 変更する教材の `lesson.md` も読み、式、単位、成立条件、参考資料と表示用TSXをそろえて更新します。

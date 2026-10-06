@@ -1,7 +1,0 @@
-.refraction-visual { display: block; width: 100%; height: auto; margin: 0; border-radius: var(--mantine-radius-md); background: #f3f7f9; border: 1px solid var(--mantine-color-default-border); }
-.refraction-visual text { fill: #304c5d; font-size: 17px; }
-.journey-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-block: 16px; }
-.journey-comparison > div { display: grid; gap: 6px; }
-.journey-comparison strong { font-size: var(--mantine-font-size-sm); }
-.journey-comparison span { font-size: var(--mantine-font-size-lg); font-variant-numeric: tabular-nums; }
-@media (max-width: 48em) { .refraction-visual text { font-size: 21px; } }

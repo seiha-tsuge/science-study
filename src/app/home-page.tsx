@@ -11,8 +11,7 @@ import {
 import { Link } from '@tanstack/react-router'
 import { motionLesson } from '../experiments/mechanics/motion/meta'
 import { accelerationLesson } from '../experiments/mechanics/acceleration/meta'
-import { opticsLesson } from '../experiments/optics/reflection-refraction/meta'
-import { imagesLesson } from '../experiments/optics/lenses-mirrors/meta'
+import { opticsLessons } from './optics-lessons'
 
 export default function HomePage() {
   return (
@@ -27,7 +26,6 @@ export default function HomePage() {
           </Title>
           <Text>
             歩く、本の文字を読む、水の中をのぞく。
-            <br />
             その行為の中で何が起きているか、図と操作でたどります。
           </Text>
           <Button component={Link} to="/mechanics/motion" size="lg" mt="lg">
@@ -90,13 +88,12 @@ export default function HomePage() {
       </header>
       <section className="map-section">
         <Title order={2}>どの行為の、何を理解する？</Title>
-        <Text mt="sm" mb="lg">各教材のゴールから選べます。詳しい範囲は教材の最初に示します。</Text>
+        <Text mt="sm" mb="lg">一つの題材で、一つの関係をたどります。光学は人の列から始められ、前提のつながりは光学の目次で確認できます。</Text>
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
           {[
             { lesson: motionLesson, to: '/mechanics/motion' },
             { lesson: accelerationLesson, to: '/mechanics/acceleration' },
-            { lesson: opticsLesson, to: '/optics/reflection-refraction' },
-            { lesson: imagesLesson, to: '/optics/lenses-mirrors' },
+            ...opticsLessons,
           ].map(({ lesson, to }) => (
             <Card key={to} component={Link} to={to} withBorder padding="lg">
               <Title order={3}>{lesson.title}</Title>
@@ -131,7 +128,6 @@ export default function HomePage() {
             <Title order={3}>力学</Title>
             <Text>
               同じ時間に、どれだけ進む？
-              <br />
               道の目印とグラフで、位置と速度をつなぎます。
             </Text>
             <span className="field-link">力学を探索する →</span>
@@ -147,12 +143,11 @@ export default function HomePage() {
               ◇
             </span>
             <Badge variant="light" size="sm">
-              2つの実験
+              7つの問い
             </Badge>
             <Title order={3}>光学</Title>
             <Text>
               水中のストロー、虫めがね、鏡の奥の像。
-              <br />
               光が曲がる理由から、像が見える場所へつなぎます。
             </Text>
             <span className="field-link">光学を探索する →</span>

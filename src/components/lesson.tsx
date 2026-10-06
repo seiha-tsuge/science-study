@@ -3,7 +3,7 @@ import { useId, useState } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
 
-/** Every lesson starts with a whole and relationships, before details or equations. */
+/** Shared lesson metadata keeps the goal and subject consistent across entrances. */
 export interface LessonContent {
   title: string
   subtitle: string
@@ -31,11 +31,12 @@ export default function Lesson({
   overviewVisual,
   opening,
   className = '',
+  singleConcept = false,
 }: {
   lesson: LessonContent
   number: string
   mechanism: ReactElement
-  simulation: ReactNode
+  simulation?: ReactNode
   explanation: ReactNode
   next: ReactNode
   subject?: { title: string; to: '/mechanics' | '/optics'; label: string }
@@ -43,14 +44,15 @@ export default function Lesson({
   overviewVisual?: ReactNode
   opening?: ReactNode
   className?: string
+  singleConcept?: boolean
 }) {
   const [showExplanation, setShowExplanation] = useState(false)
   const id = useId()
-  const sections = [
-    ['overview', opening ? '見る・比べる' : '全体像'], ['mechanism', '仕組み'], ['explore', '条件を変える'], ['details', '式と前提'],
+  const sections = singleConcept ? [['overview', '今回の問い'], ['mechanism', '観察と操作、説明'], ['details', 'モデルと前提']] as const : [
+    ['overview', opening ? '見て比べる' : '全体像'], ['mechanism', '仕組み'], ['explore', '条件を変える'], ['details', '式と前提'],
   ] as const
   return (
-    <article className={`lesson-page ${className}`}>
+    <article className={`lesson-page ${singleConcept ? 'concept-lesson' : ''} ${className}`}>
       <Breadcrumbs className="breadcrumb">
         <Anchor component={Link} to="/">学習マップ</Anchor>
         <Anchor component={Link} to={subject.to}>{subject.title}</Anchor>
@@ -66,7 +68,7 @@ export default function Lesson({
           <a key={anchor} href={`#${anchor}`}><span>{String(i + 1).padStart(2, '0')}</span>{name}</a>
         ))}
       </nav>
-      <Paper component="section" withBorder p={{ base: 'md', sm: 'lg' }} bg={opening || overviewVisual ? undefined : 'blue.0'} id="overview">
+      <Paper component="section" withBorder p={{ base: 'md', sm: 'lg' }} bg={opening || overviewVisual || singleConcept ? undefined : 'blue.0'} id="overview">
         {opening ?? <>
         <Text className="eyebrow">01 全体から見る</Text>
         <Title order={2}>今回理解すること</Title>
@@ -81,9 +83,9 @@ export default function Lesson({
           </div>
           {overviewVisual}
         </div>
-        <Title order={3} mt="lg">{lesson.question}</Title>
+        {!singleConcept && <Title order={3} mt="lg">{lesson.question}</Title>}
         <Text size="sm" mt="xs">{lesson.startingPoint.focus}</Text>
-        <SimpleGrid cols={{ base: 1, sm: 3 }} mt="lg" spacing="sm" className="relationship-map">
+        {!singleConcept && <SimpleGrid cols={{ base: 1, sm: 3 }} mt="lg" spacing="sm" className="relationship-map">
           {lesson.relationships.map((relation, index) => (
             <Paper withBorder p="md" key={relation.title}>
               <Text size="xs" c="blue.7">{String(index + 1).padStart(2, '0')}</Text>
@@ -91,20 +93,20 @@ export default function Lesson({
               <Text size="sm" mt="xs">{relation.detail}</Text>
             </Paper>
           ))}
-        </SimpleGrid>
+        </SimpleGrid>}
         </>}
       </Paper>
       <section className="lesson-section" id="mechanism">
-        <Group className="section-heading" gap="sm"><Badge variant="light">02</Badge><Title order={2}>現象を生む仕組みを、図でたどる</Title></Group>
+        <Group className="section-heading" gap="sm"><Badge variant="light">02</Badge><Title order={2}>{singleConcept ? lesson.question : '現象を生む仕組みを、図でたどる'}</Title></Group>
         {mechanism}
       </section>
-      <section className="lesson-section" id="explore">
+      {!singleConcept && <section className="lesson-section" id="explore">
         <Group className="section-heading" gap="sm"><Badge variant="light">03</Badge><Title order={2}>条件を変えて、関係を見る</Title></Group>
         <Text>{lesson.observation}</Text>
         {simulation}
-      </section>
+      </section>}
       <section className="lesson-section" id="details">
-        <Group className="section-heading" gap="sm"><Badge variant="light">04</Badge><Title order={2}>図の関係を式で表す</Title></Group>
+        <Group className="section-heading" gap="sm"><Badge variant="light">{singleConcept ? '03' : '04'}</Badge><Title order={2}>{singleConcept ? 'モデルと前提' : '図の関係を式で表す'}</Title></Group>
         <Text>式の記号が図のどの量を指すかと、式が成り立つ条件を参照できます。</Text>
         <Button type="button" variant="default" aria-expanded={showExplanation} aria-controls={`${id}-explanation`} onClick={() => setShowExplanation(!showExplanation)}>
           {showExplanation ? '式と前提を閉じる −' : '式と前提を開く ＋'}
@@ -113,7 +115,7 @@ export default function Lesson({
         <Text className="source">参考資料：{sources.map((source, index) => <span key={source.url}>{index > 0 && ' ／ '}<a href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a></span>)}</Text>
       </section>
       <footer className="next-lesson">
-        <div><span className="eyebrow">ほかの見方へつなぐ</span><Text>{lesson.connection}</Text></div>
+        <div><span className="eyebrow">次へ進む</span><Text>{lesson.connection}</Text></div>
         {next}
       </footer>
     </article>

@@ -1,12 +1,11 @@
 import { Badge, Button, Group, Paper, SegmentedControl, SimpleGrid, Stack, Tabs, Text, Title } from '@mantine/core'
 import { useId, useState } from 'react'
 import { observeStrawScenePoint, observeStrawShape, strawScene } from './model'
-import { opticsLesson } from './meta'
 
 const x = (value: number) => 260 + value * 250
 const y = (value: number) => 235 - value * 250
 const pointPath = (points: readonly { x: number; y: number }[]) => points.map((p, i) => `${i ? 'L' : 'M'}${x(p.x)},${y(p.y)}`).join(' ')
-const steps = ['同じストロー', '目へ届く光', '見える場所', '日常へ戻る'] as const
+const steps = ['同じストロー', '目へ届く光', '見える場所'] as const
 
 export function StrawScene({ water, explanation = false, step = 0, caption = true }: { water: boolean; explanation?: boolean; step?: number; caption?: boolean }) {
   const id = useId()
@@ -58,8 +57,6 @@ export function StrawObservation({ water, onWaterChange }: { water: boolean; onW
   const id = useId()
   return <Stack gap="sm" className="straw-opening">
     <Group justify="space-between"><Text className="eyebrow">水ありと水なしの見え方</Text><Badge variant="light">見え方の計算モデル</Badge></Group>
-    <Title order={2}>今回理解すること</Title>
-    <Text>{opticsLesson.learningGoal.understand} <strong>身近な行為から考える。</strong>{opticsLesson.startingPoint.scene} ストローと見る場所は動かさず、水だけを変えます。</Text>
     <SimpleGrid cols={2} spacing={{ base: 'xs', sm: 'lg' }}>
       <div><Title order={3} size="h4">比較：水なし</Title><StrawScene water={false} caption={false} /></div>
       <div><Title order={3} size="h4">今の見え方：水{water ? 'あり' : 'なし'}</Title><StrawScene water={water} caption={false} /></div>
@@ -70,9 +67,6 @@ export function StrawObservation({ water, onWaterChange }: { water: boolean; onW
       <Text role="status" mt="sm">{water ? '水中の下端が浅い場所に見え、上側とのつながりがずれます。水より上の部分はそのままです。' : '水を抜くと、下端は元の場所に見え、一本の直線につながります。ストローは動かしていません。'}</Text>
       <Button variant="subtle" mt="sm" onClick={() => onWaterChange(true)}>水ありの初期条件へ戻す</Button>
     </Paper>
-    <Text>{opticsLesson.overview}</Text>
-    <Text size="sm" c="dimmed">水面を斜め上から見た位置を計算し、横からの配置へ描き戻した模式図です。実物の写真ではありません。扱う範囲：{opticsLesson.learningGoal.scope}</Text>
-    <Button component="a" href="#mechanism" variant="light" w="fit-content">同じストローで、理由を見る ↓</Button>
   </Stack>
 }
 
@@ -98,21 +92,17 @@ export function StrawExplanation({ water }: { water: boolean }) {
               <Text>照らされたストローで反射した光の一部が、目へ届きます。青い線は、赤い下端から目へ届く細い束を二本で代表させたものです。{water ? '下端から目へたどると、水面で向きが変わります。水と空気の境目を通るときの向きの変化を「屈折」と呼びます。' : '水がないので、下端から目へ一直線に届きます。水面を通るときの向きの変化（屈折）は、この条件ではありません。'} 目から光を出す図ではなく、写真に青い線が写るという意味でもありません。</Text>
             </>}
             {current >= 2 && <>
-              <Title order={4}>{current === 2 ? '届いた向きをたどると、別の場所を指す' : 'ストローから、水中の石の見え方へ'}</Title>
+              <Title order={4}>届いた向きをたどると、別の場所を指す</Title>
               <Text>紫の破線は、目へ最後に届く向きを、そのまま来た側へ延ばした補助線です。二本が交わる白い丸が、そこから光が来たように見える下端の位置です。{water ? '白い丸は、赤い下端より水面に近い場所です。水中の点ごとに同じたどり方をすると、観察で見た下側のずれにつながります。ストローを折ったのではなく、届く向きが変わっています。' : '水なしでは補助線が赤い下端へ戻ります。光が途中で曲がらないため、実際の場所と見える場所が一致します。'} 破線を光が逆走するわけではありません。</Text>
-              {current === 3 && <>
-                <Text>池の石を水面越しに見る場合も、同じ関係で実際より浅く見えることがあります。見る場所によっても見える位置は変わります。虫めがねは曲面で光の向きを変え、鏡は光を戻しますが、コップ側面や眼鏡の見え方すべてを、この平らな水面の図で説明したことにはなりません。</Text>
-              </>}
             </>}
-            {current >= 2 && <Text size="sm" c="dimmed">同じ目の入口へ届く近接した二本から求めた、見える位置の近似です。ぼけ・明るさ・目の中で像ができる仕組みは再現しません。</Text>}
+            {current >= 2 && <Text size="sm" c="dimmed">同じ目の入口へ届く近接した二本から求めた、見える位置の近似です。ぼけ、明るさ、目の中で像ができる仕組みは再現しません。</Text>}
           </Stack>
         </div>
       </Tabs.Panel>
     </Tabs>
     <Group justify="space-between" mt="md">
       <Button variant="subtle" disabled={current === 0} onClick={() => setStep(String(current - 1))}>← 前の場面</Button>
-      <Button variant="light" disabled={current === 3} onClick={() => setStep(String(current + 1))}>{steps[current + 1] ?? '日常へ戻る'} →</Button>
+      <Button variant="light" disabled={current === 2} onClick={() => setStep(String(current + 1))}>{steps[current + 1] ?? '見える場所'} →</Button>
     </Group>
-    <Button component="a" href="#overview" variant="subtle" mt="sm">水あり・なしの観察へ戻る ↑</Button>
   </Paper>
 }

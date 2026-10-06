@@ -1,4 +1,4 @@
-import { Accordion, Paper, SegmentedControl, Stack, Switch, Text, Title } from '@mantine/core'
+import { Paper, SegmentedControl, Stack, Switch, Text, Title } from '@mantine/core'
 import { useId, useState } from 'react'
 import { LensDiagram } from './diagrams'
 import { traceLensRay } from './model'
@@ -16,9 +16,8 @@ export default function PaperImageGuide() {
   const py = (height: number) => 95 - height * 16000
   return <>
     <div className="journey-intro">
-      <Text className="eyebrow">場面 02 / 06</Text>
       <Title order={4}>紙を動かすと、なぜくっきり映る場所がある？</Title>
-      <Text size="sm" mt="sm">文字の縦線を一本取り出し、まず上端Aだけを見ます。Aから別々の向きに出た光を、レンズで曲げて白い紙で受けます。この紙がスクリーンです。</Text>
+      <Text size="sm" mt="sm">文字の縦線を一本取り出し、まず上端Aだけを見ます。Aから別々の向きに出た光を、レンズで曲げて白い紙で受けます。この紙がスクリーンです。レンズは二つの表面で光を曲げますが、この薄いレンズの図では、その曲がりを中心の一か所にまとめています。</Text>
     </div>
     <div className="journey-workspace image-paper-workspace">
       <div className="journey-tools">
@@ -50,19 +49,11 @@ export default function PaperImageGuide() {
         <Text className="eyebrow">紙の上の点を見る</Text>
         <Stack gap="sm" mt="xs">
           <Text aria-live="polite">{aligned ? 'Aの二本の光が、紙の同じ一か所へ届きます。上端Aが一つの点として映ります。' : '同じAから出た二本が、紙の別々の場所へ届きます。一点の光が広がって当たることが、ぼける原因です。'}</Text>
-          <Text>{secondPoint ? aligned ? 'Bの光も一か所へ届きますが、Aの光とは別の高さです。元の線ではAが上、Bが下。紙ではBが上、Aが下になり、上下の順が逆になります。この向きを「倒立」と呼びます。' : 'Bの二本も別々の高さへ届きます。「集まる場所」へ紙を戻すと、AとBがそれぞれ別の一点へまとまる様子を比べられます。' : '次に下端Bを重ねると、「文字全体が一つの点になる」のではなく、元の各点が別々の点へ映ることを見られます。'}</Text>
-          <Text>各点の光が集まる並びが、文字の「像」です。紙で受けて映せる像を「実像」と呼びます。スクリーンの位置が合うと、各点が広がらずに映るので、輪郭がくっきりします。</Text>
-          <Text size="sm" c="dimmed">空気中の理想的な薄い凸レンズの作図です。光を曲げる理由は「曲がる理由」へ、集まる場所が物の近さで変わる理由は「条件を変える」へつながります。</Text>
+          <Text>{secondPoint ? aligned ? 'Bの光も一か所へ届きますが、Aの光とは別の高さです。元の線ではAが上、Bが下。紙ではBが上、Aが下になり、上下の順が逆になります。' : 'Bの二本も別々の高さへ届きます。「集まる場所」へ紙を戻すと、AとBがそれぞれ別の一点へまとまる様子を比べられます。' : '次に下端Bを重ねると、「文字全体が一つの点になる」のではなく、元の各点が別々の点へ映ることを見られます。'}</Text>
+          <Text>各点の光が集まる並びが、文字の<strong>像</strong>です。スクリーンの位置が合うと、各点が広がらずに映るので、輪郭がくっきりします。</Text>
+          <Text size="sm" c="dimmed">空気中の理想的な薄い凸レンズの作図です。文字とレンズの位置は固定しています。点は二本の光の到着位置で、写真のぼけや明るさ全体は再現しません。</Text>
         </Stack>
       </Paper>
     </div>
-    <Accordion variant="separated" mt="lg">
-      <Accordion.Item value="rays"><Accordion.Control>さらに見る：焦点Fを使う作図のルール</Accordion.Control><Accordion.Panel>
-        <Text size="sm" mb="sm">レンズの中心を通る横線が軸です。軸に平行に入る光が集まる点を焦点Fと呼びます。物の一点Aの像の位置と、Fは違います。</Text>
-        <LensDiagram input={input} screen={.2} thirdRay />
-        <Text size="sm" mt="sm">同じAから出る光を、ここでは作図しやすい三本で選び直しました。軸に平行に入る線は右のFへ、中心を通る線は直進、左のFを通って入る線は出た後に軸と平行になります。いずれも同じAの像へ届きます。</Text>
-        <Text size="sm" mt="sm">これは空気中の薄いレンズの近似です。二つの表面での曲がりを、一つの面での向きの変化へまとめています。「焦点の目印」では、平行な光からFを決める図を比べられます。</Text>
-      </Accordion.Panel></Accordion.Item>
-    </Accordion>
   </>
 }

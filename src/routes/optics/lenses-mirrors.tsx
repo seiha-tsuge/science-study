@@ -1,4 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import ImagesLessonPage from '../../experiments/optics/lenses-mirrors/lesson-page'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/optics/lenses-mirrors')({ component: ImagesLessonPage })
+export const Route = createFileRoute('/optics/lenses-mirrors')({
+  beforeLoad: () => { throw redirect({ to: '/optics/magnifier', replace: true }) },
+})
