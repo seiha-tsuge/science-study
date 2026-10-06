@@ -1,0 +1,85 @@
+import { Accordion, Button, Paper } from '@mantine/core'
+import { useState } from 'react'
+import ParameterSlider from '../shared/parameter-slider'
+import Simulation from '../shared/simulation'
+import { observeMotion } from './model'
+import type { MotionParameters } from './model'
+
+const initial: MotionParameters = { initialPosition: 0, velocity: 5 }
+
+export default function MotionSimulation() {
+  const [parameters, setParameters] = useState(initial)
+  const [reference, setReference] = useState(initial)
+  return (
+    <Paper withBorder className="experiment-grid">
+      <Simulation
+        key={JSON.stringify(parameters)}
+        current={{
+          label: `現在：v = ${parameters.velocity} m/s、x₀ = ${parameters.initialPosition} m`,
+          observe: (time) => observeMotion(parameters, time),
+        }}
+        reference={{
+          label: `比較：v = ${reference.velocity} m/s、x₀ = ${reference.initialPosition} m`,
+          observe: (time) => observeMotion(reference, time),
+        }}
+      />
+      <aside className="controls" aria-label="実験条件">
+        <h3>速度と出発点を変える</h3>
+        <p>速度だけを変えると、1秒に進む量が変わります。青い点と比較する灰色の輪を、同じ時刻で見られます。</p>
+        <ParameterSlider
+          label="速度"
+          symbol="v"
+          unit="m/s"
+          min={-10}
+          max={10}
+          value={parameters.velocity}
+          onChange={(velocity) => setParameters({ ...parameters, velocity })}
+        />
+        <p className="control-hint">
+          速度の符号：＋は右向き、−は左向き
+          <br />0 m/s なら、その場に止まります。
+        </p>
+        <Accordion variant="separated" my="lg">
+          <Accordion.Item value="initial">
+            <Accordion.Control>出発点も変える</Accordion.Control>
+            <Accordion.Panel>
+              <ParameterSlider
+                label="出発時の位置"
+                symbol="x₀"
+                unit="m"
+                min={-20}
+                max={20}
+                value={parameters.initialPosition}
+                onChange={(initialPosition) =>
+                  setParameters({ ...parameters, initialPosition })
+                }
+              />
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+        <Button
+          type="button"
+          variant="default"
+          fullWidth
+          onClick={() => setReference({ ...parameters })}
+        >
+          今の条件を比較基準にする
+        </Button>
+        <Button
+          type="button"
+          variant="subtle"
+          mt="sm"
+          onClick={() => {
+            setParameters(initial)
+            setReference(initial)
+          }}
+        >
+          条件を初期値に戻す
+        </Button>
+        <p className="control-hint">
+          速度や出発点を変えると、物体の時間は0秒に戻って停止します。比較基準は保持されます。「今の条件を比較基準にする」で灰色の輪の条件を更新できます。
+        </p>
+      </aside>
+    </Paper>
+  )
+}

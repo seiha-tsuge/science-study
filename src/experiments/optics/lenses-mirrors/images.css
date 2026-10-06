@@ -17,12 +17,29 @@
 .image-observation { display: grid; margin-top: var(--mantine-spacing-sm); }
 .image-observation > * { grid-area: 1 / 1; margin: 0; }
 .image-observation-reserve { visibility: hidden; }
-.journey-visual .image-diagram svg { border-radius: var(--mantine-radius-md); background: #f3f7f9; border: 1px solid var(--mantine-color-default-border); }
+.journey-visual .image-diagram svg { border-radius: var(--mantine-radius-md); background: white; border: 1px solid var(--mantine-color-default-border); }
 .image-reason { margin-top: var(--mantine-spacing-sm); }
 
 .image-paper-face svg { max-width: 620px; }
 .image-paper-workspace .image-diagram svg text { font-size: 22px; }
+.images-lesson { --mantine-color-dimmed: var(--mantine-color-gray-7); }
+.images-lesson #overview { background: var(--mantine-color-body); }
+.images-lesson p:not(.eyebrow) { max-width: 48em; line-height: 1.7; }
+.images-lesson .eyebrow { color: var(--mantine-color-gray-7); }
+.images-lesson .lesson-steps a { background: var(--mantine-color-gray-1); color: var(--mantine-color-gray-8); }
+.images-lesson .journey-explanation { color: var(--mantine-color-gray-9); background: white; }
+.image-experience-figure { margin: var(--mantine-spacing-sm) 0; max-width: 620px; }
+.image-daily-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; margin-top: 16px; align-items: start; }
+.image-daily-layout > * { min-width: 0; }
+@media (max-width: 48em) { .image-daily-layout { grid-template-columns: 1fr; gap: 12px; } }
+.image-opening-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.image-experience-figure svg { display: block; width: 100%; height: auto; background: white; }
+.image-experience-figure svg text { fill: #343a40; font-size: 19px; }
+.image-experience-figure figcaption { color: var(--mantine-color-gray-7); font-size: var(--mantine-font-size-xs); line-height: 1.8; }
 @media (max-width: 36em) {
   .image-paper-workspace .image-diagram svg text { font-size: 26px; }
   .image-paper-workspace .image-paper-face svg text { font-size: 25px; }
+  .image-experience-figure svg text { font-size: 24px; }
+  .image-opening-comparison { grid-template-columns: 1fr; }
+  .image-opening-comparison svg text { font-size: 19px; }
 }

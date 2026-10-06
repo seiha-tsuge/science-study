@@ -5,3 +5,21 @@
   .optics-lesson .lesson-overview-visual { grid-template-columns: 1fr; gap: 8px; }
   .optics-lesson .lesson-overview-visual > figure { order: -1; }
 }
+
+.straw-scene { margin: 0; min-width: 0; }
+.straw-scene svg { width: 100%; display: block; background: #f5f9fa; border: 1px solid var(--mantine-color-default-border); border-radius: var(--mantine-radius-md); }
+.straw-scene svg text { font-size: 17px; fill: #344c58; }
+.straw-scene figcaption { font-size: var(--mantine-font-size-xs); color: var(--mantine-color-dimmed); line-height: 1.7; margin-top: 8px; }
+.straw-explanation-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 48em) {
+  .straw-explanation-layout { grid-template-columns: 1fr; gap: 16px; }
+  .straw-scene svg text { font-size: 20px; }
+}
+
+/* Only this chapter: neutral reading surfaces; blue is reserved for diagrams. */
+.optics-lesson #overview { background: var(--mantine-color-body); }
+.optics-lesson p:not(.eyebrow) { max-width: 48em; line-height: 1.7; }
+.optics-lesson .eyebrow { color: var(--mantine-color-gray-7); }
+.optics-lesson .lesson-steps a { background: var(--mantine-color-gray-1); color: var(--mantine-color-gray-8); }
+.optics-lesson .straw-opening > h3 { margin-top: 8px; }
+.optics-lesson .straw-explanation-layout > .mantine-Stack-root { max-width: 34em; }

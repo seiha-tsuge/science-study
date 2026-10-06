@@ -6,17 +6,17 @@ import { describe, expect, it } from 'vitest'
 const experiments = fileURLToPath(new URL('../src/experiments/', import.meta.url))
 const template = fileURLToPath(new URL('../docs/templates/lesson.md', import.meta.url))
 const lessons = readdirSync(experiments, { recursive: true, encoding: 'utf8' })
-  .filter(path => basename(path) === 'LessonPage.tsx')
+  .filter(path => basename(path) === 'lesson-page.tsx')
   .map(path => join(dirname(path), 'lesson.md'))
   .sort()
 
 const designTables = [
   {
     heading: '## 身近な感覚から概念への橋渡し',
-    columns: ['身近な場面', 'そこで見える関係', '新しく理解する対象', '図と操作で保つ対応', '対応しない点・限界', '元の現象への戻り方'],
+    columns: ['身近な場面', 'そこで見える関係', '新しく理解する対象', '図と操作で保つ対応', '対応しない点と限界', '元の現象への戻り方'],
   },
   { heading: '## 概念の導入', columns: ['概念', '名前を付ける前に見るもの', '図で指す対象', '混同を避ける比較'] },
-  { heading: '## 観察と説明の流れ', columns: ['場面', '注目する対象', '観察と操作', 'ここで分かる関係', '図・説明・操作の配置', '切り替え時の状態'] },
+  { heading: '## 観察と説明の流れ', columns: ['場面', '注目する対象', '観察と操作', 'ここで分かる関係', '図と説明、操作の配置', '切り替え時の状態'] },
   { heading: '## 今回理解すること', columns: ['身近な行為', 'そこで起きていること', '理解する関係', '扱う範囲'] },
 ] as const
 
@@ -80,7 +80,7 @@ describe('説明と操作の設計を省略した教材を検出する', () => {
     expect(() => assertLessonDesign(missing, '表の欠落')).toThrow(/が必要/)
   })
 
-  it.each(['図・説明・操作の配置', '切り替え時の状態'] as const)('%sの空欄を検出する', column => {
+  it.each(['図と説明、操作の配置', '切り替え時の状態'] as const)('%sの空欄を検出する', column => {
     const table = designTables[2]
     const lines = example.split('\n')
     const rowIndex = tableRowIndex(lines, table.heading, 2)
@@ -109,7 +109,7 @@ describe('説明と操作の設計を省略した教材を検出する', () => {
     expect(() => assertLessonDesign(lines.join('\n'), '旧形式')).toThrow(/列をテンプレートとそろえる/)
   })
 
-  it.each(['図と操作で保つ対応', '対応しない点・限界', '元の現象への戻り方'] as const)('%sの空欄を検出する', column => {
+  it.each(['図と操作で保つ対応', '対応しない点と限界', '元の現象への戻り方'] as const)('%sの空欄を検出する', column => {
     const lines = example.split('\n')
     const rowIndex = tableRowIndex(lines, heading, 2)
     const cells = lines[rowIndex].split('|')
