@@ -1,6 +1,6 @@
-import { Button, Group, Paper, SegmentedControl, Slider, Stack, Switch, Text, Title } from '@mantine/core'
+import { Button, Group, Paper, SegmentedControl, Slider, Stack, Text, Title } from '@mantine/core'
 import { useId, useState } from 'react'
-import { boundaryFrontPoint, observeOptics, observeWalkingRow } from './reflection-refraction/model'
+import { boundaryFrontPoint, observeOptics } from './reflection-refraction/model'
 import { useWavePresentation } from './reflection-refraction/use-wave-presentation'
 import { StrawExplanation, StrawObservation } from './reflection-refraction/straw-experience'
 import { LeafView, MirrorLeafView } from './lenses-mirrors/image-experience'
@@ -46,50 +46,7 @@ function TimeControls({ clock, middle = 3, simultaneous = false }: { clock: Retu
   </Stack>
 }
 
-export function WalkingRow() {
-  const [slanted, setSlanted] = useState(true)
-  const [slower, setSlower] = useState(true)
-  const clock = useWavePresentation()
-  const id = useId()
-  const people = observeWalkingRow(clock.time / 8 * 1.5, slanted, slower)
-  const x = (v: number) => 280 + v * 170
-  const y = (v: number) => 210 - v * 170
-  const path = (points: readonly { x: number; y: number }[]) => points.map((p, i) => `${i ? 'L' : 'M'}${x(p.x)},${y(p.y)}`).join(' ')
-  return <div className="concept-workspace">
-    <div>
-      <Text id={id} fw={600}>砂地への入り方</Text>
-      <SegmentedControl fullWidth mt="sm" aria-labelledby={id} value={slanted ? 'slanted' : 'straight'} onChange={value => { setSlanted(value === 'slanted'); clock.reset() }} data={[{ value: 'slanted', label: '斜めに入る' }, { value: 'straight', label: '同時に入る' }]} />
-      <Switch mt="md" label="砂地で速さを半分にする" checked={slower} onChange={event => { setSlower(event.currentTarget.checked); clock.reset() }} />
-      <TimeControls clock={clock} middle={slanted ? 3 : 4} simultaneous={!slanted} />
-      <Text size="sm" mt="md">8秒は説明の時間で、歩行の1.5秒に対応します。道では1.5 m/s、砂地では{slower ? '0.75' : '1.5'} m/sです。</Text>
-    </div>
-    <figure>
-      <svg viewBox="0 0 560 520" role="img" aria-label="人の列が道から砂地へ進む模式図。個人の歩く向きは保ち、列の向きだけを比べる。">
-        <rect x="24" y="210" width="512" height="286" fill="#f2e3c8" />
-        <line x1="24" x2="536" y1="210" y2="210" stroke="#617083" strokeWidth="2" />
-        <text x="35" y="35">舗装された道</text><text x="35" y="486">砂地</text>
-        <path d={path(people.map(p => p.start))} fill="none" stroke="#718096" strokeDasharray="5 5" strokeWidth="2" />
-        <path d={path(people)} fill="none" stroke="#147a65" strokeWidth="3" />
-        {people.map((person, i) => <g key={i}>
-          <line x1={x(person.start.x)} y1={y(person.start.y)} x2={x(person.x)} y2={y(person.y)} stroke="#8d9aad" strokeDasharray="2 5" />
-          <g transform={`translate(${x(person.x)} ${y(person.y)})`}>
-            <circle cy="-8" r="5" fill={i === 0 ? '#b45517' : i === 4 ? '#2563eb' : '#147a65'} />
-            <path d="M0 -2 V12 M-7 4 L0 0 L7 4 M0 12 L-6 20 M0 12 L6 20" fill="none" stroke="#147a65" strokeWidth="2.5" />
-            {(i === 0 || i === 4) && <text x={i === 0 ? -25 : 15} y="-18">{i === 0 ? 'A' : 'B'}</text>}
-          </g>
-        </g>)}
-        <text x="35" y="518">破線：出発時　実線：今の列</text>
-      </svg>
-      <figcaption>足元の位置を結んだ緑の線が、並びの向きです。点線は各人が歩いた道筋です。</figcaption>
-    </figure>
-    <Paper withBorder p="md" className="concept-reason">
-      <Title order={3}>AとBが進んだ距離を比べる</Title>
-      <Text mt="sm" role="status">{!slower ? '速さが同じなら、同じ時間に同じ距離だけ進みます。境目を通っても列の向きは変わりません。' : !slanted ? '全員が同時に遅くなります。進む距離に左右の差がないので、列の向きは変わりません。' : !people[0].inSand ? 'AもBも道の上で同じ速さです。「片側が入る」で、Aだけが遅くなった場面を選べます。' : people[4].inSand ? 'Aは先に砂地へ入り、Bより長い時間ゆっくり進みました。その間の距離の差が、今の列を傾けています。' : 'Aは砂地で遅く進み、Bはまだ道を速く進みます。同じ時間に進む距離の差が、列の向きを変えています。'}</Text>
-      <Text mt="sm">一人ずつの歩く向きは変わりません。変わるのは、人の位置を結んだ列の向きです。この図では互いに手をつないで引っ張る条件を置きません。</Text>
-      <Text size="sm" mt="sm">光へつながる手がかりは、境目への到着順と距離の差です。光は波の同じ段階を結ぶ面に直角に進みますが、人は列に直角な向きへ曲がるわけではありません。</Text>
-    </Paper>
-  </div>
-}
+export { WalkingRow } from './walking-row/experience'
 
 export function Refraction() {
   const [view, setView] = useState('sunlight')

@@ -4,9 +4,10 @@ import Lesson from '../../../components/lesson'
 import { WalkingRow } from '../concept-experiences'
 import { lesson } from './meta'
 import '../concept-lessons.css'
+import './walking-row.css'
 
 export default function LessonPage() {
-  return <Lesson lesson={lesson} number="01" subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
+  return <Lesson lesson={lesson} number="01" className="walking-row-lesson" subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
     mechanism={<WalkingRow />}
     explanation={<Text>道1.5 m/s、砂地0.75 m/sまたは1.5 m/s。説明の8秒を歩行の1.5秒へ対応させる。</Text>}
     sources={[{ title: 'OpenStax · Huygens’s Principle', url: 'https://openstax.org/books/university-physics-volume-3/pages/1-6-huygenss-principle' }]}
