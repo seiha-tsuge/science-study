@@ -24,7 +24,7 @@ describe('全教材を回答入力なしで探索できる', () => {
     ['位置と速度', MotionLessonPage, '同じ時間に、同じ変位', '速度'],
     ['加速度', AccelerationLessonPage, '二つを重ねる', '加速度'],
     ['光の反射と屈折', OpticsLessonPage, '見え方から、同じ下端の道筋へ', '入射角'],
-    ['凸レンズの像と平面鏡の像', ImagesLessonPage, '文字を見るとき、目には何が届く？', '物からレンズの中心まで'],
+    ['凸レンズの像と平面鏡の像', ImagesLessonPage, '同じ文字を、光の道筋でたどる', '物からレンズの中心まで'],
   ] as const)('%s：全体像、仕組み、操作、資料を最初から表示する', (_, Page, mechanism, control) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
     const overview = html.indexOf('id="overview"')

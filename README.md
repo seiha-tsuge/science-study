@@ -1,6 +1,7 @@
 # science-study
 
 科学現象を図と操作で学ぶWeb教材。React・TypeScript・Vite・TanStack Router・Mantineによる単一のSPAです。
+レンズ・鏡では、虫めがねの文字と鏡の奥の位置を比べてから、同じ条件の光の道筋へ進みます。眼鏡の補正との違いも紹介しますが、網膜像や度数は計算しません。
 教材の目的・対象読者・このアプリ固有の学習要件は[プロジェクトの教材設計](docs/project-design.md)、実装済みの教材とURLは[概念の地図](docs/learning-map.md)にまとめています。
 
 ## 必要環境

@@ -4,6 +4,7 @@ import { DirectDiagram, LensDiagram, MirrorDiagram } from './diagrams'
 import LensBridge from './lens-bridge'
 import PaperImageGuide from './paper-image-guide'
 import RayAnimation from './animation'
+import { observeLens } from './model'
 import '../../../components/lesson-journey.css'
 
 const lens = { focalLength: .1, objectDistance: .2, objectHeight: .002 }
@@ -12,8 +13,13 @@ const scenes = [
   ['focus', '焦点の目印'], ['bridge', '曲がる理由'],
 ] as const
 
-export default function ImageJourney() {
-  const [scene, setScene] = useState<string>('direct')
+export default function ImageJourney({ scene, onSceneChange: setScene, distance, mirrorDistance }: {
+  scene: string; onSceneChange: (scene: string) => void; distance: number; mirrorDistance: number
+}) {
+  const virtualInput = { ...lens, objectDistance: distance / 100 }
+  const image = observeLens(virtualInput)
+  const number = (value: number) => value.toLocaleString('ja-JP', { maximumFractionDigits: 2 })
+  const imageDistance = number(-(image.imageDistance ?? 0) * 100)
   const [extensions, setExtensions] = useState(false)
   const [virtualExtensions, setVirtualExtensions] = useState(false)
   const [mirrorExtensions, setMirrorExtensions] = useState(false)
@@ -22,7 +28,7 @@ export default function ImageJourney() {
   const sceneIndex = scenes.findIndex(([value]) => value === scene)
   return <Paper withBorder p={{ base: 'md', sm: 'xl' }}>
     <Group justify="space-between" gap="sm"><Title order={3}>同じ文字を、光の道筋でたどる</Title><Badge variant="light">一点ずつ見る</Badge></Group>
-    <Text size="sm" c="dimmed" mt="sm">①〜④は、文字の同じ上端Aを追う場面です。「焦点の目印」「曲がる理由」は、さらに理由を知りたいときに選べます。どの場面も直接開けます。</Text>
+    <Text size="sm" mt="sm">上の虫めがね・鏡の観察と同じ距離で、文字の上端Aを追います。実線を見てから破線を重ねると、見える場所と元の文字を比べられます。どの場面も直接開けます。</Text>
     <Tabs value={scene} onChange={value => { if (value !== null) setScene(value) }}>
       <Tabs.List className="journey-scenes" aria-label="像の仕組みの場面" grow>{scenes.map(([value, title]) => <Tabs.Tab key={value} value={value}>{title}</Tabs.Tab>)}</Tabs.List>
       <Tabs.Panel value="bridge"><LensBridge active={scene === 'bridge'} /></Tabs.Panel>
@@ -54,36 +60,36 @@ export default function ImageJourney() {
       <Tabs.Panel value="real"><PaperImageGuide /></Tabs.Panel>
       <Tabs.Panel value="virtual">
         <div className="journey-intro"><Text className="eyebrow">場面 03 / 06</Text><Title order={4}>光は広がっても、出発点はたどれる</Title>
-        <Text size="sm" c="dimmed" mt="sm">同じ文字の線を、今度はレンズから7.5 cmの近くに置きます。上端Aからレンズを通って目へ届く二本を選びます。紙に映す場面より、入る前の光の広がりが大きくなります。横線はレンズの中心を通る基準の線（軸）です。</Text></div>
-        <RayAnimation active={scene === 'virtual'} kind="virtual" extensions={virtualExtensions} tools={<Stack gap="sm">
+        <Text size="sm" mt="sm">上の観察と同じ、レンズから{number(distance)} cmの文字です。同じ上端Aから目へ届く二本を選びます。文字・レンズ・目を横から置き直し、上の像の高さがどの光の届き方に対応するかをたどります。横線はレンズの中心を通る基準の線（軸）です。</Text></div>
+        <RayAnimation key={`virtual-${distance}`} active={scene === 'virtual'} kind="virtual" extensions={virtualExtensions} tools={<Stack gap="sm">
           <Switch label="目に届く向きを、来た側へたどる（破線）" checked={virtualExtensions} onChange={event => setVirtualExtensions(event.currentTarget.checked)} />
           <Switch label="下端Bから出た光も重ねる" checked={secondPoint} onChange={event => setSecondPoint(event.currentTarget.checked)} />
         </Stack>} explanation={<Stack gap="sm">
           <Text>レンズは光を軸へ曲げますが、この近さでは、出た後もAの光は広がります。レンズの右にスクリーンを置いても、一点へは集まりません。</Text>
-          <Text>{virtualExtensions ? '破線は、目に届く二本を「レンズで曲がらず、この向きのまま来た」として、来た側へ延ばした線です。二本はレンズの左30 cmで交わります。そこから光が来たように見える位置が、Aの像です。元のAは左7.5 cmにあり、像の位置とは違います。' : '次に破線を重ねると、目に届く向きから、光が来たように見える場所を探せます。①の文字を見る場面と同じたどり方ですが、今回は途中でレンズが光を曲げています。'}</Text>
+          <Text>{virtualExtensions ? `破線は、目に届く二本を「レンズで曲がらず、この向きのまま来た」として、来た側へ延ばした線です。二本はレンズの左${imageDistance} cmで交わります。そこから光が来たように見える位置が、Aの像です。元のAは左${number(distance)} cmにあり、像の位置とは違います。` : '次に破線を重ねると、目に届く向きから、光が来たように見える場所を探せます。①の文字を見る場面と同じたどり方ですが、今回は途中でレンズが光を曲げています。'}</Text>
           {virtualExtensions && <>
-            <Text>{secondPoint ? 'Aの像は軸の上、Bの像は軸上で交わります。元のAとBの上下の順が保たれ、二点の間隔は元の4倍です。向きが同じ像を「正立」と呼びます。虫めがねで近くの文字を大きく見るときの関係です。' : '下端Bも重ねると、像の二点の上下の順と間隔を、元の線と比べられます。'}</Text>
+            <Text>{secondPoint ? `Aの像は軸の上、Bの像は軸上で交わります。元のAとBの上下の順が保たれ、二点の間隔は元の${number(image.magnification ?? 1)}倍です。向きが同じ像を「正立」と呼びます。上で比べた文字の高さと同じ対応です。見える角度の倍率とは区別します。` : '下端Bも重ねると、像の二点の上下の順と間隔を、元の線と比べられます。'}</Text>
             <Text>この交点へ光が実際に集まるわけではありません。目でのぞくと見えるけれど、その位置に紙を置いて直接は映せない像を「虚像」と呼びます。</Text>
           </>}
           <Text size="sm" c="dimmed">「虚像」は見えないという意味ではありません。見える光は実線の道筋を通ります。目のレンズが網膜に作る像とは区別します。</Text>
         </Stack>}>
-          {progress => <LensDiagram input={{ ...lens, objectDistance: .075 }} landmarks={false} extensions={virtualExtensions} secondPoint={secondPoint} progress={progress} />}
+          {progress => <LensDiagram input={virtualInput} landmarks={false} extensions={virtualExtensions} secondPoint={secondPoint} progress={progress} />}
         </RayAnimation>
       </Tabs.Panel>
       <Tabs.Panel value="mirror">
         <div className="journey-intro"><Text className="eyebrow">場面 04 / 06</Text><Title order={4}>反射した光は、鏡の奥から来たように届く</Title>
-        <Text size="sm" c="dimmed" mt="sm">ここからは上から見た図です。同じ文字の上端A、平らな鏡、目を置きます。まず実線をA→鏡→目の順に追います。次に破線を重ねると、光が来たように見える場所を探せます。</Text></div>
-        <RayAnimation active={scene === 'mirror'} kind="mirror" extensions={mirrorExtensions} tools={<Stack gap="sm">
+        <Text size="sm" mt="sm">上の観察と同じ、鏡の手前{mirrorDistance} cmにある文字の上端Aです。上から見た配置に目を加え、実線をA→鏡→目の順に追います。次に破線を重ねると、上で見た奥の位置を光の届く向きから探せます。</Text></div>
+        <RayAnimation key={`mirror-${mirrorDistance}`} active={scene === 'mirror'} kind="mirror" extensions={mirrorExtensions} tools={<Stack gap="sm">
           <Switch label="目に届く向きを、来た側へたどる（破線）" checked={mirrorExtensions} onChange={event => setMirrorExtensions(event.currentTarget.checked)} />
           <Switch label="反射する角度の基準線を重ねる" checked={normals} onChange={event => setNormals(event.currentTarget.checked)} />
         </Stack>} explanation={<Stack gap="sm">
           <Text>目へ届く光は、Aから鏡へ進み、そこで向きを変えて目に入ります。鏡の奥へは進んでいません。</Text>
           {normals && <Text>鏡の面に90°で立てた点線が、角度の基準です。この線を「法線」と呼びます。届く光と戻る光は、この基準線から測る角度が等しくなります。</Text>}
-          <Text>{mirrorExtensions ? '目から、届いた最後の向きをまっすぐ来た側へたどると、二本の破線が鏡の奥で交わります。物は鏡の手前25 cm、交点は奥25 cmです。文字が鏡の奥にあるように見える位置を、この交点が表しています。' : '破線を重ねると、鏡で折れ曲がった実際の道筋と、目からまっすぐたどる補助線を比べられます。'}</Text>
+          <Text>{mirrorExtensions ? `目から、届いた最後の向きをまっすぐ来た側へたどると、二本の破線が鏡の奥で交わります。物は鏡の手前${mirrorDistance} cm、交点は奥${mirrorDistance} cmです。上の観察で示した奥の位置と対応します。` : '破線を重ねると、鏡で折れ曲がった実際の道筋と、目からまっすぐたどる補助線を比べられます。'}</Text>
           <Text>鏡の奥の像も、そこへ光が集まらない「虚像」です。①・③と同じたどり方で位置を探せます。他の点も同じだけ鏡の奥へ対応するので、像は物と同じ大きさです。</Text>
           <Text size="sm" c="dimmed">平面鏡が反転するのは、鏡の面に直角な位置です。面に沿う上下や左右の位置は保たれます。「左右逆」という見え方と、レンズの倒立像の回転を同じ反転として扱いません。</Text>
         </Stack>}>
-          {progress => <MirrorDiagram normals={normals} extensions={mirrorExtensions} progress={progress} />}
+          {progress => <MirrorDiagram distance={mirrorDistance / 100} normals={normals} extensions={mirrorExtensions} progress={progress} />}
         </RayAnimation>
       </Tabs.Panel>
     </Tabs>
@@ -91,6 +97,7 @@ export default function ImageJourney() {
       <Button variant="subtle" disabled={sceneIndex === 0} onClick={() => setScene(scenes[sceneIndex - 1][0])}>← 前の場面</Button>
       <Button variant="light" disabled={sceneIndex === scenes.length - 1} onClick={() => setScene(scenes[sceneIndex + 1][0])}>{scenes[sceneIndex + 1]?.[1] ?? '次の場面'} →</Button>
     </Group>
+    <Button component="a" href="#overview" variant="subtle" mt="sm">虫めがね・鏡の観察へ戻る ↑</Button>
     <Accordion variant="separated" mt="lg">
       <Accordion.Item value="scope"><Accordion.Control>たとえの対応・図の尺度・説明の範囲</Accordion.Control><Accordion.Panel>
         <Text>砂地の人は右へ歩き続けます。光へ渡すのは、中央ほど長く遅れると並びの形が変わる関係です。人の軌道、歩行時刻、砂地の輪郭から光路や焦点距離を求める意味ではありません。</Text>

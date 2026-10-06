@@ -1,14 +1,29 @@
 import { Anchor, Table, Text, Title } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import Lesson from '../../../components/lesson'
 import ImageJourney from './image-journey'
 import ImageSimulation from './simulation'
+import ImageObservation from './image-experience'
+import type { ImageExperience } from './image-experience'
 import { imagesLesson, imageSources } from './meta'
 import './images.css'
 
 export default function ImagesLessonPage() {
-  return <Lesson lesson={imagesLesson} number="04" subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
-    mechanism={<ImageJourney />} simulation={<ImageSimulation />} sources={imageSources}
+  const [experience, setExperience] = useState<ImageExperience>('magnifier')
+  const [distance, setDistance] = useState(7.5)
+  const [mirrorDistance, setMirrorDistance] = useState(25)
+  const [lensVisible, setLensVisible] = useState(true)
+  const [scene, setScene] = useState('virtual')
+  const selectExperience = (next: ImageExperience) => {
+    setExperience(next)
+    setScene(next === 'mirror' ? 'mirror' : lensVisible ? 'virtual' : 'direct')
+  }
+  return <Lesson lesson={imagesLesson} number="04" className="images-lesson" subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
+    opening={<ImageObservation experience={experience} onExperienceChange={selectExperience} distance={distance} onDistanceChange={setDistance}
+      mirrorDistance={mirrorDistance} onMirrorDistanceChange={setMirrorDistance} lensVisible={lensVisible}
+      onLensVisibleChange={visible => { setLensVisible(visible); setScene(visible ? 'virtual' : 'direct') }} />}
+    mechanism={<ImageJourney scene={scene} onSceneChange={setScene} distance={distance} mirrorDistance={mirrorDistance} />} simulation={<ImageSimulation />} sources={imageSources}
     next={<Anchor component={Link} to="/optics/reflection-refraction">光が曲がる理由：反射と屈折へ →</Anchor>}
     explanation={<>
       <Title order={3}>像の一点は、二本の線の交点から求められる</Title>
