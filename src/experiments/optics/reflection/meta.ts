@@ -13,7 +13,5 @@ export const lesson = {
     scope: '平らな理想鏡での光の向き。明るさ、散乱や、物の像の位置はこのページでは扱いません。'
   },
   overview: '鏡へ届いた光は手前へ戻ります。面に直角な線から測ると、届く側と戻る側の角度は等しくなります。',
-  relationships: [],
-  observation: '同じ鏡の面を基準に、届く側と戻る側を比べます。',
   connection: '次は、鏡で戻った光が、葉をどこに見せるかを見ます。'
 } as const satisfies LessonContent

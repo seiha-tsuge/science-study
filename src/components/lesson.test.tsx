@@ -7,6 +7,7 @@ import AccelerationLessonPage from '../experiments/mechanics/acceleration/lesson
 import { motionLesson } from '../experiments/mechanics/motion/meta'
 import { accelerationLesson } from '../experiments/mechanics/acceleration/meta'
 import { opticsLessons } from '../app/optics-lessons'
+import { allLessons } from '../app/lesson-catalog'
 import HomePage from '../app/home-page'
 import MechanicsPage from '../app/mechanics-page'
 import OpticsPage from '../app/optics-page'
@@ -21,6 +22,8 @@ import PaperImagePage from '../experiments/optics/paper-image/lesson-page'
 
 const opticsPages = [WalkingRowPage, RefractionPage, ApparentDepthPage, ReflectionPage, MirrorImagePage, MagnifierPage, PaperImagePage] as const
 
+const lessonPages = [MotionLessonPage, AccelerationLessonPage, ...opticsPages] as const
+
 // Navigation belongs to Router; the contract under test is initial lesson access.
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => <a href={to} {...props}>{children}</a>,
@@ -28,24 +31,16 @@ vi.mock('@tanstack/react-router', () => ({
 
 describe('全教材を回答入力なしで探索できる', () => {
   it.each([
-    ['位置と速度', MotionLessonPage, '同じ時間に、同じ変位', '速度'],
-    ['加速度', AccelerationLessonPage, '二つを重ねる', '加速度'],
-  ] as const)('%s：全体像、仕組み、操作、資料を最初から表示する', (_, Page, mechanism, control) => {
+    ['歩く人', MotionLessonPage, '歩く場面', '歩くペース'],
+    ['発進する車', AccelerationLessonPage, '発進する車', '毎秒1.0 m/s'],
+  ] as const)('%s：日常の対象から始め、同じ条件で説明へ進む', (_, Page, scene, control) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
-    const overview = html.indexOf('id="overview"')
-    const why = html.indexOf('id="mechanism"')
-    const exploration = html.indexOf('id="explore"')
-    const details = html.indexOf('id="details"')
-    expect(overview).toBeGreaterThan(-1)
-    expect(why).toBeGreaterThan(overview)
-    expect(exploration).toBeGreaterThan(why)
-    expect(details).toBeGreaterThan(exploration)
-    expect(html).toContain('身近な行為から考える')
-    expect(html).toContain(mechanism)
+    expect(html).toContain(scene)
     expect(html).toContain(control)
-    expect(html).toContain('参考資料：')
-    expect(html).toContain('aria-expanded="false"')
-    expect(html).not.toMatch(/prediction-|challenge-|答えを確かめる|まず予想|自分の言葉で|再挑戦|locked-panel/)
+    expect(html).not.toContain('class="motion-canvas"')
+    expect(html).not.toContain('道の場所 [m]')
+    expect(html).not.toContain('車の速度 [m/s]')
+    expect(html).not.toMatch(/出発点も変える|出発時の速度と位置も変える|負の加速度は|二つを重ねる/)
   })
   it.each([
     [MotionLessonPage, motionLesson], [AccelerationLessonPage, accelerationLesson],
@@ -72,7 +67,7 @@ describe('全教材を回答入力なしで探索できる', () => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
     for (const lesson of lessons) expect(html).toContain(lesson.learningGoal.understand)
   })
-  it.each(opticsPages.map((Page, index) => [Page, opticsLessons[index].lesson] as const))('光学は一つのゴールを同じ題材でたどり、次のリンクを一つ表示する', (Page, lesson) => {
+  it.each(lessonPages.map((Page, index) => [Page, allLessons[index].lesson] as const))('全教材は一つのゴールを同じ題材でたどり、次のリンクを一つ表示する', (Page, lesson) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
     expect(html.match(/>今回理解すること</g)).toHaveLength(1)
     expect(html).toContain(lesson.learningGoal.understand)

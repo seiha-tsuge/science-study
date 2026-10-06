@@ -13,7 +13,5 @@ export const lesson = {
     scope: '平らな水面と透明な空気、水。反射した光や、物質中で遅くなる微視的な仕組みは扱いません。'
   },
   overview: '空気から水へ入ると光は遅く進みます。斜めに届く波では、水へ先に入る側が遅くなり、同じ進み具合の場所を結ぶ線の向きが変わります。',
-  relationships: [],
-  observation: '同じ光の目印が水へ入る前後を比べます。',
   connection: '次は、水面を通って目へ届く光と、ストローの見える場所をつなぎます。'
 } as const satisfies LessonContent

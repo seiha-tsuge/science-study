@@ -13,7 +13,5 @@ export const lesson = {
     scope: '理想的な薄い凸レンズ。二本の到着位置の比較で、ぼけの形、収差と明るさ全体は再現しません。'
   },
   overview: '紙が集まる位置から外れると、同じ点から出た光が別々の場所へ当たります。集まる位置なら、各点が別々の一点として映ります。',
-  relationships: [],
-  observation: '同じ文字の上端Aから出た二本が、紙のどこへ届くかを比べます。',
   connection: 'この題材での観察を終えたら、光学の目次から次に見る問いを選べます。'
 } as const satisfies LessonContent

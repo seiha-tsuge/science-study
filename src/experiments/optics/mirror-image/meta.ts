@@ -13,7 +13,5 @@ export const lesson = {
     scope: '十分広い理想平面鏡を上から見た位置の図。正面の景色、目の中の結像や奥行き判断は再現しません。'
   },
   overview: '鏡の向こうにもう一枚の葉があるわけではありません。戻って目へ届いた光の向きをたどると、鏡から等しい奥行きの場所を指します。',
-  relationships: [],
-  observation: '同じ葉先から鏡を経て目へ届く光をたどります。',
   connection: '次は、虫めがねで葉が大きく見える関係を見ます。'
 } as const satisfies LessonContent

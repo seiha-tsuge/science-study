@@ -9,9 +9,9 @@ import {
   Title,
 } from '@mantine/core'
 import { Link } from '@tanstack/react-router'
-import { motionLesson } from '../experiments/mechanics/motion/meta'
-import { accelerationLesson } from '../experiments/mechanics/acceleration/meta'
-import { opticsLessons } from './optics-lessons'
+import { allLessons } from './lesson-catalog'
+import { RoadScene } from '../experiments/mechanics/shared/daily-motion'
+import { observeMotion } from '../experiments/mechanics/motion/model'
 
 export default function HomePage() {
   return (
@@ -29,76 +29,28 @@ export default function HomePage() {
             その行為の中で何が起きているか、図と操作でたどります。
           </Text>
           <Button component={Link} to="/mechanics/motion" size="lg" mt="lg">
-            位置と速度を見てみる <span>↗</span>
+            歩く場所を見てみる <span>↗</span>
           </Button>
           <span className="hero-caption">
             道の上の動きと、グラフを一緒に見る
           </span>
         </div>
-        <Paper
-          withBorder
-          p="lg"
-          bg="blue.0"
-          className="hero-diagram"
-          role="img"
-          aria-label="横軸が時間、縦軸が位置の模式図。実線は一定の増え方、破線は増え方が変わる例。実測値ではありません。"
-        >
-          <span className="diagram-label">時間と位置のグラフ</span>
-          <svg viewBox="0 0 320 260">
-            <defs>
-              <pattern
-                id="hero-grid"
-                width="32"
-                height="32"
-                patternUnits="userSpaceOnUse"
-              >
-                <path
-                  d="M 32 0 L 0 0 0 32"
-                  fill="none"
-                  stroke="#dbe6f4"
-                  strokeWidth="1"
-                />
-              </pattern>
-            </defs>
-            <rect width="320" height="260" fill="url(#hero-grid)" />
-            <path d="M32 218 H300 M32 218 V20" stroke="#93a8c4" fill="none" />
-            <path
-              d="M32 218 L275 42"
-              stroke="#2563eb"
-              strokeWidth="3"
-              fill="none"
-            />
-            <path
-              d="M32 218 Q186 216 275 42"
-              stroke="#7d98bc"
-              strokeWidth="2"
-              strokeDasharray="5 5"
-              fill="none"
-            />
-            <circle cx="180" cy="111" r="8" fill="#2563eb" />
-            <text x="288" y="238">
-              t
-            </text>
-            <text x="13" y="22">
-              x
-            </text>
-          </svg>
-          <span className="diagram-note">横は時間、縦は位置。直線と曲線で増え方を比べます。</span>
+        <Paper withBorder p="lg" className="hero-diagram">
+          <span className="diagram-label">道を同じペースで歩く</span>
+          <RoadScene subject="walker" time={4} marks={false} observe={time => observeMotion({ initialPosition: 0, velocity: 1 }, time)} />
+          <span className="diagram-note">同じ人の場所を、時刻ごとの印へ渡します。</span>
         </Paper>
       </header>
       <section className="map-section">
         <Title order={2}>どの行為の、何を理解する？</Title>
-        <Text mt="sm" mb="lg">一つの題材で、一つの関係をたどります。光学は人の列から始められ、前提のつながりは光学の目次で確認できます。</Text>
+        <Text mt="sm" mb="lg">一つの題材で、一つの関係をたどります。カードの前提を手がかりに、どのページからも自由に見られます。</Text>
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-          {[
-            { lesson: motionLesson, to: '/mechanics/motion' },
-            { lesson: accelerationLesson, to: '/mechanics/acceleration' },
-            ...opticsLessons,
-          ].map(({ lesson, to }) => (
+          {allLessons.map(({ lesson, to, prerequisite }) => (
             <Card key={to} component={Link} to={to} withBorder padding="lg">
               <Title order={3}>{lesson.title}</Title>
               <Text fw={600} size="sm" mt="sm">今回理解すること</Text>
               <Text size="sm" mt="xs">{lesson.learningGoal.understand}</Text>
+              <Text size="xs" mt="sm">前提：{prerequisite}</Text>
             </Card>
           ))}
         </SimpleGrid>
@@ -123,7 +75,7 @@ export default function HomePage() {
               ↗
             </span>
             <Badge variant="light" size="sm">
-              2つの実験
+              2つの問い
             </Badge>
             <Title order={3}>力学</Title>
             <Text>
@@ -186,7 +138,7 @@ export default function HomePage() {
           className="concept-nodes"
         >
           <Card component={Link} to="/mechanics/motion" withBorder padding="lg">
-            <span>01</span>位置と速度<small>道の上の動きとグラフをつなぐ</small>
+            <span>01</span>歩く場所とグラフ<small>道の上の動きとグラフをつなぐ</small>
           </Card>
           <Card
             component={Link}
@@ -194,7 +146,7 @@ export default function HomePage() {
             withBorder
             padding="lg"
           >
-            <span>02</span>加速度<small>速度が変わると、進む量はどう変わる？</small>
+            <span>02</span>発進した車が進む距離<small>止まった車の距離に、時間の二乗が現れる理由</small>
           </Card>
           <Paper withBorder p="lg" className="future-node">
             <span>この先</span>力と運動<small>押す力と速度の変化をつなぐ</small>

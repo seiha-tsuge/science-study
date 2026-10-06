@@ -10,6 +10,31 @@ import '../../components/lesson-journey.css'
 import './reflection-refraction/optics-lesson.css'
 import './lenses-mirrors/images.css'
 
+function SunlightSource({ x, y }: { x: number; y: number }) {
+  return <g transform={`translate(${x} ${y})`} aria-label="日差しの来る側の目印">
+    {Array.from({ length: 8 }, (_, i) => <line key={i} x1="0" x2="0" y1="-24" y2="-19" transform={`rotate(${i * 45})`} stroke="#b78525" strokeWidth="2" />)}
+    <circle r="14" fill="#f5d774" stroke="#b78525" strokeWidth="2" />
+  </g>
+}
+
+export function WaterSunlight({ slanted }: { slanted: boolean }) {
+  const id = useId()
+  const result = observeOptics({ incidentAngle: slanted ? Math.PI / 4 : 0, incidentIndex: 1, transmittedIndex: 1.33 })
+  const entry = { x: 280, y: 210 }
+  const start = { x: entry.x - result.incidentDirection.x * 150, y: entry.y + result.incidentDirection.y * 150 }
+  const end = { x: entry.x + result.refractedDirection!.x * 160, y: entry.y - result.refractedDirection!.y * 160 }
+  return <figure className="concept-sunlight">
+    <svg viewBox="0 0 560 440" role="img" aria-label={`水面に差し込む日差しの模式図。${slanted ? '水へ斜めに入ると向きが変わる。' : 'まっすぐ入ると向きは変わらない。'}`}>
+      <defs><marker id={`${id}-ray`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#246b9a" /></marker></defs>
+      <rect x="24" y="210" width="512" height="190" fill="#d9eeeb" /><path d="M24 210H536" stroke="#4d979f" strokeWidth="2" />
+      <text x="35" y="35">空気</text><text x="440" y="199">水面</text><text x="35" y="390">水</text>
+      <path d={`M${start.x} ${start.y}L${entry.x} ${entry.y}L${end.x} ${end.y}`} fill="none" stroke="#246b9a" strokeWidth="3" markerEnd={`url(#${id}-ray)`} />
+      <SunlightSource x={start.x} y={start.y} /><text x={start.x + 30} y={start.y - 20}>日差し</text>
+    </svg>
+    <figcaption>線は、同じ日差しが進む向きを表すモデルです。太陽の印は光が来る側で、位置と大きさを再現していません。光路の縦横は同じ縮尺です。</figcaption>
+  </figure>
+}
+
 function TimeControls({ clock, middle = 3, simultaneous = false }: { clock: ReturnType<typeof useWavePresentation>; middle?: number; simultaneous?: boolean }) {
   const id = useId()
   return <Stack gap="sm" mt="md">
@@ -67,6 +92,7 @@ export function WalkingRow() {
 }
 
 export function Refraction() {
+  const [view, setView] = useState('sunlight')
   const [slanted, setSlanted] = useState(true)
   const clock = useWavePresentation()
   const id = useId()
@@ -80,11 +106,14 @@ export function Refraction() {
     <div>
       <Text id={id} fw={600}>水面への入り方</Text>
       <SegmentedControl fullWidth mt="sm" aria-labelledby={id} value={slanted ? 'slanted' : 'straight'} onChange={value => { setSlanted(value === 'slanted'); clock.reset() }} data={[{ value: 'slanted', label: '斜めに入る' }, { value: 'straight', label: 'まっすぐ入る' }]} />
+      <SegmentedControl fullWidth mt="md" aria-label="同じ日差しの見方" value={view} onChange={value => { clock.seek(clock.time); setView(value) }} data={[{ value: 'sunlight', label: '日差しを見る' }, { value: 'front', label: '進み方を比べる' }]} />
+      {view === 'front' && <>
       <Text mt="md">光の波で、繰り返しの同じ段階にある場所を緑の線で結びます。この面を<strong>波面</strong>と呼び、ここではその断面を見ています。実在する棒ではありません。</Text>
       <TimeControls clock={clock} middle={slanted ? 3 : 4} simultaneous={!slanted} />
       <Text size="sm" mt="md">8秒は作図の説明時間です。実際の光の約4.00 nsを引き伸ばしています。1 nsは10億分の1秒です。</Text>
+      </>}
     </div>
-    <figure>
+    {view === 'sunlight' ? <WaterSunlight slanted={slanted} /> : <figure>
       <svg viewBox="0 0 560 440" role="img" aria-label="水へ入る同じ光の波面。緑の線と直角な黒い矢印が光の進む向き。">
         <defs><marker id={`${id}-arrow`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#26364b" /></marker><clipPath id={`${id}-clip`}><rect x="24" y="20" width="512" height="380" /></clipPath></defs>
         <rect x="24" y="210" width="512" height="190" fill="#d9eeeb" /><line x1="24" x2="536" y1="210" y2="210" stroke="#617083" strokeWidth="2" />
@@ -101,11 +130,11 @@ export function Refraction() {
         <text x="35" y="430">緑：同じ段階　矢印：進む向き</text>
       </svg>
       <figcaption>矢印は各領域の平らな波面に直角です。AとBは場所の目印で、粒の軌道ではありません。縦横は同じ縮尺です。</figcaption>
-    </figure>
+    </figure>}
     <Paper withBorder p="md" className="concept-reason">
-      <Title order={3}>速さの違いが、同じ段階の線を傾ける</Title>
-      <Text mt="sm" role="status">{!slanted ? '全体が同時に水へ入ると、左右の進み方に差が付きません。速さは小さくなっても、向きは変わりません。' : !front[20].inWater ? '水へ入る前は、A側もB側も同じ速さで進みます。「片側が入る」で、先に水へ届く側を見られます。' : !front[80].inWater ? 'A側が先に水へ入り、遅くなります。まだ空気にあるB側は速く進むので、緑の線が傾き始めます。' : '水の中では、緑の線が入る前と違う傾きを持ちます。この平らな波では、光の向きは線に直角なので、黒い矢印も向きを変えます。'}</Text>
-      <Text mt="sm">物質の境目を通って進む向きが変わることを<strong>屈折</strong>と呼びます。速さと波面の関係を示した図で、光が水面で何かにぶつかって曲がる説明ではありません。</Text>
+      <Title order={3}>{view === 'sunlight' ? '水に入る前後で、同じ日差しを比べる' : '速さの違いが、同じ段階の線を傾ける'}</Title>
+      <Text mt="sm" role="status">{view === 'sunlight' ? slanted ? '水へ斜めに入ると、水面に直角な向きへ近づきます。「進み方を比べる」で、同じ日差しの先に水へ届く側と、後から届く側を見られます。' : '水面へまっすぐ入ると、水の中でも向きは変わりません。' : !slanted ? '全体が同時に水へ入ると、左右の進み方に差が付きません。速さは小さくなっても、向きは変わりません。' : !front[20].inWater ? '水へ入る前は、A側もB側も同じ速さで進みます。「片側が入る」で、先に水へ届く側を見られます。' : !front[80].inWater ? 'A側が先に水へ入り、遅くなります。まだ空気にあるB側は速く進むので、緑の線が傾き始めます。' : '水の中では、緑の線が入る前と違う傾きを持ちます。この平らな波では、光の向きは線に直角なので、黒い矢印も向きを変えます。'}</Text>
+      {view === 'front' && <Text mt="sm">物質の境目を通って進む向きが変わることを<strong>屈折</strong>と呼びます。速さと波面の関係を示した図で、光が水面で何かにぶつかって曲がる説明ではありません。</Text>}
       <Text size="sm" mt="sm">前提の人の列から引き継ぐのは、到着順と同じ時間の距離の差です。人の歩く向きは光と同じではありません。光の角度はスネルの法則で求めています。平らな波と等方的な透明物質を扱い、反射や微視的な相互作用は省いています。</Text>
     </Paper>
   </div>
@@ -127,12 +156,13 @@ export function Reflection() {
     <div><Text id={id} fw={600}>鏡に直角な線から、届く角度を変える</Text><Slider mt="md" aria-labelledby={id} value={angle} onChange={setAngle} min={0} max={60} step={1} label={value => `${value}°`} marks={[{ value: 0, label: '0°' }, { value: 60, label: '60°' }]} /><Text mt="xl" role="status">届く角度：{angle}°。戻る角度：{angle}°。</Text></div>
     <figure><svg viewBox="0 0 560 370" role="img" aria-label={`机の鏡へ届く光と戻る光。鏡に直角な線から、どちらも${angle}度。`}>
       <defs><marker id={`${id}-arrow`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke" /></marker></defs>
-      <rect x="25" y="280" width="510" height="20" fill="#bcc6d1" /><text x="420" y="325">机の鏡</text>
+      <rect x="25" y="302" width="510" height="25" fill="#e5dcc8" /><rect x="25" y="280" width="510" height="20" fill="#bcc6d1" /><text x="420" y="325">机の鏡</text>
       <line x1="280" x2="280" y1="35" y2="280" stroke="#64748b" strokeDasharray="5 5" /><text x="290" y="38">面に直角な線</text>
       <line x1={start.x} y1={start.y} x2={origin.x} y2={origin.y} stroke="#1971c2" strokeWidth="3" markerEnd={`url(#${id}-arrow)`} />
       <line x1={origin.x} y1={origin.y} x2={end.x} y2={end.y} stroke="#d9480f" strokeWidth="3" markerEnd={`url(#${id}-arrow)`} />
-      <text x="40" y="350">青：届く光　橙：戻る光</text>
-    </svg><figcaption>同じ平らな鏡を横から見た図です。矢印は進む向きで、光の強さを表しません。</figcaption></figure>
+      <SunlightSource x={start.x} y={start.y} /><text x={Math.max(35, start.x - 65)} y={start.y - 35}>日差し</text>
+      <text x="40" y="355">青：届く光　橙：戻る光</text>
+    </svg><figcaption>机に置いた同じ鏡へ日差しが届く模式図です。太陽の印は光が来る側で、位置と大きさを再現していません。線は光の向きで、強さを表しません。</figcaption></figure>
     <Paper withBorder p="md" className="concept-reason"><Title order={3}>基準の線から、両側を同じ角度で比べる</Title><Text mt="sm">光が届いた点で、鏡に90°の線を立てます。この基準線を<strong>法線</strong>と呼びます。鏡で手前へ戻る光は、この線の反対側へ、届いたときと同じ角度で進みます。これが<strong>反射</strong>の向きの規則です。</Text><Text mt="sm">0°では同じ道筋を戻ります。斜めに届くほど、戻る光も基準線から離れます。鏡の面から測った角度と、法線から測った角度を混ぜずに比べます。</Text><Text size="sm" mt="sm">平らな理想鏡の向きだけを求めています。表面の粗さ、散乱、明るさの変化はこの図に含めません。</Text></Paper>
   </div>
 }

@@ -13,7 +13,5 @@ export const lesson = {
     scope: '全員が同じ方向へ歩き、砂地で速さが変わる模式図。人が互いを引っ張る運動は扱いません。'
   },
   overview: '斜めに砂地へ入ると、先に入った側は長い時間ゆっくり進みます。個人の歩く向きを保っても、並びは傾きます。',
-  relationships: [],
-  observation: '同じ時間にAとBが進む距離を比べます。',
   connection: '次は、速さの違いと光の向きの関係を見ます。人の歩く向きと光の向きは同一ではありません。'
 } as const satisfies LessonContent

@@ -6,7 +6,7 @@ import { lesson } from './meta'
 import '../concept-lessons.css'
 
 export default function LessonPage() {
-  return <Lesson lesson={lesson} number="04" singleConcept subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
+  return <Lesson lesson={lesson} number="04" subject={{ title: '光学', to: '/optics', label: 'OPTICS' }}
     mechanism={<Reflection />}
     explanation={<Text>平面鏡の反射則。面に直角な方向から角度0°から60°を測る。</Text>}
     sources={[{ title: 'OpenStax · The Law of Reflection', url: 'https://openstax.org/books/university-physics-volume-3/pages/1-2-the-law-of-reflection' }]}
