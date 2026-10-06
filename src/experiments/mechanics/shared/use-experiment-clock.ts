@@ -2,10 +2,19 @@ import { useEffect, useState } from 'react'
 import { advanceTime } from './clock'
 import { DURATION } from './types'
 
-export function useExperimentClock() {
-  const [time, setTime] = useState(0)
+export function useExperimentClock(initialTime = 0, duration = DURATION) {
+  const [time, setTime] = useState(initialTime)
   const [playing, setPlaying] = useState(false)
-  const running = playing && time < DURATION
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const running = playing && time < duration && !reducedMotion
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => { setReducedMotion(query.matches); if (query.matches) setPlaying(false) }
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
 
   useEffect(() => {
     if (!running) return
@@ -14,7 +23,7 @@ export function useExperimentClock() {
     const tick = (timestamp: number) => {
       if (previous !== undefined) {
         const elapsed = timestamp - previous
-        setTime((current) => advanceTime(current, elapsed))
+        setTime((current) => Math.min(duration, advanceTime(current, elapsed)))
       }
       previous = timestamp
       frame = requestAnimationFrame(tick)
@@ -28,13 +37,15 @@ export function useExperimentClock() {
       cancelAnimationFrame(frame)
       document.removeEventListener('visibilitychange', pauseWhenHidden)
     }
-  }, [running])
+  }, [running, duration])
 
   return {
     time,
     running,
+    reducedMotion,
     toggle: () => {
-      if (time >= DURATION) {
+      if (reducedMotion) return
+      if (time >= duration) {
         setTime(0)
         setPlaying(true)
       } else {
@@ -43,7 +54,7 @@ export function useExperimentClock() {
     },
     seek: (next: number) => {
       setPlaying(false)
-      setTime(next)
+      setTime(Math.min(duration, Math.max(0, next)))
     },
     reset: () => {
       setPlaying(false)

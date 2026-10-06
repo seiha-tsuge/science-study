@@ -30,7 +30,7 @@ export default function ImageJourney({ experience, lensVisible, distance, mirror
       {mirror ? <MirrorDiagram distance={mirrorDistance / 100} extensions={false} progress={0} subject="leaf" /> : lensVisible ? <LensDiagram input={input} landmarks={false} extensions={false} progress={0} subject="leaf" /> : <DirectLeafDiagram distance={distance} progress={0} />}
       <div>
         <Title order={4}>{mirror ? '光は、鏡の面で戻る' : lensVisible ? '向きが変わるのは、レンズの表面' : '道具を外すと、まっすぐ届く'}</Title>
-        <Text mt="sm">{mirror ? '鏡の向こうの葉を直接見ているわけではありません。手前の葉から来た光が、鏡で向きを変えて目へ届いています。次の図では、その実際の道筋だけを重ねます。' : lensVisible ? '水に入れたストローの見え方が変わるのと同じように、光は違う物質へ斜めに入る境目で向きを変えます。これを「屈折」と呼びます。虫めがねでは、入る面と出る面の両方で起こります。面が曲がっているため、通る場所で向きの変わり方も異なります。中央が厚い形のレンズを「凸レンズ」と呼びます。この図は薄いレンズの近似なので、二つの表面での曲がりを中心の一か所へまとめています。線がそこで折れるのは、この省略を表しています。' : '虫めがねを外しても、葉と目の位置は変えていません。光は葉から目へまっすぐ届きます。上で虫めがねを戻すと、同じ配置で光が曲がる場合と比べられます。'}</Text>
+        <Text mt="sm">{mirror ? '鏡の向こうの葉を直接見ているわけではありません。手前の葉から来た光が、鏡で向きを変えて目へ届いています。次の図では、その実際の道筋だけを重ねます。' : lensVisible ? '光は違う物質へ斜めに入る境目で向きを変えます。これを「屈折」と呼びます。虫めがねでは、入る面と出る面の両方で起こります。面が曲がっているため、通る場所で向きの変わり方も異なります。中央が厚い形のレンズを「凸レンズ」と呼びます。この図は薄いレンズの近似なので、二つの表面での曲がりを中心の一か所へまとめています。線がそこで折れるのは、この省略を表しています。' : '虫めがねを外しても、葉と目の位置は変えていません。光は葉から目へまっすぐ届きます。上で虫めがねを戻すと、同じ配置で光が曲がる場合と比べられます。'}</Text>
       </div>
     </div> : <>
       <Text size="sm" mt="md">{mirror ? `同じ葉を鏡の手前${mirrorDistance} cmに置き、上からの配置へ目を加えます。` : `同じ葉と目を横から見た配置です。${lensVisible ? `虫めがねとの間隔は上と同じ${distance} cm。` : '虫めがねは外しています。'}`} 実線は実際の光の道筋です。葉の先から届く光の一部を、二本の線で代表させています。</Text>
@@ -41,11 +41,11 @@ export default function ImageJourney({ experience, lensVisible, distance, mirror
           <Text>{stage === 'light'
             ? mirror ? '葉→鏡→目の順にたどれます。鏡の向こうを光が通ったのではありません。物が鏡の向こうに見える理由は、目へ届いた最後の向きにあります。' : lensVisible ? '光は葉→レンズ→目の順に進みます。この近さでは、レンズを出た後も光は広がりながら目へ届きます。次の場面では、その届く向きと、大きく見える葉の場所をつなぎます。' : '葉から来る光は途中で曲がりません。目へ届いた向きをたどると、元の葉へ戻ります。'
             : mirror ? '目へ届いた最後の向きを、来た側へまっすぐたどると、鏡の向こうの葉先を指します。上の図で見た奥行きに対応する場所です。破線は場所を探すための補助線で、実際の光ではありません。' : lensVisible ? '目へ届く向きを、来た側へまっすぐたどると、元の葉より遠い場所で交わります。その場所にある大きな葉から来たような向きで、光が届きます。見える大きさには、そこでの葉の高さと目からの距離の両方が関係します。この条件では、そのまま見るときより広い角度を占めるため、葉が大きく見えます。' : '光は元の葉からまっすぐ届きます。虫めがねを戻すと、光の届く向きと、見える葉の大きさを同じ条件で比べられます。'}</Text>
-          {stage === 'image' && (mirror || lensVisible) && <Text>道具を通して見える、この葉の姿を「像」と呼びます。この場所にもう一枚の葉があるわけでも、光が集まっているわけでもありません。虫めがねや鏡でのぞいて見えるこの種類の像を「虚像」と呼びます。</Text>}
+          {stage === 'image' && (mirror || lensVisible) && <Text>道具を通して見える、この葉の姿を<strong>像</strong>と呼びます。この場所にもう一枚の葉があるわけでも、光が集まっているわけでもありません。</Text>}
           <Text size="sm" c="dimmed">{mirror ? '十分広い平面鏡の位置の図です。' : '縦を拡大した薄いレンズの図です。角度や写真の見え方は読み取れません。'} 目の中で光が集まる過程と、脳が奥行きを判断する仕組みは省いています。</Text>
         </Stack>
       </div>
     </>}
-    <Group mt="md"><Button variant="light" disabled={stage === 'image'} onClick={() => setStage(stage === 'surface' ? 'light' : 'image')}>{stage === 'surface' ? '目へ届く光を重ねる' : '見える場所をたどる'}</Button><Button component="a" href="#overview" variant="subtle">道具を使う場面へ戻る ↑</Button></Group>
+    <Group mt="md"><Button variant="light" disabled={stage === 'image'} onClick={() => setStage(stage === 'surface' ? 'light' : 'image')}>{stage === 'surface' ? '目へ届く光を重ねる' : '見える場所をたどる'}</Button></Group>
   </Paper>
 }

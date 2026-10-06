@@ -16,8 +16,15 @@ import { Route as MechanicsIndexRouteImport } from './routes/mechanics/index'
 import { Route as MechanicsAccelerationRouteImport } from './routes/mechanics/acceleration'
 import { Route as MechanicsMotionRouteImport } from './routes/mechanics/motion'
 import { Route as OpticsIndexRouteImport } from './routes/optics/index'
+import { Route as OpticsApparentDepthRouteImport } from './routes/optics/apparent-depth'
 import { Route as OpticsLensesMirrorsRouteImport } from './routes/optics/lenses-mirrors'
+import { Route as OpticsMagnifierRouteImport } from './routes/optics/magnifier'
+import { Route as OpticsMirrorImageRouteImport } from './routes/optics/mirror-image'
+import { Route as OpticsPaperImageRouteImport } from './routes/optics/paper-image'
+import { Route as OpticsReflectionRouteImport } from './routes/optics/reflection'
 import { Route as OpticsReflectionRefractionRouteImport } from './routes/optics/reflection-refraction'
+import { Route as OpticsRefractionRouteImport } from './routes/optics/refraction'
+import { Route as OpticsWalkingRowRouteImport } from './routes/optics/walking-row'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,9 +61,34 @@ const OpticsIndexRoute = OpticsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => OpticsRoute,
 } as any)
+const OpticsApparentDepthRoute = OpticsApparentDepthRouteImport.update({
+  id: '/apparent-depth',
+  path: '/apparent-depth',
+  getParentRoute: () => OpticsRoute,
+} as any)
 const OpticsLensesMirrorsRoute = OpticsLensesMirrorsRouteImport.update({
   id: '/lenses-mirrors',
   path: '/lenses-mirrors',
+  getParentRoute: () => OpticsRoute,
+} as any)
+const OpticsMagnifierRoute = OpticsMagnifierRouteImport.update({
+  id: '/magnifier',
+  path: '/magnifier',
+  getParentRoute: () => OpticsRoute,
+} as any)
+const OpticsMirrorImageRoute = OpticsMirrorImageRouteImport.update({
+  id: '/mirror-image',
+  path: '/mirror-image',
+  getParentRoute: () => OpticsRoute,
+} as any)
+const OpticsPaperImageRoute = OpticsPaperImageRouteImport.update({
+  id: '/paper-image',
+  path: '/paper-image',
+  getParentRoute: () => OpticsRoute,
+} as any)
+const OpticsReflectionRoute = OpticsReflectionRouteImport.update({
+  id: '/reflection',
+  path: '/reflection',
   getParentRoute: () => OpticsRoute,
 } as any)
 const OpticsReflectionRefractionRoute =
@@ -65,6 +97,16 @@ const OpticsReflectionRefractionRoute =
     path: '/reflection-refraction',
     getParentRoute: () => OpticsRoute,
   } as any)
+const OpticsRefractionRoute = OpticsRefractionRouteImport.update({
+  id: '/refraction',
+  path: '/refraction',
+  getParentRoute: () => OpticsRoute,
+} as any)
+const OpticsWalkingRowRoute = OpticsWalkingRowRouteImport.update({
+  id: '/walking-row',
+  path: '/walking-row',
+  getParentRoute: () => OpticsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,8 +114,15 @@ export interface FileRoutesByFullPath {
   '/optics': typeof OpticsRouteWithChildren
   '/mechanics/acceleration': typeof MechanicsAccelerationRoute
   '/mechanics/motion': typeof MechanicsMotionRoute
+  '/optics/apparent-depth': typeof OpticsApparentDepthRoute
   '/optics/lenses-mirrors': typeof OpticsLensesMirrorsRoute
+  '/optics/magnifier': typeof OpticsMagnifierRoute
+  '/optics/mirror-image': typeof OpticsMirrorImageRoute
+  '/optics/paper-image': typeof OpticsPaperImageRoute
+  '/optics/reflection': typeof OpticsReflectionRoute
   '/optics/reflection-refraction': typeof OpticsReflectionRefractionRoute
+  '/optics/refraction': typeof OpticsRefractionRoute
+  '/optics/walking-row': typeof OpticsWalkingRowRoute
   '/mechanics/': typeof MechanicsIndexRoute
   '/optics/': typeof OpticsIndexRoute
 }
@@ -81,8 +130,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/mechanics/acceleration': typeof MechanicsAccelerationRoute
   '/mechanics/motion': typeof MechanicsMotionRoute
+  '/optics/apparent-depth': typeof OpticsApparentDepthRoute
   '/optics/lenses-mirrors': typeof OpticsLensesMirrorsRoute
+  '/optics/magnifier': typeof OpticsMagnifierRoute
+  '/optics/mirror-image': typeof OpticsMirrorImageRoute
+  '/optics/paper-image': typeof OpticsPaperImageRoute
+  '/optics/reflection': typeof OpticsReflectionRoute
   '/optics/reflection-refraction': typeof OpticsReflectionRefractionRoute
+  '/optics/refraction': typeof OpticsRefractionRoute
+  '/optics/walking-row': typeof OpticsWalkingRowRoute
   '/mechanics': typeof MechanicsIndexRoute
   '/optics': typeof OpticsIndexRoute
 }
@@ -93,8 +149,15 @@ export interface FileRoutesById {
   '/optics': typeof OpticsRouteWithChildren
   '/mechanics/acceleration': typeof MechanicsAccelerationRoute
   '/mechanics/motion': typeof MechanicsMotionRoute
+  '/optics/apparent-depth': typeof OpticsApparentDepthRoute
   '/optics/lenses-mirrors': typeof OpticsLensesMirrorsRoute
+  '/optics/magnifier': typeof OpticsMagnifierRoute
+  '/optics/mirror-image': typeof OpticsMirrorImageRoute
+  '/optics/paper-image': typeof OpticsPaperImageRoute
+  '/optics/reflection': typeof OpticsReflectionRoute
   '/optics/reflection-refraction': typeof OpticsReflectionRefractionRoute
+  '/optics/refraction': typeof OpticsRefractionRoute
+  '/optics/walking-row': typeof OpticsWalkingRowRoute
   '/mechanics/': typeof MechanicsIndexRoute
   '/optics/': typeof OpticsIndexRoute
 }
@@ -106,8 +169,15 @@ export interface FileRouteTypes {
     | '/optics'
     | '/mechanics/acceleration'
     | '/mechanics/motion'
+    | '/optics/apparent-depth'
     | '/optics/lenses-mirrors'
+    | '/optics/magnifier'
+    | '/optics/mirror-image'
+    | '/optics/paper-image'
+    | '/optics/reflection'
     | '/optics/reflection-refraction'
+    | '/optics/refraction'
+    | '/optics/walking-row'
     | '/mechanics/'
     | '/optics/'
   fileRoutesByTo: FileRoutesByTo
@@ -115,8 +185,15 @@ export interface FileRouteTypes {
     | '/'
     | '/mechanics/acceleration'
     | '/mechanics/motion'
+    | '/optics/apparent-depth'
     | '/optics/lenses-mirrors'
+    | '/optics/magnifier'
+    | '/optics/mirror-image'
+    | '/optics/paper-image'
+    | '/optics/reflection'
     | '/optics/reflection-refraction'
+    | '/optics/refraction'
+    | '/optics/walking-row'
     | '/mechanics'
     | '/optics'
   id:
@@ -126,8 +203,15 @@ export interface FileRouteTypes {
     | '/optics'
     | '/mechanics/acceleration'
     | '/mechanics/motion'
+    | '/optics/apparent-depth'
     | '/optics/lenses-mirrors'
+    | '/optics/magnifier'
+    | '/optics/mirror-image'
+    | '/optics/paper-image'
+    | '/optics/reflection'
     | '/optics/reflection-refraction'
+    | '/optics/refraction'
+    | '/optics/walking-row'
     | '/mechanics/'
     | '/optics/'
   fileRoutesById: FileRoutesById
@@ -189,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OpticsIndexRouteImport
       parentRoute: typeof OpticsRoute
     }
+    '/optics/apparent-depth': {
+      id: '/optics/apparent-depth'
+      path: '/apparent-depth'
+      fullPath: '/optics/apparent-depth'
+      preLoaderRoute: typeof OpticsApparentDepthRouteImport
+      parentRoute: typeof OpticsRoute
+    }
     '/optics/lenses-mirrors': {
       id: '/optics/lenses-mirrors'
       path: '/lenses-mirrors'
@@ -196,11 +287,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OpticsLensesMirrorsRouteImport
       parentRoute: typeof OpticsRoute
     }
+    '/optics/magnifier': {
+      id: '/optics/magnifier'
+      path: '/magnifier'
+      fullPath: '/optics/magnifier'
+      preLoaderRoute: typeof OpticsMagnifierRouteImport
+      parentRoute: typeof OpticsRoute
+    }
+    '/optics/mirror-image': {
+      id: '/optics/mirror-image'
+      path: '/mirror-image'
+      fullPath: '/optics/mirror-image'
+      preLoaderRoute: typeof OpticsMirrorImageRouteImport
+      parentRoute: typeof OpticsRoute
+    }
+    '/optics/paper-image': {
+      id: '/optics/paper-image'
+      path: '/paper-image'
+      fullPath: '/optics/paper-image'
+      preLoaderRoute: typeof OpticsPaperImageRouteImport
+      parentRoute: typeof OpticsRoute
+    }
+    '/optics/reflection': {
+      id: '/optics/reflection'
+      path: '/reflection'
+      fullPath: '/optics/reflection'
+      preLoaderRoute: typeof OpticsReflectionRouteImport
+      parentRoute: typeof OpticsRoute
+    }
     '/optics/reflection-refraction': {
       id: '/optics/reflection-refraction'
       path: '/reflection-refraction'
       fullPath: '/optics/reflection-refraction'
       preLoaderRoute: typeof OpticsReflectionRefractionRouteImport
+      parentRoute: typeof OpticsRoute
+    }
+    '/optics/refraction': {
+      id: '/optics/refraction'
+      path: '/refraction'
+      fullPath: '/optics/refraction'
+      preLoaderRoute: typeof OpticsRefractionRouteImport
+      parentRoute: typeof OpticsRoute
+    }
+    '/optics/walking-row': {
+      id: '/optics/walking-row'
+      path: '/walking-row'
+      fullPath: '/optics/walking-row'
+      preLoaderRoute: typeof OpticsWalkingRowRouteImport
       parentRoute: typeof OpticsRoute
     }
   }
@@ -223,14 +356,28 @@ const MechanicsRouteWithChildren = MechanicsRoute._addFileChildren(
 )
 
 interface OpticsRouteChildren {
+  OpticsApparentDepthRoute: typeof OpticsApparentDepthRoute
   OpticsLensesMirrorsRoute: typeof OpticsLensesMirrorsRoute
+  OpticsMagnifierRoute: typeof OpticsMagnifierRoute
+  OpticsMirrorImageRoute: typeof OpticsMirrorImageRoute
+  OpticsPaperImageRoute: typeof OpticsPaperImageRoute
+  OpticsReflectionRoute: typeof OpticsReflectionRoute
   OpticsReflectionRefractionRoute: typeof OpticsReflectionRefractionRoute
+  OpticsRefractionRoute: typeof OpticsRefractionRoute
+  OpticsWalkingRowRoute: typeof OpticsWalkingRowRoute
   OpticsIndexRoute: typeof OpticsIndexRoute
 }
 
 const OpticsRouteChildren: OpticsRouteChildren = {
+  OpticsApparentDepthRoute: OpticsApparentDepthRoute,
   OpticsLensesMirrorsRoute: OpticsLensesMirrorsRoute,
+  OpticsMagnifierRoute: OpticsMagnifierRoute,
+  OpticsMirrorImageRoute: OpticsMirrorImageRoute,
+  OpticsPaperImageRoute: OpticsPaperImageRoute,
+  OpticsReflectionRoute: OpticsReflectionRoute,
   OpticsReflectionRefractionRoute: OpticsReflectionRefractionRoute,
+  OpticsRefractionRoute: OpticsRefractionRoute,
+  OpticsWalkingRowRoute: OpticsWalkingRowRoute,
   OpticsIndexRoute: OpticsIndexRoute,
 }
 

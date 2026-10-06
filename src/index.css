@@ -226,7 +226,7 @@ p {
 }
 .lesson-steps {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-bottom: 28px;
 }
@@ -529,6 +529,9 @@ p {
   .lesson-steps {
     grid-template-columns: repeat(2, 1fr);
   }
+  .lesson-steps a:last-child {
+    grid-column: 1 / -1;
+  }
   .lesson-card {
     gap: 12px;
   }
@@ -567,3 +570,6 @@ p {
   .graph-toolbar .mantine-SegmentedControl-root { max-width: 100%; }
   .measurement-table { font-size: 11px; }
 }
+
+.concept-lesson p:not(.eyebrow) { max-width: 48rem; line-height: 1.7; }
+.concept-lesson .lesson-steps a { background: var(--mantine-color-gray-1); color: var(--mantine-color-gray-8); }

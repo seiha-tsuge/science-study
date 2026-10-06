@@ -1,0 +1,6 @@
+.daily-road, .daily-graph { margin: 1rem 0; min-width: 0; }
+.daily-road svg, .daily-graph svg { width: 100%; height: auto; display: block; }
+.daily-road svg text, .daily-graph svg text { font-size: 17px; fill: #34465b; }
+.daily-road figcaption, .daily-graph figcaption { font-size: .875rem; color: #526173; line-height: 1.7; }
+.daily-tools { max-width: 38rem; }
+@media (max-width: 36rem) { .daily-road svg text, .daily-graph svg text { font-size: 22px; } }

@@ -1,0 +1,7 @@
+.concept-workspace { display: grid; grid-template-columns: minmax(15rem, 1fr) minmax(0, 1.7fr); gap: 1.5rem; align-items: start; }
+.concept-workspace figure { margin: 0; min-width: 0; }
+.concept-workspace svg { width: 100%; height: auto; display: block; }
+.concept-workspace svg text { font-size: 15px; fill: #334155; }
+.concept-workspace figcaption { font-size: .875rem; color: #526173; line-height: 1.7; }
+.concept-reason { grid-column: 1 / -1; max-width: 48rem; line-height: 1.7; }
+@media (max-width: 46rem) { .concept-workspace { grid-template-columns: minmax(0, 1fr); } .concept-workspace svg text { font-size: 23px; } }

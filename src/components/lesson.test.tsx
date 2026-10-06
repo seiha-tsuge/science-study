@@ -4,15 +4,25 @@ import { describe, expect, it, vi } from 'vitest'
 import type { ReactNode } from 'react'
 import MotionLessonPage from '../experiments/mechanics/motion/lesson-page'
 import AccelerationLessonPage from '../experiments/mechanics/acceleration/lesson-page'
-import OpticsLessonPage from '../experiments/optics/reflection-refraction/lesson-page'
-import ImagesLessonPage from '../experiments/optics/lenses-mirrors/lesson-page'
 import { motionLesson } from '../experiments/mechanics/motion/meta'
 import { accelerationLesson } from '../experiments/mechanics/acceleration/meta'
-import { opticsLesson } from '../experiments/optics/reflection-refraction/meta'
-import { imagesLesson } from '../experiments/optics/lenses-mirrors/meta'
+import { opticsLessons } from '../app/optics-lessons'
+import { allLessons } from '../app/lesson-catalog'
 import HomePage from '../app/home-page'
 import MechanicsPage from '../app/mechanics-page'
 import OpticsPage from '../app/optics-page'
+
+import WalkingRowPage from '../experiments/optics/walking-row/lesson-page'
+import RefractionPage from '../experiments/optics/refraction/lesson-page'
+import ApparentDepthPage from '../experiments/optics/apparent-depth/lesson-page'
+import ReflectionPage from '../experiments/optics/reflection/lesson-page'
+import MirrorImagePage from '../experiments/optics/mirror-image/lesson-page'
+import MagnifierPage from '../experiments/optics/magnifier/lesson-page'
+import PaperImagePage from '../experiments/optics/paper-image/lesson-page'
+
+const opticsPages = [WalkingRowPage, RefractionPage, ApparentDepthPage, ReflectionPage, MirrorImagePage, MagnifierPage, PaperImagePage] as const
+
+const lessonPages = [MotionLessonPage, AccelerationLessonPage, ...opticsPages] as const
 
 // Navigation belongs to Router; the contract under test is initial lesson access.
 vi.mock('@tanstack/react-router', () => ({
@@ -21,30 +31,20 @@ vi.mock('@tanstack/react-router', () => ({
 
 describe('全教材を回答入力なしで探索できる', () => {
   it.each([
-    ['位置と速度', MotionLessonPage, '同じ時間に、同じ変位', '速度'],
-    ['加速度', AccelerationLessonPage, '二つを重ねる', '加速度'],
-    ['光の反射と屈折', OpticsLessonPage, '見え方から、同じ下端の道筋へ', '入射角'],
-    ['凸レンズの像と平面鏡の像', ImagesLessonPage, '同じ葉を、見え方から光の道筋へ', '数値と光の作図で、条件を広げてみる'],
-  ] as const)('%s：全体像、仕組み、操作、資料を最初から表示する', (_, Page, mechanism, control) => {
+    ['歩く人', MotionLessonPage, '歩く場面', '歩くペース'],
+    ['発進する車', AccelerationLessonPage, '発進する車', '毎秒1.0 m/s'],
+  ] as const)('%s：日常の対象から始め、同じ条件で説明へ進む', (_, Page, scene, control) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
-    const overview = html.indexOf('id="overview"')
-    const why = html.indexOf('id="mechanism"')
-    const exploration = html.indexOf('id="explore"')
-    const details = html.indexOf('id="details"')
-    expect(overview).toBeGreaterThan(-1)
-    expect(why).toBeGreaterThan(overview)
-    expect(exploration).toBeGreaterThan(why)
-    expect(details).toBeGreaterThan(exploration)
-    expect(html).toContain('身近な行為から考える')
-    expect(html).toContain(mechanism)
+    expect(html).toContain(scene)
     expect(html).toContain(control)
-    expect(html).toContain('参考資料：')
-    expect(html).toContain('aria-expanded="false"')
-    expect(html).not.toMatch(/prediction-|challenge-|答えを確かめる|まず予想|自分の言葉で|再挑戦|locked-panel/)
+    expect(html).not.toContain('class="motion-canvas"')
+    expect(html).not.toContain('道の場所 [m]')
+    expect(html).not.toContain('車の速度 [m/s]')
+    expect(html).not.toMatch(/出発点も変える|出発時の速度と位置も変える|負の加速度は|二つを重ねる/)
   })
   it.each([
     [MotionLessonPage, motionLesson], [AccelerationLessonPage, accelerationLesson],
-    [OpticsLessonPage, opticsLesson], [ImagesLessonPage, imagesLesson],
+    ...opticsPages.map((Page, index) => [Page, opticsLessons[index].lesson] as const),
   ] as const)('最初に理解する関係を示し、行為・現象・範囲を仕組みより先に表示する', (Page, lesson) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
     const goalHeading = html.indexOf('今回理解すること')
@@ -60,23 +60,24 @@ describe('全教材を回答入力なしで探索できる', () => {
     expect(html.indexOf('id="mechanism"')).toBeGreaterThan(scope)
   })
   it.each([
-    [HomePage, [motionLesson, accelerationLesson, opticsLesson, imagesLesson]],
+    [HomePage, [motionLesson, accelerationLesson, ...opticsLessons.map(item => item.lesson)]],
     [MechanicsPage, [motionLesson, accelerationLesson]],
-    [OpticsPage, [opticsLesson, imagesLesson]],
+    [OpticsPage, opticsLessons.map(item => item.lesson)],
   ] as const)('ホームと分野の案内でも、教材と同じゴールを表示する', (Page, lessons) => {
     const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
     for (const lesson of lessons) expect(html).toContain(lesson.learningGoal.understand)
   })
-  it('光学の入口は線や未説明語なしの水の比較で、類推は任意で開ける', () => {
-    const html = renderToStaticMarkup(<MantineProvider><OpticsLessonPage /></MantineProvider>)
-    const opening = html.slice(html.indexOf('id="overview"'), html.indexOf('id="mechanism"'))
-    expect(opening).toContain('水を抜く')
-    expect(opening).toContain('水を入れる')
-    expect(opening).toContain('見え方の計算モデル')
-    expect(opening).not.toMatch(/marker-end|stroke-dasharray="6 5"|波面|位相|法線|入射角|下端A/)
-    expect(html).toContain('さらに知りたい：なぜ曲がる？ 人の列から波へ')
-    expect(html).not.toContain('人の列が道から砂地へ進む模式図')
-    expect(html).toContain('さらに知りたい：光では何が変わる？')
-    expect(html).not.toContain('小さな＋の電気を帯びた粒を置いたとき')
+  it.each(lessonPages.map((Page, index) => [Page, allLessons[index].lesson] as const))('全教材は一つのゴールを同じ題材でたどり、次のリンクを一つ表示する', (Page, lesson) => {
+    const html = renderToStaticMarkup(<MantineProvider><Page /></MantineProvider>)
+    expect(html.match(/>今回理解すること</g)).toHaveLength(1)
+    expect(html).toContain(lesson.learningGoal.understand)
+    expect(html.indexOf('id="mechanism"')).toBeGreaterThan(html.indexOf('id="overview"'))
+    expect(html.indexOf('id="details"')).toBeGreaterThan(html.indexOf('id="mechanism"'))
+    expect(html).not.toContain('id="explore"')
+    const footer = html.slice(html.indexOf('<footer'), html.indexOf('</footer>'))
+    expect(footer.match(/href=/g)).toHaveLength(1)
+    expect(html).not.toMatch(/prediction-|challenge-|locked-panel|位相|干渉|全反射|焦点F/)
+    expect(html).toContain('参考資料：')
+    expect(html).toContain('aria-expanded="false"')
   })
 })
